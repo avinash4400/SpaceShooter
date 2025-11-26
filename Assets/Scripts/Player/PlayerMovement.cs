@@ -44,7 +44,7 @@ public class PlayerMovement : MonoBehaviour, IGameComponent, IMovementBlocker
     public void Initialize(IActor actor)
     {
         this.actor = actor;
-        rb = GetComponentInChildren<Rigidbody>();
+        rb = actor.GetRigidbody();
         rb.useGravity = false;
         rb.freezeRotation = true;
         // Set the initial Z position to lock the movement plane
@@ -138,15 +138,19 @@ public class PlayerMovement : MonoBehaviour, IGameComponent, IMovementBlocker
         // Share the current velocity state back to the IActor for components like Dash
         actor.SetCurrentVelocity(currentVelocity);
 
-        // Predict next position before clamping
-        Vector2 predictedPos = rb.position + currentVelocity * Time.fixedDeltaTime;
+        if(currentVelocity.magnitude > 0.01f)
+        {
+            // Predict next position before clamping
+            Vector2 predictedPos = rb.position + currentVelocity * Time.fixedDeltaTime;
 
-        // Clamp within camera bounds
-        //predictedPos.x = Mathf.Clamp(predictedPos.x, cameraBounds.min.x + paddingX, cameraBounds.max.x - paddingX);
-        //predictedPos.y = Mathf.Clamp(predictedPos.y, cameraBounds.min.y + paddingY, cameraBounds.max.y - paddingY);
-        predictedPos = ClampPlayerPosition(predictedPos);
-        // Move using Rigidbody
-        rb.MovePosition(predictedPos);
+            // Clamp within camera bounds
+            //predictedPos.x = Mathf.Clamp(predictedPos.x, cameraBounds.min.x + paddingX, cameraBounds.max.x - paddingX);
+            //predictedPos.y = Mathf.Clamp(predictedPos.y, cameraBounds.min.y + paddingY, cameraBounds.max.y - paddingY);
+            predictedPos = ClampPlayerPosition(predictedPos);
+            // Move using Rigidbody
+            rb.MovePosition(predictedPos);
+        }
+        
     }
 
     /// <summary>

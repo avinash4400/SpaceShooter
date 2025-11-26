@@ -53,6 +53,15 @@ public partial class @GameControlSystem: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Shoot"",
+                    ""type"": ""Button"",
+                    ""id"": ""b06ff3e6-a58d-44d3-972d-1993edcf6337"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -114,7 +123,7 @@ public partial class @GameControlSystem: IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""96b33f36-8ed2-4426-9225-25d19a747b0e"",
-                    ""path"": ""<Keyboard>/#(R)"",
+                    ""path"": ""<Keyboard>/leftShift"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
@@ -130,6 +139,17 @@ public partial class @GameControlSystem: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""EscapeKey"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""b5efd446-425f-42ac-9751-7f8955341bf0"",
+                    ""path"": ""<Keyboard>/space"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Shoot"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -171,6 +191,7 @@ public partial class @GameControlSystem: IInputActionCollection2, IDisposable
         m_Player_Movement = m_Player.FindAction("Movement", throwIfNotFound: true);
         m_Player_Dash = m_Player.FindAction("Dash", throwIfNotFound: true);
         m_Player_EscapeKey = m_Player.FindAction("EscapeKey", throwIfNotFound: true);
+        m_Player_Shoot = m_Player.FindAction("Shoot", throwIfNotFound: true);
         // Game
         m_Game = asset.FindActionMap("Game", throwIfNotFound: true);
         m_Game_StartGame = m_Game.FindAction("StartGame", throwIfNotFound: true);
@@ -238,6 +259,7 @@ public partial class @GameControlSystem: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_Movement;
     private readonly InputAction m_Player_Dash;
     private readonly InputAction m_Player_EscapeKey;
+    private readonly InputAction m_Player_Shoot;
     public struct PlayerActions
     {
         private @GameControlSystem m_Wrapper;
@@ -245,6 +267,7 @@ public partial class @GameControlSystem: IInputActionCollection2, IDisposable
         public InputAction @Movement => m_Wrapper.m_Player_Movement;
         public InputAction @Dash => m_Wrapper.m_Player_Dash;
         public InputAction @EscapeKey => m_Wrapper.m_Player_EscapeKey;
+        public InputAction @Shoot => m_Wrapper.m_Player_Shoot;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -263,6 +286,9 @@ public partial class @GameControlSystem: IInputActionCollection2, IDisposable
             @EscapeKey.started += instance.OnEscapeKey;
             @EscapeKey.performed += instance.OnEscapeKey;
             @EscapeKey.canceled += instance.OnEscapeKey;
+            @Shoot.started += instance.OnShoot;
+            @Shoot.performed += instance.OnShoot;
+            @Shoot.canceled += instance.OnShoot;
         }
 
         private void UnregisterCallbacks(IPlayerActions instance)
@@ -276,6 +302,9 @@ public partial class @GameControlSystem: IInputActionCollection2, IDisposable
             @EscapeKey.started -= instance.OnEscapeKey;
             @EscapeKey.performed -= instance.OnEscapeKey;
             @EscapeKey.canceled -= instance.OnEscapeKey;
+            @Shoot.started -= instance.OnShoot;
+            @Shoot.performed -= instance.OnShoot;
+            @Shoot.canceled -= instance.OnShoot;
         }
 
         public void RemoveCallbacks(IPlayerActions instance)
@@ -344,6 +373,7 @@ public partial class @GameControlSystem: IInputActionCollection2, IDisposable
         void OnMovement(InputAction.CallbackContext context);
         void OnDash(InputAction.CallbackContext context);
         void OnEscapeKey(InputAction.CallbackContext context);
+        void OnShoot(InputAction.CallbackContext context);
     }
     public interface IGameActions
     {

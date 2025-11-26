@@ -97,6 +97,7 @@ public class DashComponent : MonoBehaviour, IGameComponent, IMovementBlocker
         OnDashExecuted?.Invoke();
 
         Transform actorTransform = actor.GetTransform();
+        Vector3 currentVelocity = dashVelocity;
         float startTime = Time.time;
 
         // Dash movement loop
@@ -104,6 +105,8 @@ public class DashComponent : MonoBehaviour, IGameComponent, IMovementBlocker
         {
             // Apply dash movement directly using the Actor's Transform
             actorTransform.position += dashVelocity * Time.deltaTime;
+            //currentVelocity = dashVelocity;
+            //actor.GetRigidbody().velocity = currentVelocity;
             yield return null; // Wait until the next frame
         }
 

@@ -14,6 +14,7 @@ public class Player : MonoBehaviour, IActor
     private HealthComponent healthComponent;
     private PlayerMovement playerMovement;
     private DashComponent dashComponent;
+    private Rigidbody rb;
 
     // IActor State: Shared velocity data, maintained by PlayerMovement.cs
     private Vector2 currentVelocity;
@@ -70,7 +71,7 @@ public class Player : MonoBehaviour, IActor
         healthComponent = GetOrAddComponent<HealthComponent>();
         playerMovement = GetOrAddComponent<PlayerMovement>();
         dashComponent = GetOrAddComponent<DashComponent>();
-
+        rb = GetComponentInChildren<Rigidbody>();
         // 2. Get all components implementing the IGameComponent feature interface
         // We use GetComponents here because they must exist now (step 1 guarantees it)
         IGameComponent[] gameComponents = GetComponents<IGameComponent>();
@@ -81,6 +82,8 @@ public class Player : MonoBehaviour, IActor
             Debug.Log($"Initialized {component.GetType().Name} with IActor reference.");
         }
     }
+
+    public Rigidbody GetRigidbody() => rb;
 
     void OnDestroy()
     {

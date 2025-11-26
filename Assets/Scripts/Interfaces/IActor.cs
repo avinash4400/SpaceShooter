@@ -22,4 +22,6 @@ public interface IActor
     /// Used by the movement component to share velocity data.
     /// </summary>
     void SetCurrentVelocity(Vector2 velocity);
+
+    Rigidbody GetRigidbody();
 }

@@ -20,8 +20,5 @@ public interface IDamageSource
     /// <summary>
     /// Creates a DamageInfo struct containing all necessary data about the damage event.
     /// </summary>
-    DamageInfo CreateDamageInfo()
-    {
-        return new DamageInfo(DamageAmount, SourceObject);
-    }
+    DamageInfo CreateDamageInfo();
 }
