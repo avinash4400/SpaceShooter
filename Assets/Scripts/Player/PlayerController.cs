@@ -14,10 +14,14 @@ public class PlayerController : MonoBehaviour
     public static event Action OnDashAttempt;
     public static event Action<bool> OnShootInput;
 
+    // NEW: Switching inputs
+    public static event Action OnSwitchBulletInput;
+    public static event Action OnSwitchPowerupInput;
+
     // Events for Universal actions (used across multiple states)
     public static event Action OnEscapeKeyPressed;
 
-    // NEW EVENT: Broadcasts that the start game input was detected.
+    // Broadcasts that the start game input was detected.
     public static event Action OnStartGameInput;
 
     // Reference to the auto-generated Input Action asset class
@@ -32,13 +36,17 @@ public class PlayerController : MonoBehaviour
         // 1. Initialize the Input System
         mGameControlSystem = new GameControlSystem();
 
-        // 2. Bind the Player Map Actions (Movement, Dash, EscapeKey)
+        // 2. Bind the Player Map Actions
         mGameControlSystem.Player.Movement.performed += OnMovementPerformed;
         mGameControlSystem.Player.Movement.canceled += OnMovementCanceled;
         mGameControlSystem.Player.Dash.performed += OnDashPerformed;
         mGameControlSystem.Player.EscapeKey.performed += OnEscapePerformed;
         mGameControlSystem.Player.Shoot.started += OnShootStarted;
         mGameControlSystem.Player.Shoot.canceled += OnShootCanceled;
+
+        // Bind Switching Actions
+        mGameControlSystem.Player.SwitchBullet.performed += OnSwitchBulletPerformed;
+        mGameControlSystem.Player.SwitchPowerup.performed += OnSwitchPowerupPerformed;
 
         // 3. Bind the Game Map Actions (StartGame)
         mGameControlSystem.Game.StartGame.performed += OnStartGamePerformed;
@@ -59,6 +67,9 @@ public class PlayerController : MonoBehaviour
             mGameControlSystem.Player.EscapeKey.performed -= OnEscapePerformed;
             mGameControlSystem.Player.Shoot.started -= OnShootStarted;
             mGameControlSystem.Player.Shoot.canceled -= OnShootCanceled;
+
+            mGameControlSystem.Player.SwitchBullet.performed -= OnSwitchBulletPerformed;
+            mGameControlSystem.Player.SwitchPowerup.performed -= OnSwitchPowerupPerformed;
 
             // Unsubscribe Game Map
             mGameControlSystem.Game.StartGame.performed -= OnStartGamePerformed;
@@ -93,6 +104,18 @@ public class PlayerController : MonoBehaviour
     private void OnShootCanceled(InputAction.CallbackContext context)
     {
         OnShootInput?.Invoke(false);
+    }
+
+    // --- New Switching Listeners ---
+
+    private void OnSwitchBulletPerformed(InputAction.CallbackContext context)
+    {
+        OnSwitchBulletInput?.Invoke();
+    }
+
+    private void OnSwitchPowerupPerformed(InputAction.CallbackContext context)
+    {
+        OnSwitchPowerupInput?.Invoke();
     }
 
     // --- Player Map Listener (Escape) ---

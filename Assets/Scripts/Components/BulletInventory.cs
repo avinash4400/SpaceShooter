@@ -47,6 +47,17 @@ public class BulletInventory : MonoBehaviour, IGameComponent
         InitializePools();
     }
 
+    // NEW: Subscribe to Input Events
+    void OnEnable()
+    {
+        PlayerController.OnSwitchBulletInput += SwitchBullet;
+    }
+
+    void OnDisable()
+    {
+        PlayerController.OnSwitchBulletInput -= SwitchBullet;
+    }
+
     private void InitializePools()
     {
         bulletPools = new Dictionary<BulletType, ObjectPool<BaseProjectile>>();
