@@ -27,34 +27,43 @@ public class PlayerShooting : MonoBehaviour, IGameComponent
 
     void OnEnable()
     {
-        PlayerController.OnDashAttempt += OnShootingPerformed;
+        PlayerController.OnShootInput += OnShootingInput;
     }
 
     void OnDisable()
     {
-        PlayerController.OnDashAttempt -= OnShootingPerformed;
+        PlayerController.OnShootInput -= OnShootingInput;
         StopCoroutine(HandleContinuousFire());
         isFiring = false;
     }
 
-    private void OnShootingPerformed()
+    private void OnShootingInput(bool isShooting)
     {
-        if (!isFiring)
+        if (isShooting)
         {
-            isFiring = true;
-            StartCoroutine(HandleContinuousFire());
+            if (!isFiring)
+            {
+                isFiring = true;
+                StartCoroutine(HandleContinuousFire());
+            }
+        }
+        else
+        {
+            isFiring = false;
         }
     }
 
     private IEnumerator HandleContinuousFire()
     {
-        if (Time.time >= nextFireTime)
+        while (isFiring)
         {
-            TryFire();
-            nextFireTime = Time.time + fireRate;
+            if (Time.time >= nextFireTime)
+            {
+                TryFire();
+                nextFireTime = Time.time + fireRate;
+            }
+            yield return null;
         }
-        isFiring = false;
-        yield return null;
     }
 
     private void TryFire()
@@ -63,6 +72,6 @@ public class PlayerShooting : MonoBehaviour, IGameComponent
 
         // Delegate the entire firing logic (check ammo, consume, spawn) to the inventory
         // We pass the muzzle position and direction (Up for vertical shooter)
-        inventory.AttemptFire(muzzlePoint.position, Vector3.up, actor.GetTransform().gameObject);
+        inventory.AttemptFire(muzzlePoint.position, Vector3.up, actor);
     }
 }

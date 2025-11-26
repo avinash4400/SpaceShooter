@@ -103,7 +103,7 @@ public class BulletInventory : MonoBehaviour, IGameComponent
     /// Attempts to fire the currently selected bullet.
     /// Handles ammo check, consumption, and spawning.
     /// </summary>
-    public void AttemptFire(Vector3 spawnPosition, Vector3 fireDirection, GameObject sourceObject)
+    public void AttemptFire(Vector3 spawnPosition, Vector3 fireDirection, IActor sourceActor)
     {
         if (SelectedBullet == null) return;
 
@@ -111,10 +111,10 @@ public class BulletInventory : MonoBehaviour, IGameComponent
         if (!ConsumeAmmo(SelectedBullet)) return;
 
         // 2. Spawn from Pool
-        SpawnBullet(SelectedBullet, spawnPosition, fireDirection, sourceObject);
+        SpawnBullet(SelectedBullet, spawnPosition, fireDirection, sourceActor);
     }
 
-    private void SpawnBullet(BulletTypeSO bulletConfig, Vector3 position, Vector3 direction, GameObject source)
+    private void SpawnBullet(BulletTypeSO bulletConfig, Vector3 position, Vector3 direction, IActor source)
     {
         if (bulletPools == null || !bulletPools.ContainsKey(bulletConfig.type)) return;
 

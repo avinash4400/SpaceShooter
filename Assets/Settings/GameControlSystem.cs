@@ -62,6 +62,24 @@ public partial class @GameControlSystem: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""SwitchBullet"",
+                    ""type"": ""Button"",
+                    ""id"": ""f5335c97-6af9-4a65-86c5-a973917fb715"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""SwitchPowerup"",
+                    ""type"": ""Button"",
+                    ""id"": ""fcf9c846-2e19-47ec-9936-c8b5fa2f2907"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -152,6 +170,28 @@ public partial class @GameControlSystem: IInputActionCollection2, IDisposable
                     ""action"": ""Shoot"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""25d7f787-3bc7-410a-8927-b720fc332202"",
+                    ""path"": ""<Keyboard>/q"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""SwitchBullet"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""d24a63c1-9c0c-4bf1-b7a3-e7c799568ee2"",
+                    ""path"": ""<Keyboard>/e"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""SwitchPowerup"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         },
@@ -192,6 +232,8 @@ public partial class @GameControlSystem: IInputActionCollection2, IDisposable
         m_Player_Dash = m_Player.FindAction("Dash", throwIfNotFound: true);
         m_Player_EscapeKey = m_Player.FindAction("EscapeKey", throwIfNotFound: true);
         m_Player_Shoot = m_Player.FindAction("Shoot", throwIfNotFound: true);
+        m_Player_SwitchBullet = m_Player.FindAction("SwitchBullet", throwIfNotFound: true);
+        m_Player_SwitchPowerup = m_Player.FindAction("SwitchPowerup", throwIfNotFound: true);
         // Game
         m_Game = asset.FindActionMap("Game", throwIfNotFound: true);
         m_Game_StartGame = m_Game.FindAction("StartGame", throwIfNotFound: true);
@@ -260,6 +302,8 @@ public partial class @GameControlSystem: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_Dash;
     private readonly InputAction m_Player_EscapeKey;
     private readonly InputAction m_Player_Shoot;
+    private readonly InputAction m_Player_SwitchBullet;
+    private readonly InputAction m_Player_SwitchPowerup;
     public struct PlayerActions
     {
         private @GameControlSystem m_Wrapper;
@@ -268,6 +312,8 @@ public partial class @GameControlSystem: IInputActionCollection2, IDisposable
         public InputAction @Dash => m_Wrapper.m_Player_Dash;
         public InputAction @EscapeKey => m_Wrapper.m_Player_EscapeKey;
         public InputAction @Shoot => m_Wrapper.m_Player_Shoot;
+        public InputAction @SwitchBullet => m_Wrapper.m_Player_SwitchBullet;
+        public InputAction @SwitchPowerup => m_Wrapper.m_Player_SwitchPowerup;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -289,6 +335,12 @@ public partial class @GameControlSystem: IInputActionCollection2, IDisposable
             @Shoot.started += instance.OnShoot;
             @Shoot.performed += instance.OnShoot;
             @Shoot.canceled += instance.OnShoot;
+            @SwitchBullet.started += instance.OnSwitchBullet;
+            @SwitchBullet.performed += instance.OnSwitchBullet;
+            @SwitchBullet.canceled += instance.OnSwitchBullet;
+            @SwitchPowerup.started += instance.OnSwitchPowerup;
+            @SwitchPowerup.performed += instance.OnSwitchPowerup;
+            @SwitchPowerup.canceled += instance.OnSwitchPowerup;
         }
 
         private void UnregisterCallbacks(IPlayerActions instance)
@@ -305,6 +357,12 @@ public partial class @GameControlSystem: IInputActionCollection2, IDisposable
             @Shoot.started -= instance.OnShoot;
             @Shoot.performed -= instance.OnShoot;
             @Shoot.canceled -= instance.OnShoot;
+            @SwitchBullet.started -= instance.OnSwitchBullet;
+            @SwitchBullet.performed -= instance.OnSwitchBullet;
+            @SwitchBullet.canceled -= instance.OnSwitchBullet;
+            @SwitchPowerup.started -= instance.OnSwitchPowerup;
+            @SwitchPowerup.performed -= instance.OnSwitchPowerup;
+            @SwitchPowerup.canceled -= instance.OnSwitchPowerup;
         }
 
         public void RemoveCallbacks(IPlayerActions instance)
@@ -374,6 +432,8 @@ public partial class @GameControlSystem: IInputActionCollection2, IDisposable
         void OnDash(InputAction.CallbackContext context);
         void OnEscapeKey(InputAction.CallbackContext context);
         void OnShoot(InputAction.CallbackContext context);
+        void OnSwitchBullet(InputAction.CallbackContext context);
+        void OnSwitchPowerup(InputAction.CallbackContext context);
     }
     public interface IGameActions
     {

@@ -12,6 +12,7 @@ public class PlayerController : MonoBehaviour
     // Events for Player actions (used during StageActive)
     public static event Action<Vector2> OnMovementInput;
     public static event Action OnDashAttempt;
+    public static event Action<bool> OnShootInput;
 
     // Events for Universal actions (used across multiple states)
     public static event Action OnEscapeKeyPressed;
@@ -36,6 +37,8 @@ public class PlayerController : MonoBehaviour
         mGameControlSystem.Player.Movement.canceled += OnMovementCanceled;
         mGameControlSystem.Player.Dash.performed += OnDashPerformed;
         mGameControlSystem.Player.EscapeKey.performed += OnEscapePerformed;
+        mGameControlSystem.Player.Shoot.started += OnShootStarted;
+        mGameControlSystem.Player.Shoot.canceled += OnShootCanceled;
 
         // 3. Bind the Game Map Actions (StartGame)
         mGameControlSystem.Game.StartGame.performed += OnStartGamePerformed;
@@ -54,6 +57,8 @@ public class PlayerController : MonoBehaviour
             mGameControlSystem.Player.Movement.canceled -= OnMovementCanceled;
             mGameControlSystem.Player.Dash.performed -= OnDashPerformed;
             mGameControlSystem.Player.EscapeKey.performed -= OnEscapePerformed;
+            mGameControlSystem.Player.Shoot.started -= OnShootStarted;
+            mGameControlSystem.Player.Shoot.canceled -= OnShootCanceled;
 
             // Unsubscribe Game Map
             mGameControlSystem.Game.StartGame.performed -= OnStartGamePerformed;
@@ -78,6 +83,16 @@ public class PlayerController : MonoBehaviour
     private void OnDashPerformed(InputAction.CallbackContext context)
     {
         OnDashAttempt?.Invoke();
+    }
+
+    private void OnShootStarted(InputAction.CallbackContext context)
+    {
+        OnShootInput?.Invoke(true);
+    }
+
+    private void OnShootCanceled(InputAction.CallbackContext context)
+    {
+        OnShootInput?.Invoke(false);
     }
 
     // --- Player Map Listener (Escape) ---
