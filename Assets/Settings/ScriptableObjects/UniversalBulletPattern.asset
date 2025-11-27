@@ -12,4 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 045cfcd7b36593545851559002427918, type: 3}
   m_Name: UniversalBulletPattern
   m_EditorClassIdentifier: 
-  spreadAngle: 0
+  spreadAngle: 15
