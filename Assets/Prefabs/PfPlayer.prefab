@@ -151,8 +151,9 @@ GameObject:
   - component: {fileID: 4352876116295502930}
   - component: {fileID: 3561729290521633322}
   - component: {fileID: 8145051291626932678}
+  - component: {fileID: 2282763749877746899}
   m_Layer: 0
-  m_Name: Player
+  m_Name: PfPlayer
   m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -295,6 +296,18 @@ MonoBehaviour:
   dashSpeed: 25
   dashDuration: 0.15
   dashCooldown: 1
+--- !u!114 &2282763749877746899
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6205013781952291633}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3c75c7bf0347b6f41a863977b7c57021, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &7034402838355293666
 GameObject:
   m_ObjectHideFlags: 0

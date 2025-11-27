@@ -80,6 +80,15 @@ public partial class @GameControlSystem: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""ActivatePowerUp"",
+                    ""type"": ""Button"",
+                    ""id"": ""7c041ef9-2a0b-4792-ab14-e69eb15b12bf"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -192,6 +201,17 @@ public partial class @GameControlSystem: IInputActionCollection2, IDisposable
                     ""action"": ""SwitchPowerup"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""fce06b32-c379-4151-941c-bea99ecdcb0d"",
+                    ""path"": ""<Keyboard>/f"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ActivatePowerUp"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         },
@@ -234,6 +254,7 @@ public partial class @GameControlSystem: IInputActionCollection2, IDisposable
         m_Player_Shoot = m_Player.FindAction("Shoot", throwIfNotFound: true);
         m_Player_SwitchBullet = m_Player.FindAction("SwitchBullet", throwIfNotFound: true);
         m_Player_SwitchPowerup = m_Player.FindAction("SwitchPowerup", throwIfNotFound: true);
+        m_Player_ActivatePowerUp = m_Player.FindAction("ActivatePowerUp", throwIfNotFound: true);
         // Game
         m_Game = asset.FindActionMap("Game", throwIfNotFound: true);
         m_Game_StartGame = m_Game.FindAction("StartGame", throwIfNotFound: true);
@@ -304,6 +325,7 @@ public partial class @GameControlSystem: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_Shoot;
     private readonly InputAction m_Player_SwitchBullet;
     private readonly InputAction m_Player_SwitchPowerup;
+    private readonly InputAction m_Player_ActivatePowerUp;
     public struct PlayerActions
     {
         private @GameControlSystem m_Wrapper;
@@ -314,6 +336,7 @@ public partial class @GameControlSystem: IInputActionCollection2, IDisposable
         public InputAction @Shoot => m_Wrapper.m_Player_Shoot;
         public InputAction @SwitchBullet => m_Wrapper.m_Player_SwitchBullet;
         public InputAction @SwitchPowerup => m_Wrapper.m_Player_SwitchPowerup;
+        public InputAction @ActivatePowerUp => m_Wrapper.m_Player_ActivatePowerUp;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -341,6 +364,9 @@ public partial class @GameControlSystem: IInputActionCollection2, IDisposable
             @SwitchPowerup.started += instance.OnSwitchPowerup;
             @SwitchPowerup.performed += instance.OnSwitchPowerup;
             @SwitchPowerup.canceled += instance.OnSwitchPowerup;
+            @ActivatePowerUp.started += instance.OnActivatePowerUp;
+            @ActivatePowerUp.performed += instance.OnActivatePowerUp;
+            @ActivatePowerUp.canceled += instance.OnActivatePowerUp;
         }
 
         private void UnregisterCallbacks(IPlayerActions instance)
@@ -363,6 +389,9 @@ public partial class @GameControlSystem: IInputActionCollection2, IDisposable
             @SwitchPowerup.started -= instance.OnSwitchPowerup;
             @SwitchPowerup.performed -= instance.OnSwitchPowerup;
             @SwitchPowerup.canceled -= instance.OnSwitchPowerup;
+            @ActivatePowerUp.started -= instance.OnActivatePowerUp;
+            @ActivatePowerUp.performed -= instance.OnActivatePowerUp;
+            @ActivatePowerUp.canceled -= instance.OnActivatePowerUp;
         }
 
         public void RemoveCallbacks(IPlayerActions instance)
@@ -434,6 +463,7 @@ public partial class @GameControlSystem: IInputActionCollection2, IDisposable
         void OnShoot(InputAction.CallbackContext context);
         void OnSwitchBullet(InputAction.CallbackContext context);
         void OnSwitchPowerup(InputAction.CallbackContext context);
+        void OnActivatePowerUp(InputAction.CallbackContext context);
     }
     public interface IGameActions
     {

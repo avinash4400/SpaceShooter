@@ -14,9 +14,12 @@ public class PlayerController : MonoBehaviour
     public static event Action OnDashAttempt;
     public static event Action<bool> OnShootInput;
 
-    // NEW: Switching inputs
+    // Switching inputs
     public static event Action OnSwitchBulletInput;
     public static event Action OnSwitchPowerupInput;
+
+    // NEW: Activation input
+    public static event Action OnActivatePowerupInput;
 
     // Events for Universal actions (used across multiple states)
     public static event Action OnEscapeKeyPressed;
@@ -48,6 +51,9 @@ public class PlayerController : MonoBehaviour
         mGameControlSystem.Player.SwitchBullet.performed += OnSwitchBulletPerformed;
         mGameControlSystem.Player.SwitchPowerup.performed += OnSwitchPowerupPerformed;
 
+        // Bind Activation Action
+        mGameControlSystem.Player.ActivatePowerUp.performed += OnActivatePowerupPerformed;
+
         // 3. Bind the Game Map Actions (StartGame)
         mGameControlSystem.Game.StartGame.performed += OnStartGamePerformed;
 
@@ -70,6 +76,7 @@ public class PlayerController : MonoBehaviour
 
             mGameControlSystem.Player.SwitchBullet.performed -= OnSwitchBulletPerformed;
             mGameControlSystem.Player.SwitchPowerup.performed -= OnSwitchPowerupPerformed;
+            mGameControlSystem.Player.ActivatePowerUp.performed -= OnActivatePowerupPerformed;
 
             // Unsubscribe Game Map
             mGameControlSystem.Game.StartGame.performed -= OnStartGamePerformed;
@@ -106,7 +113,7 @@ public class PlayerController : MonoBehaviour
         OnShootInput?.Invoke(false);
     }
 
-    // --- New Switching Listeners ---
+    // --- Switching & Activation Listeners ---
 
     private void OnSwitchBulletPerformed(InputAction.CallbackContext context)
     {
@@ -116,6 +123,11 @@ public class PlayerController : MonoBehaviour
     private void OnSwitchPowerupPerformed(InputAction.CallbackContext context)
     {
         OnSwitchPowerupInput?.Invoke();
+    }
+
+    private void OnActivatePowerupPerformed(InputAction.CallbackContext context)
+    {
+        OnActivatePowerupInput?.Invoke();
     }
 
     // --- Player Map Listener (Escape) ---
