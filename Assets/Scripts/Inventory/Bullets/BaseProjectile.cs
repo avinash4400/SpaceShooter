@@ -60,6 +60,11 @@ public abstract class BaseProjectile : MonoBehaviour, IDamageSource, IActor
         StartCoroutine(LifeCountdownCoroutine());
     }
 
+    public T GetAttachedComponent<T>() where T : IGameComponent
+    {
+        return default;
+    }
+
     protected virtual void Expire()
     {
         StopAllCoroutines();

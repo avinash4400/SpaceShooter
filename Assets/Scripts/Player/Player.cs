@@ -1,12 +1,11 @@
 using UnityEngine;
 using System;
 using System.Linq;
+using System.Collections.Generic;
 
 /// <summary>
 /// The primary identity component for the Player object. 
-/// It implements the IActor interface, making it the central data hub for the player.
-/// It holds and initializes all core player feature components (Movement, Dash, Health) 
-/// and translates local death events into global game events via the EventManager.
+/// Implements the Provider side of the Handshake Pattern.
 /// </summary>
 public class Player : MonoBehaviour, IActor
 {
@@ -14,42 +13,72 @@ public class Player : MonoBehaviour, IActor
     private HealthComponent healthComponent;
     private PlayerMovement playerMovement;
     private DashComponent dashComponent;
+    private IGameComponent[] gameComponents;
     private Rigidbody rb;
 
-    // IActor State: Shared velocity data, maintained by PlayerMovement.cs
+    // IActor State
     private Vector2 currentVelocity;
 
     // --- IActor Implementation ---
 
     public Transform GetTransform() => transform;
-
     public Vector2 GetCurrentVelocity() => currentVelocity;
+    public void SetCurrentVelocity(Vector2 velocity) => currentVelocity = velocity;
+    public Rigidbody GetRigidbody() => rb;
 
-    public void SetCurrentVelocity(Vector2 velocity)
+    public T GetAttachedComponent<T>() where T : IGameComponent
     {
-        currentVelocity = velocity;
+        return gameComponents.OfType<T>().FirstOrDefault();
     }
 
-    // --- Component Initialization and Event Handling ---
+    // --- Lifecycle & Handshake ---
+
+    void OnEnable()
+    {
+        // Listen for anyone asking for the player
+        if (EventManager.Instance != null)
+        {
+            EventManager.Instance.OnPlayerRequested += BroadcastSelf;
+        }
+    }
+
+    void OnDisable()
+    {
+        if (EventManager.Instance != null)
+        {
+            EventManager.Instance.OnPlayerRequested -= BroadcastSelf;
+        }
+    }
 
     void Start()
     {
-        // 1. Ensure the Player object has the correct tag
         gameObject.tag = "Player";
-
-        // 2. Aggregate and initialize all IGameComponents, ensuring they exist
         InitializeComponents();
 
-        // 3. Subscribe to the local HealthComponent's death event.
         if (healthComponent != null)
         {
             healthComponent.OnDeath += OnLocalDeath;
         }
+
+        // Initial broadcast for systems already waiting
+        BroadcastSelf();
     }
 
     /// <summary>
-    /// Helper method to get a component if it exists, or add it if it doesn't.
+    /// Announces this instance as the active Player.
+    /// Called on Start and whenever 'RequestPlayer' is fired.
     /// </summary>
+    private void BroadcastSelf()
+    {
+        if (EventManager.Instance != null)
+        {
+            Debug.Log("[Player] Broadcasting identity via Handshake.");
+            EventManager.Instance.RegisterPlayer(this);
+        }
+    }
+
+    // --- Initialization ---
+
     private T GetOrAddComponent<T>() where T : Component
     {
         T component = GetComponent<T>();
@@ -61,44 +90,30 @@ public class Player : MonoBehaviour, IActor
         return component;
     }
 
-    /// <summary>
-    /// Finds and initializes all IGameComponent implementations on this GameObject.
-    /// This method now ensures critical components are present.
-    /// </summary>
     private void InitializeComponents()
     {
-        // 1. Ensure critical components exist (using GetOrAddComponent)
         healthComponent = GetOrAddComponent<HealthComponent>();
         playerMovement = GetOrAddComponent<PlayerMovement>();
         dashComponent = GetOrAddComponent<DashComponent>();
         rb = GetComponentInChildren<Rigidbody>();
-        // 2. Get all components implementing the IGameComponent feature interface
-        // We use GetComponents here because they must exist now (step 1 guarantees it)
-        IGameComponent[] gameComponents = GetComponents<IGameComponent>();
+
+        gameComponents = GetComponents<IGameComponent>();
 
         foreach (IGameComponent component in gameComponents)
         {
-            component.Initialize(this); // Inject 'this' (the IActor)
+            component.Initialize(this);
             Debug.Log($"Initialized {component.GetType().Name} with IActor reference.");
         }
     }
 
-    public Rigidbody GetRigidbody() => rb;
-
     void OnDestroy()
     {
-        // Unsubscribe to prevent memory leaks
         if (healthComponent != null)
         {
             healthComponent.OnDeath -= OnLocalDeath;
         }
     }
 
-    /// <summary>
-    /// Handles the local death event from the HealthComponent.
-    /// This translates the low-level component event into a high-level global event.
-    /// </summary>
-    /// <param name="deadObject">The GameObject that died (should always be this GameObject).</param>
     private void OnLocalDeath(GameObject deadObject)
     {
         if (EventManager.Instance != null)

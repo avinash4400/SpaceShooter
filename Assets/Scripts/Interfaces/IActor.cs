@@ -24,4 +24,5 @@ public interface IActor
     void SetCurrentVelocity(Vector2 velocity);
 
     Rigidbody GetRigidbody();
+    T GetAttachedComponent<T>() where T : IGameComponent;
 }

@@ -9,9 +9,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b8a89239c0f2db64fa391889e756fc4d, type: 3}
-  m_Name: ShieldEffect
+  m_Script: {fileID: 11500000, guid: 038329f6996f39a4b809d86c27df8358, type: 3}
+  m_Name: Level_1
   m_EditorClassIdentifier: 
-  duration: 5
-  shieldPrefab: {fileID: 7100015532256891651, guid: ea280cc8bf7ea2c4a9c71cbba12a0f51, type: 3}
-  shieldHealth: 3
+  levelName: Level 1
+  waves:
+  - {fileID: 11400000, guid: c4846b0bc5bd40f44a23763961c73d0d, type: 2}
+  backgroundMusic: {fileID: 0}

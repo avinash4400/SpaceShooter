@@ -22,7 +22,7 @@ public class ShieldPowerUpSO : PowerUpEffectSO
             return;
         }
 
-        Transform targetTransform = target.GetTransform();
+        Transform targetTransform = target.GetRigidbody().transform;
 
         // Check if a shield already exists to prevent stacking
         ShieldController existingShield = targetTransform.GetComponentInChildren<ShieldController>();

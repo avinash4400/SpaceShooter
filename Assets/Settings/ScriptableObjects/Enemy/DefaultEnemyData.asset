@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 18ef1b5d88a54b9408d6faabacd52734, type: 3}
+  m_Name: DefaultEnemyData
+  m_EditorClassIdentifier: 
+  enemyName: Default Alien
+  maxHealth: 10
+  scoreValue: 100
+  moveSpeed: 1
+  lootTable: {fileID: 11400000, guid: e1f49eb4fa114d240a93a5a768665376, type: 2}
+  movementPattern: {fileID: 11400000, guid: b173d1a3a19562f46917ce96b796dcec, type: 2}
+  rotationPattern: {fileID: 11400000, guid: daf09ca5cbb8b564bb357043a8ce0c70, type: 2}
+  attackPattern: {fileID: 11400000, guid: 57b2bb91db677f0469580971cc2f7d2a, type: 2}
+  bulletType: {fileID: 11400000, guid: 2614ef3f51a9e65489661a762e210156, type: 2}
+  fireRate: 1
