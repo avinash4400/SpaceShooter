@@ -33,7 +33,7 @@ public abstract class BaseProjectile : MonoBehaviour, IDamageSource, IActor
 
     // --- IActor Implementation ---
     public Transform GetTransform() => transform;
-    public Rigidbody GetRigidbody() => null; // No RB for simple projectiles
+    public Rigidbody GetRigidbody() => null;
     public Vector2 GetCurrentVelocity() => fireDirection * moveSpeed;
     public void SetCurrentVelocity(Vector2 velocity)
     {
@@ -41,12 +41,24 @@ public abstract class BaseProjectile : MonoBehaviour, IDamageSource, IActor
         if (moveSpeed > 0.001f) fireDirection = velocity.normalized;
     }
 
-    public virtual void Initialize(BulletTypeSO bulletConfig, IActor source, Vector3 direction)
+    public T GetAttachedComponent<T>() where T : IGameComponent
+    {
+        return GetComponent<T>();
+    }
+
+    /// <summary>
+    /// Initializes the projectile.
+    /// Added speedMultiplier with default 1f to maintain compatibility with Player firing logic.
+    /// </summary>
+    public virtual void Initialize(BulletTypeSO bulletConfig, IActor source, Vector3 direction, float speedMultiplier = 1f)
     {
         config = bulletConfig;
         DamageAmount = config.damage;
         SourceActor = source;
-        moveSpeed = config.speed;
+
+        // Apply the multiplier to the base speed from config
+        moveSpeed = config.speed * speedMultiplier;
+
         lifeTimer = config.lifetime;
         fireDirection = direction.normalized;
 
@@ -58,11 +70,6 @@ public abstract class BaseProjectile : MonoBehaviour, IDamageSource, IActor
 
         gameObject.SetActive(true);
         StartCoroutine(LifeCountdownCoroutine());
-    }
-
-    public T GetAttachedComponent<T>() where T : IGameComponent
-    {
-        return default;
     }
 
     protected virtual void Expire()
@@ -84,7 +91,6 @@ public abstract class BaseProjectile : MonoBehaviour, IDamageSource, IActor
         if (mainCamera == null) return;
         Vector3 viewPos = mainCamera.WorldToViewportPoint(transform.position);
 
-        // Buffer of 0.1 to ensure full exit
         if (viewPos.x < -0.1f || viewPos.x > 1.1f || viewPos.y < -0.1f || viewPos.y > 1.1f)
         {
             Expire();

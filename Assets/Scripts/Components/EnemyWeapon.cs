@@ -6,47 +6,58 @@ using UnityEngine;
 /// </summary>
 public class EnemyWeapon : MonoBehaviour, IGameComponent
 {
+    [Header("Visuals")]
+    [Tooltip("The Transform where bullets spawn. Create a child object on the Enemy Prefab and assign it here.")]
+    [SerializeField] private Transform muzzlePoint;
+
     // Strategies
     private EnemyAttackSO attackStrategy;
-    private EnemyDataSO enemyData; // Needed for bullet type reference
+    private EnemyDataSO enemyData;
 
     // State
     private IActor target;
     private float fireRate;
     private float nextAttackTime;
 
-    // Pooling
+    // Pooling (Injected)
     private BulletPool weaponPool;
 
-    public void Initialize(IActor actor) { }
+    public void Initialize(IActor actor)
+    {
+        if (muzzlePoint == null)
+        {
+            muzzlePoint = actor.GetTransform();
+        }
+    }
 
-    public void Setup(EnemyAttackSO attackStrat, EnemyDataSO data, float rate, IActor playerTarget)
+    /// <summary>
+    /// Sets up the weapon with strategies and the specific bullet pool.
+    /// </summary>
+    public void Setup(EnemyAttackSO attackStrat, EnemyDataSO data, float rate, IActor playerTarget, BulletPool sharedPool)
     {
         attackStrategy = attackStrat;
         enemyData = data;
         fireRate = rate;
         target = playerTarget;
 
-        // Randomize start time slightly to prevent enemies syncing up
-        nextAttackTime = Time.time + Random.Range(0.5f, 2f);
+        // Injected dependency
+        weaponPool = sharedPool;
 
-        // Setup Pool
-        if (enemyData.bulletType != null && enemyData.bulletType.projectilePrefab != null)
-        {
-            // Create a local pool for this enemy (or shared if optimized later)
-            GameObject poolRoot = new GameObject($"Pool_{name}");
-            weaponPool = new BulletPool(enemyData.bulletType.projectilePrefab, 5, poolRoot.transform);
-        }
+        nextAttackTime = Time.time + Random.Range(0.5f, 2f);
     }
 
     void Update()
     {
         if (attackStrategy != null && Time.time >= nextAttackTime)
         {
-            // The enemy itself acts as the 'Attacker' IActor
             IActor attacker = GetComponent<IActor>();
 
-            attackStrategy.ExecuteAttack(attacker, target, enemyData, weaponPool);
+            // Pass the bullet speed multiplier from the enemy config
+            float speedMult = enemyData != null ? enemyData.bulletSpeedMultiplier : 1.0f;
+
+            // Execute attack using the injected pool
+            attackStrategy.ExecuteAttack(attacker, muzzlePoint, target, enemyData, weaponPool, speedMult);
+
             nextAttackTime = Time.time + fireRate;
         }
     }

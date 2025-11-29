@@ -2,37 +2,31 @@ using UnityEngine;
 
 /// <summary>
 /// Concrete Attack Strategy: Standard Forward Fire.
-/// Fires a bullet in the direction the enemy is currently facing (Transform.up).
-/// Ignores the target position directly, relying on the Rotation Strategy to aim.
+/// Fires a bullet from the specific muzzle point in the direction the muzzle is facing.
 /// </summary>
 [CreateAssetMenu(fileName = "StandardAttack", menuName = "Game/Enemy/Attack/Standard")]
 public class StandardAttackSO : EnemyAttackSO
 {
-    [Header("Settings")]
-    [Tooltip("Offset from the center of the enemy where the bullet spawns.")]
-    [SerializeField] private Vector3 muzzleOffset = new Vector3(0, -0.5f, 0);
-
-    public override void ExecuteAttack(IActor attacker, IActor target, EnemyDataSO data, ObjectPool<BaseProjectile> bulletPool)
+    public override void ExecuteAttack(
+        IActor attacker,
+        Transform muzzle,
+        IActor target,
+        EnemyDataSO data,
+        ObjectPool<BaseProjectile> bulletPool,
+        float speedMultiplier)
     {
-        if (bulletPool == null) return;
+        if (bulletPool == null || muzzle == null) return;
 
-        // 1. Get Orientation
-        Transform t = attacker.GetTransform();
+        // 1. Determine Direction (Muzzle Forward)
+        Vector3 fireDirection = muzzle.up;
 
-        // 2. Calculate Spawn Position (Offset relative to rotation)
-        Vector3 spawnPos = t.position + (t.rotation * muzzleOffset);
-
-        // 3. Determine Direction
-        // STRICTLY use the actor's facing direction (Up vector for 2D sprites).
-        // This ensures the bullet goes where the enemy is looking, not magically at the player.
-        Vector3 fireDirection = t.up;
-
-        // 4. Spawn & Initialize
+        // 2. Spawn from Pool
         BaseProjectile bullet = bulletPool.Get();
 
-        bullet.transform.position = spawnPos;
-        bullet.transform.rotation = t.rotation; // Align bullet sprite with enemy rotation
+        bullet.transform.position = muzzle.position;
+        bullet.transform.rotation = muzzle.rotation;
 
-        bullet.Initialize(data.bulletType, attacker, fireDirection);
+        // 3. Initialize with Speed Multiplier
+        bullet.Initialize(data.bulletType, attacker, fireDirection, speedMultiplier);
     }
 }

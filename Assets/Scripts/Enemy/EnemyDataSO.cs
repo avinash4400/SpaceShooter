@@ -25,4 +25,7 @@ public class EnemyDataSO : ScriptableObject
     public EnemyAttackSO attackPattern;
     public BulletTypeSO bulletType; // What bullet they fire
     public float fireRate = 1.5f;
+
+    [Tooltip("Multiplier for the speed of bullets fired by this enemy. 1.0 = Base Speed.")]
+    public float bulletSpeedMultiplier = 1.0f;
 }

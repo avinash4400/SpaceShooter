@@ -9,8 +9,17 @@ public abstract class EnemyAttackSO : ScriptableObject
     /// Executes the attack logic.
     /// </summary>
     /// <param name="attacker">The enemy actor.</param>
+    /// <param name="muzzle">The specific transform where the bullet appears.</param>
     /// <param name="target">The player target.</param>
     /// <param name="data">Configuration data (Bullet type, stats).</param>
     /// <param name="bulletPool">The pool to spawn bullets from.</param>
-    public abstract void ExecuteAttack(IActor attacker, IActor target, EnemyDataSO data, ObjectPool<BaseProjectile> bulletPool);
+    /// <param name="speedMultiplier">Multiplier for bullet speed (from EnemyData).</param>
+    public abstract void ExecuteAttack(
+        IActor attacker,
+        Transform muzzle,
+        IActor target,
+        EnemyDataSO data,
+        ObjectPool<BaseProjectile> bulletPool,
+        float speedMultiplier
+    );
 }

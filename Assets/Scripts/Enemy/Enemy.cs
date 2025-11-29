@@ -22,30 +22,27 @@ public class Enemy : MonoBehaviour, IActor, ILootSource
     private Rigidbody rb;
 
     // --- IActor Implementation ---
-
-    // Updated: Return the Rigidbody's transform as it is the moving part
     public Transform GetTransform() => rb != null ? rb.transform : transform;
     public Rigidbody GetRigidbody() => rb;
-
-    // Delegate velocity query to the movement component
     public Vector2 GetCurrentVelocity() => movement != null ? movement.GetVelocity() : Vector2.zero;
-    public void SetCurrentVelocity(Vector2 velocity) { /* Enemy movement is driven by logic, not external set */ }
+    public void SetCurrentVelocity(Vector2 velocity) { }
 
     public T GetAttachedComponent<T>() where T : IGameComponent
     {
         return gameComponents.OfType<T>().FirstOrDefault();
     }
 
-    // --- ILootSource Implementation ---
     public LootTableSO GetLootTable() => config != null ? config.lootTable : null;
 
     // --- Initialization ---
 
-    public void Initialize(EnemyDataSO data, IActor targetPlayer)
+    /// <summary>
+    /// Initializes the enemy with data, target, and required dependencies (like bullet pool).
+    /// </summary>
+    public void Initialize(EnemyDataSO data, IActor targetPlayer, BulletPool bulletPool = null)
     {
         config = data;
 
-        // Changed: Use GetComponentInChildren to find RB if it's on a child object
         rb = GetComponentInChildren<Rigidbody>();
         if (rb == null) rb = gameObject.AddComponent<Rigidbody>();
         rb.isKinematic = true;
@@ -76,10 +73,12 @@ public class Enemy : MonoBehaviour, IActor, ILootSource
             weapon = GetOrAddComponent<EnemyWeapon>();
             gameComponents.Add(weapon);
             weapon.Initialize(this);
-            weapon.Setup(config.attackPattern, config, config.fireRate, targetPlayer);
+
+            // Pass the injected pool to the weapon
+            weapon.Setup(config.attackPattern, config, config.fireRate, targetPlayer, bulletPool);
         }
 
-        // 4. Bounds (Auto-Destroy)
+        // 4. Bounds
         bounds = GetOrAddComponent<ScreenBoundsHandlerComponent>();
         bounds.Initialize(this);
         bounds.Configure(0.2f);
@@ -95,7 +94,6 @@ public class Enemy : MonoBehaviour, IActor, ILootSource
 
     private void OnDeath(GameObject obj)
     {
-        // Use the RB position for loot spawning location
         Vector3 deathPos = rb != null ? rb.position : transform.position;
 
         if (EventManager.Instance != null)

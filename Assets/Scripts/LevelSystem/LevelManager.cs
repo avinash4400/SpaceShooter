@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 /// <summary>
 /// The central director for the game level.
-/// Uses the Handshake Pattern to acquire the Player reference safely.
+/// Loads a LevelSO and executes its Waves and Patterns sequentially or in parallel.
 /// </summary>
 public class LevelManager : Singleton<LevelManager>
 {
@@ -28,6 +28,14 @@ public class LevelManager : Singleton<LevelManager>
         }
     }
 
+    private void OnDisable()
+    {
+        if (EventManager.Instance != null)
+        {
+            EventManager.Instance.OnPlayerRegistered -= InitializeWithPlayer;
+        }
+    }
+
     void Start()
     {
         if (EventManager.Instance == null)
@@ -35,19 +43,11 @@ public class LevelManager : Singleton<LevelManager>
             Debug.LogError("[LevelManager] EventManager is missing! Cannot start handshake.");
             return;
         }
-
-        // Start Handshake
-        //Removed Handshake request
-        //EventManager.Instance.RequestPlayer();
+        EventManager.Instance.RequestPlayer();
     }
 
-    /// <summary>
-    /// Callback when the Player responds to the handshake.
-    /// </summary>
     private void InitializeWithPlayer(IActor player)
     {
-        EventManager.Instance.OnPlayerRegistered -= InitializeWithPlayer;
-        // Prevent re-initialization
         if (playerActor != null) return;
 
         playerActor = player;
@@ -59,16 +59,12 @@ public class LevelManager : Singleton<LevelManager>
         }
     }
 
-    // --- Execution Logic ---
-
     private IEnumerator RunLevelRoutine()
     {
         Debug.Log($"[LevelManager] Starting Level: {currentLevel.levelName}");
-
-        // Notify systems (UI, Audio) that level has begun
         EventManager.Instance.TriggerLevelStart(currentLevel);
 
-        yield return new WaitForSeconds(2f); // Intro delay
+        yield return new WaitForSeconds(2f);
 
         foreach (WaveSO wave in currentLevel.waves)
         {
@@ -76,8 +72,6 @@ public class LevelManager : Singleton<LevelManager>
         }
 
         Debug.Log("[LevelManager] Level Complete!");
-
-        // Notify systems that level is finished (triggers Stage Clear)
         EventManager.Instance.TriggerLevelCompleted(currentLevel);
     }
 
@@ -95,11 +89,7 @@ public class LevelManager : Singleton<LevelManager>
                     runningPatterns.Add(StartCoroutine(step.patternLogic.Execute(this, step.config)));
                 }
             }
-
-            foreach (var c in runningPatterns)
-            {
-                yield return c;
-            }
+            foreach (var c in runningPatterns) yield return c;
         }
         else
         {
@@ -121,6 +111,16 @@ public class LevelManager : Singleton<LevelManager>
 
         Vector3 spawnPos = strategy.CalculateSpawnPosition(transform);
         Enemy enemyInstance = Instantiate(prefab, spawnPos, Quaternion.identity);
-        enemyInstance.Initialize(config, playerActor);
+
+        // --- Bullet Pool Injection Logic ---
+        BulletPool pool = null;
+        if (config.bulletType != null && BulletManager.Instance != null)
+        {
+            // Ask the BulletManager for the shared pool corresponding to this enemy's bullet type
+            pool = BulletManager.Instance.GetPool(config.bulletType);
+        }
+
+        // Initialize with Dependency Injection
+        enemyInstance.Initialize(config, playerActor, pool);
     }
 }
