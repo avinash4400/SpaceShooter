@@ -9,6 +9,10 @@ public class AtSourcePositionStrategySO : SpawnStrategySO
     public override Vector3 CalculateSpawnPosition(Transform sourceTransform)
     {
         if (sourceTransform == null) return Vector3.zero;
-        return sourceTransform.position;
+
+        Vector3 pos = sourceTransform.position;
+        pos.z = 0f; // Force 2D plane
+
+        return pos;
     }
 }

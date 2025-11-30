@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 7790960547436074104}
   - component: {fileID: 5142277300539289456}
   - component: {fileID: 3446152006452363307}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Sphere
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -114,7 +114,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3583750926993918683}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: MuzzulePoint
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -152,7 +152,7 @@ GameObject:
   - component: {fileID: 3561729290521633322}
   - component: {fileID: 8145051291626932678}
   - component: {fileID: 2282763749877746899}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: PfPlayer
   m_TagString: Player
   m_Icon: {fileID: 0}
@@ -320,7 +320,7 @@ GameObject:
   - component: {fileID: 1264447079314294173}
   - component: {fileID: 3117816336824365599}
   - component: {fileID: 3526447253688120518}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Fighter 1
   m_TagString: Player
   m_Icon: {fileID: 0}

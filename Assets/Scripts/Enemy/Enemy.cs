@@ -36,12 +36,15 @@ public class Enemy : MonoBehaviour, IActor, ILootSource
 
     // --- Initialization ---
 
-    /// <summary>
-    /// Initializes the enemy with data, target, and required dependencies (like bullet pool).
-    /// </summary>
     public void Initialize(EnemyDataSO data, IActor targetPlayer, BulletPool bulletPool = null)
     {
         config = data;
+
+        // 1. Set Tag and Layer explicitly
+        gameObject.tag = "Enemy";
+        int enemyLayer = LayerMask.NameToLayer("Enemy");
+        if (enemyLayer > -1) gameObject.layer = enemyLayer;
+        else Debug.LogWarning("Layer 'Enemy' does not exist in Project Settings!");
 
         rb = GetComponentInChildren<Rigidbody>();
         if (rb == null) rb = gameObject.AddComponent<Rigidbody>();
@@ -50,7 +53,7 @@ public class Enemy : MonoBehaviour, IActor, ILootSource
 
         gameComponents = new List<IGameComponent>();
 
-        // 1. Health
+        // Setup Components (Health, Movement, Weapon, Bounds)
         healthComponent = GetOrAddComponent<HealthComponent>();
         healthComponent.Initialize(this);
         healthComponent.ResetHealth();
@@ -58,7 +61,6 @@ public class Enemy : MonoBehaviour, IActor, ILootSource
         healthComponent.OnDeath += OnDeath;
         gameComponents.Add(healthComponent);
 
-        // 2. Movement
         if (config.movementPattern != null || config.rotationPattern != null)
         {
             movement = GetOrAddComponent<EnemyMovement>();
@@ -67,18 +69,14 @@ public class Enemy : MonoBehaviour, IActor, ILootSource
             movement.Setup(config.movementPattern, config.rotationPattern, targetPlayer, config.moveSpeed);
         }
 
-        // 3. Weapon
         if (config.attackPattern != null)
         {
             weapon = GetOrAddComponent<EnemyWeapon>();
             gameComponents.Add(weapon);
             weapon.Initialize(this);
-
-            // Pass the injected pool to the weapon
             weapon.Setup(config.attackPattern, config, config.fireRate, targetPlayer, bulletPool);
         }
 
-        // 4. Bounds
         bounds = GetOrAddComponent<ScreenBoundsHandlerComponent>();
         bounds.Initialize(this);
         bounds.Configure(0.2f);

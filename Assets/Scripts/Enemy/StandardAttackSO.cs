@@ -17,16 +17,17 @@ public class StandardAttackSO : EnemyAttackSO
     {
         if (bulletPool == null || muzzle == null) return;
 
-        // 1. Determine Direction (Muzzle Forward)
         Vector3 fireDirection = muzzle.up;
 
-        // 2. Spawn from Pool
         BaseProjectile bullet = bulletPool.Get();
 
-        bullet.transform.position = muzzle.position;
+        // Force spawn position to Z=0
+        Vector3 spawnPos = muzzle.position;
+        spawnPos.z = 0f;
+
+        bullet.transform.position = spawnPos;
         bullet.transform.rotation = muzzle.rotation;
 
-        // 3. Initialize with Speed Multiplier
         bullet.Initialize(data.bulletType, attacker, fireDirection, speedMultiplier);
     }
 }

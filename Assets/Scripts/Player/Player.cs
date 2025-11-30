@@ -35,7 +35,6 @@ public class Player : MonoBehaviour, IActor
 
     void OnEnable()
     {
-        // Listen for anyone asking for the player
         if (EventManager.Instance != null)
         {
             EventManager.Instance.OnPlayerRequested += BroadcastSelf;
@@ -52,7 +51,10 @@ public class Player : MonoBehaviour, IActor
 
     void Start()
     {
+        // 1. Set Tag and Layer explicitly for Logic/Collision
         gameObject.tag = "Player";
+        gameObject.layer = LayerMask.NameToLayer("Player");
+
         InitializeComponents();
 
         if (healthComponent != null)
@@ -60,14 +62,9 @@ public class Player : MonoBehaviour, IActor
             healthComponent.OnDeath += OnLocalDeath;
         }
 
-        // Initial broadcast for systems already waiting
         BroadcastSelf();
     }
 
-    /// <summary>
-    /// Announces this instance as the active Player.
-    /// Called on Start and whenever 'RequestPlayer' is fired.
-    /// </summary>
     private void BroadcastSelf()
     {
         if (EventManager.Instance != null)

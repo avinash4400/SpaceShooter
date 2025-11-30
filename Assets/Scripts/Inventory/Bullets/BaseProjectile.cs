@@ -5,7 +5,7 @@ using System.Collections;
 /// <summary>
 /// Abstract base class for all projectiles.
 /// Implements IDamageSource, IActor, and pooling/recycling logic.
-/// Uses Transform-based movement (non-physics).
+/// Automatically handles Layer assignment for collision filtering.
 /// </summary>
 public abstract class BaseProjectile : MonoBehaviour, IDamageSource, IActor
 {
@@ -26,14 +26,15 @@ public abstract class BaseProjectile : MonoBehaviour, IDamageSource, IActor
     protected float lifeTimer;
     protected Vector3 fireDirection;
 
-    // Cache camera for bounds check
+    // Physics component
+    protected Rigidbody rb;
     private Camera mainCamera;
 
     public BulletTypeSO Config => config;
 
     // --- IActor Implementation ---
     public Transform GetTransform() => transform;
-    public Rigidbody GetRigidbody() => null;
+    public Rigidbody GetRigidbody() => rb;
     public Vector2 GetCurrentVelocity() => fireDirection * moveSpeed;
     public void SetCurrentVelocity(Vector2 velocity)
     {
@@ -47,29 +48,51 @@ public abstract class BaseProjectile : MonoBehaviour, IDamageSource, IActor
     }
 
     /// <summary>
-    /// Initializes the projectile.
-    /// Added speedMultiplier with default 1f to maintain compatibility with Player firing logic.
+    /// Initializes the projectile and sets the correct Physics Layer.
     /// </summary>
     public virtual void Initialize(BulletTypeSO bulletConfig, IActor source, Vector3 direction, float speedMultiplier = 1f)
     {
         config = bulletConfig;
         DamageAmount = config.damage;
         SourceActor = source;
-
-        // Apply the multiplier to the base speed from config
         moveSpeed = config.speed * speedMultiplier;
-
         lifeTimer = config.lifetime;
         fireDirection = direction.normalized;
 
-        if (mainCamera == null)
+        // --- Layer Assignment Logic ---
+        AssignLayerBasedOnSource(source);
+
+        if (rb == null)
         {
-            mainCamera = Camera.main;
-            if (mainCamera == null) mainCamera = FindAnyObjectByType<Camera>();
+            rb = GetComponent<Rigidbody>();
+            if (rb == null) rb = gameObject.AddComponent<Rigidbody>();
         }
+
+        rb.useGravity = false;
+        rb.isKinematic = true;
+        rb.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
 
         gameObject.SetActive(true);
         StartCoroutine(LifeCountdownCoroutine());
+    }
+
+    /// <summary>
+    /// Sets the bullet's layer based on the source actor's layer.
+    /// </summary>
+    private void AssignLayerBasedOnSource(IActor source)
+    {
+        int sourceLayer = source.GetTransform().gameObject.layer;
+        int playerLayer = LayerMask.NameToLayer("Player");
+        int enemyLayer = LayerMask.NameToLayer("Enemy");
+
+        if (sourceLayer == playerLayer)
+        {
+            gameObject.layer = LayerMask.NameToLayer("PlayerBullet");
+        }
+        else if (sourceLayer == enemyLayer)
+        {
+            gameObject.layer = LayerMask.NameToLayer("EnemyBullet");
+        }
     }
 
     protected virtual void Expire()
@@ -80,21 +103,9 @@ public abstract class BaseProjectile : MonoBehaviour, IDamageSource, IActor
 
     protected abstract void Move();
 
-    void Update()
+    void FixedUpdate()
     {
         Move();
-        CheckOutOfBounds();
-    }
-
-    private void CheckOutOfBounds()
-    {
-        if (mainCamera == null) return;
-        Vector3 viewPos = mainCamera.WorldToViewportPoint(transform.position);
-
-        if (viewPos.x < -0.1f || viewPos.x > 1.1f || viewPos.y < -0.1f || viewPos.y > 1.1f)
-        {
-            Expire();
-        }
     }
 
     protected abstract void HandleCollision(Collider other);

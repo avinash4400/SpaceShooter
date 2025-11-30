@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5388544344647944662}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Muzzle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -45,7 +45,7 @@ GameObject:
   - component: {fileID: 2667548269132748545}
   - component: {fileID: 1218460659564051768}
   - component: {fileID: 3448083130830418483}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: PfEnemy
   m_TagString: Enemy
   m_Icon: {fileID: 0}
@@ -144,7 +144,7 @@ GameObject:
   - component: {fileID: 2333590894576292138}
   - component: {fileID: 4327848201618954047}
   - component: {fileID: 6870314647248741184}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Ship
   m_TagString: Untagged
   m_Icon: {fileID: 0}

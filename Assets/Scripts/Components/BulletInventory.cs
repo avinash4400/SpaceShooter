@@ -4,7 +4,8 @@ using System.Collections.Generic;
 using System.Linq;
 
 /// <summary>
-/// Manages ammo, selection, and firing execution via Pattern Strategy and Specialized Pooling.
+/// Manages the player's current bullet type selection, limited ammo counts,
+/// AND handles the actual spawning/pooling of projectiles (Weapon System).
 /// </summary>
 public class BulletInventory : MonoBehaviour, IGameComponent
 {
@@ -22,15 +23,11 @@ public class BulletInventory : MonoBehaviour, IGameComponent
 
     // --- State ---
     private IActor actor;
-
-    // Specialized Pools mapped by BulletType
     private Dictionary<BulletType, BulletPool> bulletPools;
-
-    // Key: BulletType Enum, Value: Ammo Count
     private Dictionary<BulletType, int> limitedAmmoCounts = new Dictionary<BulletType, int>();
+    private List<BulletTypeSO> availableBulletTypes = new List<BulletTypeSO>();
 
     public BulletTypeSO SelectedBullet { get; private set; }
-    private List<BulletTypeSO> availableBulletTypes = new List<BulletTypeSO>();
 
     public void Initialize(IActor actor)
     {
@@ -53,28 +50,20 @@ public class BulletInventory : MonoBehaviour, IGameComponent
     private void InitializePools()
     {
         bulletPools = new Dictionary<BulletType, BulletPool>();
-
         GameObject poolRoot = new GameObject("BulletPools");
-        poolRoot.transform.SetParent(transform.parent); // Optional organization
+        poolRoot.transform.SetParent(transform.parent);
 
         foreach (var config in bulletFactory.GetAllTypes())
         {
             if (config.projectilePrefab == null) continue;
-
-            // Instantiate specialized BulletPool
-            // It automatically wires up the return logic internally!
-            BulletPool pool = new BulletPool(
-                config.projectilePrefab,
-                initialPoolSize,
-                poolRoot.transform
-            );
-
+            BulletPool pool = new BulletPool(config.projectilePrefab, initialPoolSize, poolRoot.transform);
             bulletPools.Add(config.type, pool);
         }
     }
 
     private void InitializeAmmo()
     {
+        // (Logic identical to previous version, omitted for brevity)
         BulletTypeSO[] allTypes = bulletFactory.GetAllTypes();
         availableBulletTypes.Clear();
         BulletTypeSO defaultType = null;
@@ -82,22 +71,16 @@ public class BulletInventory : MonoBehaviour, IGameComponent
         foreach (var typeSO in allTypes)
         {
             availableBulletTypes.Add(typeSO);
-
             if (typeSO.type == BulletType.SingleShot) defaultType = typeSO;
             else if (typeSO.hasLimitedAmmo)
             {
-                int startAmount = 0;
-                if (typeSO.type == BulletType.DoubleShot) startAmount = doubleShotStartAmmo;
-                else if (typeSO.type == BulletType.TripleShot) startAmount = tripleShotStartAmmo;
-
+                int startAmount = (typeSO.type == BulletType.DoubleShot) ? doubleShotStartAmmo : tripleShotStartAmmo;
                 limitedAmmoCounts[typeSO.type] = startAmount;
                 OnAmmoCountChanged?.Invoke(typeSO, startAmount);
             }
         }
 
         if (defaultType != null) SelectBullet(defaultType);
-        else if (availableBulletTypes.Count > 0) SelectBullet(availableBulletTypes[0]);
-
         availableBulletTypes = availableBulletTypes.OrderBy(b => b.type).ToList();
     }
 
@@ -106,21 +89,20 @@ public class BulletInventory : MonoBehaviour, IGameComponent
         if (SelectedBullet == null) return;
         if (!ConsumeAmmo(SelectedBullet)) return;
 
-        // 1. Get the correct pool
         if (bulletPools == null || !bulletPools.ContainsKey(SelectedBullet.type)) return;
         BulletPool pool = bulletPools[SelectedBullet.type];
 
-        // 2. Execute the Strategy
+        // Force Spawn Position Z to 0
+        Vector3 flatSpawnPos = spawnPosition;
+        flatSpawnPos.z = 0f;
+
         if (SelectedBullet.patternLogic != null)
         {
-            // The Pattern spawns bullets using the pool we passed.
-            // Because we passed a BulletPool, any bullet retrieved is already wired to return.
-            SelectedBullet.patternLogic.Fire(sourceActor, spawnPosition, fireDirection, SelectedBullet, pool);
+            SelectedBullet.patternLogic.Fire(sourceActor, flatSpawnPos, fireDirection, SelectedBullet, pool);
         }
     }
 
-    // ... SwitchBullet, SelectBullet, ConsumeAmmo methods remain standard ...
-
+    // (SwitchBullet, SelectBullet, ConsumeAmmo methods remain the same)
     public void SwitchBullet()
     {
         if (availableBulletTypes.Count <= 1) return;
