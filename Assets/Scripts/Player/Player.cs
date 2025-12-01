@@ -21,7 +21,7 @@ public class Player : MonoBehaviour, IActor
 
     // --- IActor Implementation ---
 
-    public Transform GetTransform() => transform;
+    public Transform GetTransform() => GetRigidbody().transform;
     public Vector2 GetCurrentVelocity() => currentVelocity;
     public void SetCurrentVelocity(Vector2 velocity) => currentVelocity = velocity;
     public Rigidbody GetRigidbody() => rb;
@@ -51,15 +51,19 @@ public class Player : MonoBehaviour, IActor
 
     void Start()
     {
-        // 1. Set Tag and Layer explicitly for Logic/Collision
         gameObject.tag = "Player";
         gameObject.layer = LayerMask.NameToLayer("Player");
 
         InitializeComponents();
 
+        // Subscribe to local health events to forward them globally
         if (healthComponent != null)
         {
             healthComponent.OnDeath += OnLocalDeath;
+            healthComponent.OnHealthChanged += OnLocalHealthChanged;
+
+            // Initial broadcast so UI updates on start
+            OnLocalHealthChanged(gameObject, healthComponent.CurrentHealth);
         }
 
         BroadcastSelf();
@@ -108,6 +112,7 @@ public class Player : MonoBehaviour, IActor
         if (healthComponent != null)
         {
             healthComponent.OnDeath -= OnLocalDeath;
+            healthComponent.OnHealthChanged -= OnLocalHealthChanged;
         }
     }
 
@@ -117,6 +122,17 @@ public class Player : MonoBehaviour, IActor
         {
             Debug.Log("Player identity confirmed death. Triggering global event.");
             EventManager.Instance.TriggerPlayerDeath();
+        }
+    }
+
+    /// <summary>
+    /// Forwards the local health change to the global event manager for UI updates.
+    /// </summary>
+    private void OnLocalHealthChanged(GameObject source, int currentHealth)
+    {
+        if (EventManager.Instance != null && healthComponent != null)
+        {
+            EventManager.Instance.TriggerPlayerHealthChanged(currentHealth, healthComponent.MaxHealth);
         }
     }
 }

@@ -1,33 +1,34 @@
 using UnityEngine;
 
-/// <summary>
-/// Concrete Attack Strategy: Standard Forward Fire.
-/// Fires a bullet from the specific muzzle point in the direction the muzzle is facing.
-/// </summary>
 [CreateAssetMenu(fileName = "StandardAttack", menuName = "Game/Enemy/Attack/Standard")]
 public class StandardAttackSO : EnemyAttackSO
 {
-    public override void ExecuteAttack(
+    public override float ExecuteAttack(
         IActor attacker,
-        Transform muzzle,
+        EnemyWeapon weapon,
         IActor target,
         EnemyDataSO data,
-        ObjectPool<BaseProjectile> bulletPool,
         float speedMultiplier)
     {
-        if (bulletPool == null || muzzle == null) return;
+        ObjectPool<BaseProjectile> pool = GetPool();
+        if (pool == null || weapon == null) return data.fireRate;
 
-        Vector3 fireDirection = muzzle.up;
+        // Get the specific muzzle
+        Transform muzzleTransform = weapon.GetMuzzle(muzzleType);
+        if (muzzleTransform == null) return data.fireRate;
 
-        BaseProjectile bullet = bulletPool.Get();
+        Vector3 fireDirection = muzzleTransform.up;
 
-        // Force spawn position to Z=0
-        Vector3 spawnPos = muzzle.position;
+        BaseProjectile bullet = pool.Get();
+        Vector3 spawnPos = muzzleTransform.position;
         spawnPos.z = 0f;
 
         bullet.transform.position = spawnPos;
-        bullet.transform.rotation = muzzle.rotation;
+        bullet.transform.rotation = muzzleTransform.rotation;
 
-        bullet.Initialize(data.bulletType, attacker, fireDirection, speedMultiplier);
+        // Use local bulletType, not data.bulletType
+        bullet.Initialize(bulletType, attacker, fireDirection, speedMultiplier);
+
+        return data.fireRate;
     }
 }

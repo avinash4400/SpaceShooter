@@ -1,8 +1,5 @@
 using UnityEngine;
 
-/// <summary>
-/// Configuration asset defining an enemy's stats and behavior strategies.
-/// </summary>
 [CreateAssetMenu(fileName = "NewEnemyData", menuName = "Game/Enemy/Enemy Data")]
 public class EnemyDataSO : ScriptableObject
 {
@@ -13,7 +10,7 @@ public class EnemyDataSO : ScriptableObject
     public float moveSpeed = 5f;
 
     [Header("Loot")]
-    public LootTableSO lootTable; // For ILootSource implementation
+    public LootTableSO lootTable;
 
     [Header("Movement Strategy")]
     public EnemyMovementSO movementPattern;
@@ -23,9 +20,8 @@ public class EnemyDataSO : ScriptableObject
 
     [Header("Attack Strategy")]
     public EnemyAttackSO attackPattern;
-    public BulletTypeSO bulletType; // What bullet they fire
+    // bulletType removed - now in AttackSO
     public float fireRate = 1.5f;
 
-    [Tooltip("Multiplier for the speed of bullets fired by this enemy. 1.0 = Base Speed.")]
     public float bulletSpeedMultiplier = 1.0f;
 }

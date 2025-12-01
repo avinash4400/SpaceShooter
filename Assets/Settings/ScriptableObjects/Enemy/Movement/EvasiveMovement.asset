@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ab2779b7c6a3e064d9b15e71e4e194d6, type: 3}
+  m_Name: EvasiveMovement
+  m_EditorClassIdentifier: 
+  baseDirection: {x: 0, y: -1, z: 0}
+  detectionRadius: 3
+  evasionStrength: 5
+  dangerLayers:
+    serializedVersion: 2
+    m_Bits: 128

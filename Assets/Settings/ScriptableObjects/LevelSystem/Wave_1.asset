@@ -16,11 +16,11 @@ MonoBehaviour:
   - patternLogic: {fileID: 11400000, guid: e1de21f2d842dd5479a5145950229ed3, type: 2}
     config:
       enemyPrefab: {fileID: -815993105983958437, guid: bc5749eaadb203044a2e3afe7a642bdc, type: 3}
-      enemyConfig: {fileID: 11400000, guid: 3d31d64a2b5003644add25065174a7f6, type: 2}
+      enemyConfig: {fileID: 11400000, guid: 5cff3c20abf36cc4fb5927313d0faeaf, type: 2}
       spawnStrategy: {fileID: 11400000, guid: bf3a567e481732a4fa75c12f2254662d, type: 2}
       enemyPool: []
-      count: 50
-      interval: 1
+      count: 1
+      interval: 2
       duration: 0
       initialDelay: 2
   runInParallel: 1

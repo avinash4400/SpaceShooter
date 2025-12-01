@@ -25,7 +25,9 @@ public class GameplayManager : Singleton<GameplayManager>
         if (EventManager.Instance != null)
         {
             EventManager.Instance.OnPlayerDeath += OnPlayerDeath;
-            EventManager.Instance.OnLevelCompleted += OnLevelCompleted; // Listen for victory
+            EventManager.Instance.OnLevelCompleted += OnLevelCompleted;
+            EventManager.Instance.OnLevelStarted += OnLevelStarted; // New listener
+            EventManager.Instance.OnGameVictory += OnGameVictory;   // New listener
         }
 
         PlayerController.OnEscapeKeyPressed += OnEscapeKeyInput;
@@ -38,6 +40,8 @@ public class GameplayManager : Singleton<GameplayManager>
         {
             EventManager.Instance.OnPlayerDeath -= OnPlayerDeath;
             EventManager.Instance.OnLevelCompleted -= OnLevelCompleted;
+            EventManager.Instance.OnLevelStarted -= OnLevelStarted;
+            EventManager.Instance.OnGameVictory -= OnGameVictory;
         }
 
         PlayerController.OnEscapeKeyPressed -= OnEscapeKeyInput;
@@ -62,21 +66,19 @@ public class GameplayManager : Singleton<GameplayManager>
         switch (newState)
         {
             case GameState.TitleScreen:
-                // HandleTitleScreen();
                 break;
             case GameState.PreStage:
-                // HandlePreStage();
-                // Typically waits for initialization then goes to Active
-                UpdateGameState(GameState.StageActive);
+                // PreStage usually handles setup, then immediately goes to Active 
+                // OR waits for LevelManager to fire OnLevelStarted.
+                // For now, we allow LevelManager's event to trigger StageActive.
                 break;
             case GameState.StageActive:
-                // HandleStageActive();
+                // Enable Input, Hide Cursor, etc.
                 break;
             case GameState.GameOver:
-                // HandleGameOver();
+                // Show Game Over UI
                 break;
             case GameState.StageClear:
-                // HandleStageClear();
                 // Show Victory UI, Stop Timer
                 break;
             case GameState.Pause:
@@ -105,12 +107,26 @@ public class GameplayManager : Singleton<GameplayManager>
 
     private void OnLevelCompleted(LevelSO level)
     {
-        // When level is finished, transition to StageClear
         if (currentState == GameState.StageActive)
         {
             Debug.Log("Level Complete! Transitioning to StageClear.");
             UpdateGameState(GameState.StageClear);
         }
+    }
+
+    private void OnLevelStarted(LevelSO level)
+    {
+        // When a new level starts, ensure we are in the Active state (hiding stage clear UI)
+        UpdateGameState(GameState.StageActive);
+    }
+
+    private void OnGameVictory()
+    {
+        // Separate state for finishing the entire campaign
+        // For simplicity, we can use StageClear or a dedicated Victory state
+        // Assuming GameState enum has GameVictory, otherwise fallback to StageClear
+        Debug.Log("Campaign Complete!");
+        UpdateGameState(GameState.StageClear);
     }
 
     private void OnEscapeKeyInput()

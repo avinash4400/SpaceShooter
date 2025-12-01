@@ -1,28 +1,22 @@
 using UnityEngine;
 
-/// <summary>
-/// Handles the physical movement and rotation of the enemy based on Strategies.
-/// Controlled by the main Enemy script.
-/// </summary>
 public class EnemyMovement : MonoBehaviour, IGameComponent
 {
-    // Strategies
     private EnemyMovementSO movementStrategy;
     private EnemyRotationSO rotationStrategy;
 
-    // State
     private IActor target;
     private float moveSpeed;
     private float timeAlive;
     private Rigidbody rb;
-
-    // Internal Velocity tracking for Rotation Strategy
     private Vector2 currentVelocity;
 
-    public void Initialize(IActor actor)
-    {
-        // RB is set up in Setup() called by Enemy.cs
-    }
+    // Memory for Strategies (Encapsulated)
+    private Vector3? storedPosition;
+
+    public Vector3? StoredPosition => storedPosition;
+
+    public void Initialize(IActor actor) { }
 
     public void Setup(EnemyMovementSO moveStrat, EnemyRotationSO rotStrat, IActor playerTarget, float speed)
     {
@@ -31,8 +25,8 @@ public class EnemyMovement : MonoBehaviour, IGameComponent
         target = playerTarget;
         moveSpeed = speed;
         timeAlive = 0f;
+        storedPosition = null;
 
-        // Use GetComponentInChildren to find the Rigidbody if it's on a child
         rb = GetComponentInChildren<Rigidbody>();
         if (rb == null)
         {
@@ -42,35 +36,36 @@ public class EnemyMovement : MonoBehaviour, IGameComponent
         }
     }
 
+    /// <summary>
+    /// Runtime update of movement strategies (used by Boss Phases).
+    /// </summary>
+    public void UpdateStrategies(EnemyMovementSO newMove, EnemyRotationSO newRot)
+    {
+        if (newMove != null) movementStrategy = newMove;
+        if (newRot != null) rotationStrategy = newRot;
+
+        // Optionally reset memory when switching strategies?
+        // storedPosition = null; 
+    }
+
     void FixedUpdate()
     {
         timeAlive += Time.fixedDeltaTime;
 
-        // 1. Calculate and Apply Movement
         if (movementStrategy != null)
         {
-            // Use Rigidbody position as the source of truth
             Vector3 currentPos = rb != null ? rb.position : transform.position;
 
-            Vector3 nextPos = movementStrategy.CalculateMovement(currentPos, target, timeAlive, moveSpeed);
+            Vector3 nextPos = movementStrategy.CalculateMovement(currentPos, target, timeAlive, moveSpeed, ref storedPosition);
 
-            // Calculate velocity
             currentVelocity = (nextPos - currentPos) / Time.fixedDeltaTime;
 
-            if (rb != null)
-            {
-                rb.MovePosition(nextPos);
-            }
-            else
-            {
-                transform.position = nextPos;
-            }
+            if (rb != null) rb.MovePosition(nextPos);
+            else transform.position = nextPos;
         }
 
-        // 2. Calculate and Apply Rotation
         if (rotationStrategy != null && rb != null)
         {
-            // Apply rotation to the Rigidbody transform (the visual/physical object)
             rb.rotation = rotationStrategy.CalculateRotation(rb.transform, target);
         }
     }

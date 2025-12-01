@@ -8,66 +8,40 @@ using System;
 public class EventManager : Singleton<EventManager>
 {
     // --- Global Events ---
-
-    // Player Death (Game Over Logic)
     public event Action OnPlayerDeath;
-
-    // Enemy Death (Score and Loot Logic)
+    public event Action<int, int> OnPlayerHealthChanged;
     public event Action<Vector3, ILootSource> OnEnemyDeath;
+
+    // --- Score Events ---
+    public event Action<int> OnAddScore;
+    public event Action<int> OnScoreUpdated;
 
     // --- Level Events ---
     public event Action<LevelSO> OnLevelStarted;
     public event Action<LevelSO> OnLevelCompleted;
+    public event Action OnGameVictory;
 
-    // --- Handshake Events (Player Discovery) ---
+    // --- Boss Events ---
+    public event Action<HealthComponent> OnBossSpawned; // NEW
+
+    // --- Handshake Events ---
     public event Action OnPlayerRequested;
     public event Action<IActor> OnPlayerRegistered;
 
-    /// <summary>
-    /// Triggered by Player.cs
-    /// </summary>
-    public void TriggerPlayerDeath()
-    {
-        OnPlayerDeath?.Invoke();
-    }
+    // ... Existing Trigger Methods ...
 
-    /// <summary>
-    /// Triggered by Enemy components when they die.
-    /// </summary>
-    public void TriggerEnemyDeath(Vector3 deathPosition, ILootSource lootSource)
-    {
-        OnEnemyDeath?.Invoke(deathPosition, lootSource);
-    }
+    public void TriggerPlayerDeath() => OnPlayerDeath?.Invoke();
+    public void TriggerPlayerHealthChanged(int current, int max) => OnPlayerHealthChanged?.Invoke(current, max);
+    public void TriggerEnemyDeath(Vector3 deathPosition, ILootSource lootSource) => OnEnemyDeath?.Invoke(deathPosition, lootSource);
+    public void TriggerLevelStart(LevelSO level) => OnLevelStarted?.Invoke(level);
+    public void TriggerLevelCompleted(LevelSO level) => OnLevelCompleted?.Invoke(level);
+    public void TriggerGameVictory() => OnGameVictory?.Invoke();
 
-    /// <summary>
-    /// Triggered by LevelManager when a level begins.
-    /// </summary>
-    public void TriggerLevelStart(LevelSO level)
-    {
-        OnLevelStarted?.Invoke(level);
-    }
+    // NEW Trigger
+    public void TriggerBossSpawned(HealthComponent bossHealth) => OnBossSpawned?.Invoke(bossHealth);
 
-    /// <summary>
-    /// Triggered by LevelManager when all waves in a level are finished.
-    /// </summary>
-    public void TriggerLevelCompleted(LevelSO level)
-    {
-        OnLevelCompleted?.Invoke(level);
-    }
-
-    /// <summary>
-    /// Call this to ask the Player to identify itself.
-    /// </summary>
-    public void RequestPlayer()
-    {
-        OnPlayerRequested?.Invoke();
-    }
-
-    /// <summary>
-    /// Call this to broadcast the Player's identity to listeners.
-    /// </summary>
-    public void RegisterPlayer(IActor player)
-    {
-        OnPlayerRegistered?.Invoke(player);
-    }
+    public void RequestPlayer() => OnPlayerRequested?.Invoke();
+    public void RegisterPlayer(IActor player) => OnPlayerRegistered?.Invoke(player);
+    public void TriggerAddScore(int amount) => OnAddScore?.Invoke(amount);
+    public void TriggerScoreUpdated(int newTotalScore) => OnScoreUpdated?.Invoke(newTotalScore);
 }

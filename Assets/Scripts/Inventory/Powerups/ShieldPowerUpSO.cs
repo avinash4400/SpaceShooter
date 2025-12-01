@@ -28,22 +28,19 @@ public class ShieldPowerUpSO : PowerUpEffectSO
         ShieldController existingShield = targetTransform.GetComponentInChildren<ShieldController>();
         if (existingShield != null)
         {
-            // Option A: Refresh existing shield
-            // existingShield.Initialize(duration, shieldHealth);
-            // return;
-
-            // Option B: Destroy old and replace (Simpler visual reset)
             Destroy(existingShield.gameObject);
         }
 
         // Spawn the shield attached to the actor
-        // Since shieldPrefab is of type ShieldController, Instantiate returns the component directly.
         ShieldController shieldInstance = Instantiate(shieldPrefab, targetTransform.position, Quaternion.identity);
         shieldInstance.transform.SetParent(targetTransform);
-        shieldInstance.transform.localPosition = Vector3.zero; // Center on player
+        shieldInstance.transform.localPosition = Vector3.zero;
+
+        // CRITICAL FIX: Set the layer to match the Player so Enemy Bullets collide with it
+        // Also ensure we set it recursively in case the shield has child visuals/colliders
+        SetLayerRecursively(shieldInstance.gameObject, targetTransform.gameObject.layer);
 
         // Initialize the logic component
-        // No need to use GetComponent since we instantiated the specific component type.
         shieldInstance.Initialize(duration, shieldHealth);
 
         Debug.Log($"[ShieldPowerUp] Activated on {targetTransform.name}");
@@ -51,7 +48,15 @@ public class ShieldPowerUpSO : PowerUpEffectSO
 
     public override void Remove(IActor target)
     {
-        // Cleanup is handled by the ShieldController's own duration timer.
-        // However, if we forced removal (e.g. death), we could look for the component here.
+        // Cleanup handled by ShieldController
+    }
+
+    private void SetLayerRecursively(GameObject obj, int newLayer)
+    {
+        obj.layer = newLayer;
+        foreach (Transform child in obj.transform)
+        {
+            SetLayerRecursively(child.gameObject, newLayer);
+        }
     }
 }

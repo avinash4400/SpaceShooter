@@ -13,7 +13,7 @@ public class DurationPatternSO : SpawnPatternSO
 
         float timer = 0f;
 
-        // Safety check using the new struct array
+        // Safety check
         if (config.enemyPool == null || config.enemyPool.Length == 0)
         {
             Debug.LogWarning("DurationPattern: No enemy pool defined in config.");
@@ -22,14 +22,14 @@ public class DurationPatternSO : SpawnPatternSO
 
         while (timer < config.duration)
         {
-            // Pick random enemy from the pool
+            // Pick random enemy from pool
             int index = Random.Range(0, config.enemyPool.Length);
-            var poolEntry = config.enemyPool[index];
+            var entry = config.enemyPool[index];
 
-            // Use the specific config if present, otherwise fallback to the main single config
-            EnemyDataSO enemyData = poolEntry.config != null ? poolEntry.config : config.enemyConfig;
+            // Use specific config if available, fallback to main config
+            EnemyDataSO data = entry.config != null ? entry.config : config.enemyConfig;
 
-            manager.SpawnEnemy(poolEntry.prefab, enemyData, config.spawnStrategy);
+            manager.SpawnEnemy(entry.prefab, data, config.spawnStrategy);
 
             yield return new WaitForSeconds(config.interval);
             timer += config.interval;

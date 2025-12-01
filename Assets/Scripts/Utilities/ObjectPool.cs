@@ -56,7 +56,6 @@ public class ObjectPool<T> where T : Component
         }
 
         obj.gameObject.SetActive(true);
-        Debug.Log($"[ObjectPool] Retrieved instance of {typeof(T).Name} from pool.");
         onGet?.Invoke(obj);
         return obj;
     }

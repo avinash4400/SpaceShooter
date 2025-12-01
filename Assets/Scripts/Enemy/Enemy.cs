@@ -2,26 +2,16 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-/// <summary>
-/// The central hub for an Enemy entity.
-/// Manages components, implements IActor/ILootSource, and handles Identity.
-/// </summary>
 public class Enemy : MonoBehaviour, IActor, ILootSource
 {
-    // Configuration
     private EnemyDataSO config;
-
-    // Sub-Components
     private HealthComponent healthComponent;
     private EnemyMovement movement;
     private EnemyWeapon weapon;
     private ScreenBoundsHandlerComponent bounds;
     private List<IGameComponent> gameComponents;
-
-    // State
     private Rigidbody rb;
 
-    // --- IActor Implementation ---
     public Transform GetTransform() => rb != null ? rb.transform : transform;
     public Rigidbody GetRigidbody() => rb;
     public Vector2 GetCurrentVelocity() => movement != null ? movement.GetVelocity() : Vector2.zero;
@@ -36,15 +26,13 @@ public class Enemy : MonoBehaviour, IActor, ILootSource
 
     // --- Initialization ---
 
-    public void Initialize(EnemyDataSO data, IActor targetPlayer, BulletPool bulletPool = null)
+    public void Initialize(EnemyDataSO data, IActor targetPlayer)
     {
         config = data;
 
-        // 1. Set Tag and Layer explicitly
         gameObject.tag = "Enemy";
         int enemyLayer = LayerMask.NameToLayer("Enemy");
         if (enemyLayer > -1) gameObject.layer = enemyLayer;
-        else Debug.LogWarning("Layer 'Enemy' does not exist in Project Settings!");
 
         rb = GetComponentInChildren<Rigidbody>();
         if (rb == null) rb = gameObject.AddComponent<Rigidbody>();
@@ -53,7 +41,6 @@ public class Enemy : MonoBehaviour, IActor, ILootSource
 
         gameComponents = new List<IGameComponent>();
 
-        // Setup Components (Health, Movement, Weapon, Bounds)
         healthComponent = GetOrAddComponent<HealthComponent>();
         healthComponent.Initialize(this);
         healthComponent.ResetHealth();
@@ -74,13 +61,27 @@ public class Enemy : MonoBehaviour, IActor, ILootSource
             weapon = GetOrAddComponent<EnemyWeapon>();
             gameComponents.Add(weapon);
             weapon.Initialize(this);
-            weapon.Setup(config.attackPattern, config, config.fireRate, targetPlayer, bulletPool);
+
+            // Removed bulletPool argument
+            weapon.Setup(config.attackPattern, config, config.fireRate, targetPlayer);
         }
 
         bounds = GetOrAddComponent<ScreenBoundsHandlerComponent>();
         bounds.Initialize(this);
         bounds.Configure(0.2f);
         gameComponents.Add(bounds);
+    }
+
+    // ... OverrideMovement, OverrideAttack, GetOrAddComponent, OnDeath, OnDestroy ...
+
+    public void OverrideMovement(EnemyMovementSO move, EnemyRotationSO rot)
+    {
+        if (movement != null) movement.UpdateStrategies(move, rot);
+    }
+
+    public void OverrideAttack(EnemyAttackSO attack)
+    {
+        if (weapon != null) weapon.UpdateStrategy(attack);
     }
 
     private T GetOrAddComponent<T>() where T : Component
@@ -93,12 +94,11 @@ public class Enemy : MonoBehaviour, IActor, ILootSource
     private void OnDeath(GameObject obj)
     {
         Vector3 deathPos = rb != null ? rb.position : transform.position;
-
         if (EventManager.Instance != null)
         {
             EventManager.Instance.TriggerEnemyDeath(deathPos, this);
+            if (config != null) EventManager.Instance.TriggerAddScore(config.scoreValue);
         }
-
         Destroy(gameObject);
     }
 

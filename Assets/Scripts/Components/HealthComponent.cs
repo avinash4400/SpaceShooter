@@ -18,9 +18,12 @@ public class HealthComponent : MonoBehaviour, IDamageHandler, IGameComponent
     [Tooltip("If true, this component does not enter an invulnerable state after being hit (e.g., for enemies).")]
     [SerializeField] private bool disableInvulnerability = false;
 
-
     private int currentHealth;
     private bool isInvulnerable = false;
+
+    // --- Public Accessors for UI ---
+    public int MaxHealth => maxHealth;
+    public int CurrentHealth => currentHealth;
 
     // --- Events for Decoupled Communication (INSTANCE EVENTS) ---
     // The GameObject parameter tells subscribers *which* entity was affected.
@@ -30,12 +33,6 @@ public class HealthComponent : MonoBehaviour, IDamageHandler, IGameComponent
 
     // --- IGameComponent Implementation ---
 
-    /// <summary>
-    /// Initializes the component with a reference to its owning Actor.
-    /// Although HealthComponent doesn't currently need the IActor reference, 
-    /// this method is required to participate in the initialization contract.
-    /// </summary>
-    /// <param name="actor">The IActor interface of the owning entity.</param>
     public void Initialize(IActor actor)
     {
         // Currently, no initialization logic is needed here, but the contract is fulfilled.

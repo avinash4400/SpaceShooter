@@ -15,11 +15,11 @@ MonoBehaviour:
   enemyName: Default Alien
   maxHealth: 10
   scoreValue: 100
-  moveSpeed: 1
+  moveSpeed: 0.5
   lootTable: {fileID: 11400000, guid: e1f49eb4fa114d240a93a5a768665376, type: 2}
-  movementPattern: {fileID: 11400000, guid: b173d1a3a19562f46917ce96b796dcec, type: 2}
+  movementPattern: {fileID: 11400000, guid: e997d9999d737b64c80003948bd002cb, type: 2}
   rotationPattern: {fileID: 11400000, guid: daf09ca5cbb8b564bb357043a8ce0c70, type: 2}
   attackPattern: {fileID: 11400000, guid: 57b2bb91db677f0469580971cc2f7d2a, type: 2}
   bulletType: {fileID: 11400000, guid: 2614ef3f51a9e65489661a762e210156, type: 2}
-  fireRate: 1
-  bulletSpeedMultiplier: 0.5
+  fireRate: 2
+  bulletSpeedMultiplier: 0.15

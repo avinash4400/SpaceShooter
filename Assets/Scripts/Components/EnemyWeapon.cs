@@ -1,14 +1,17 @@
 using UnityEngine;
+using System.Collections.Generic;
 
-/// <summary>
-/// Handles the enemy's attack logic.
-/// Manages the fire timer and executes the Attack Strategy.
-/// </summary>
 public class EnemyWeapon : MonoBehaviour, IGameComponent
 {
+    [System.Serializable]
+    public struct MuzzleDefinition
+    {
+        public MuzzleType type;
+        public Transform transform;
+    }
+
     [Header("Visuals")]
-    [Tooltip("The Transform where bullets spawn. Create a child object on the Enemy Prefab and assign it here.")]
-    [SerializeField] private Transform muzzlePoint;
+    [SerializeField] private List<MuzzleDefinition> muzzles;
 
     // Strategies
     private EnemyAttackSO attackStrategy;
@@ -19,31 +22,55 @@ public class EnemyWeapon : MonoBehaviour, IGameComponent
     private float fireRate;
     private float nextAttackTime;
 
-    // Pooling (Injected)
-    private BulletPool weaponPool;
+    // Internal cache
+    private Dictionary<MuzzleType, Transform> muzzleLookup;
+    private Transform defaultMuzzle; // Fallback
 
     public void Initialize(IActor actor)
     {
-        if (muzzlePoint == null)
+        muzzleLookup = new Dictionary<MuzzleType, Transform>();
+
+        // Build lookup
+        foreach (var def in muzzles)
         {
-            muzzlePoint = actor.GetTransform();
+            if (!muzzleLookup.ContainsKey(def.type))
+            {
+                muzzleLookup.Add(def.type, def.transform);
+            }
+        }
+
+        // Set default muzzle (Main or Actor Transform)
+        if (muzzleLookup.ContainsKey(MuzzleType.Main))
+        {
+            defaultMuzzle = muzzleLookup[MuzzleType.Main];
+        }
+        else
+        {
+            defaultMuzzle = actor.GetTransform();
         }
     }
 
-    /// <summary>
-    /// Sets up the weapon with strategies and the specific bullet pool.
-    /// </summary>
-    public void Setup(EnemyAttackSO attackStrat, EnemyDataSO data, float rate, IActor playerTarget, BulletPool sharedPool)
+    public Transform GetMuzzle(MuzzleType type)
+    {
+        if (muzzleLookup != null && muzzleLookup.TryGetValue(type, out Transform t))
+        {
+            return t;
+        }
+        return defaultMuzzle;
+    }
+
+    public void Setup(EnemyAttackSO attackStrat, EnemyDataSO data, float rate, IActor playerTarget)
     {
         attackStrategy = attackStrat;
         enemyData = data;
         fireRate = rate;
         target = playerTarget;
-
-        // Injected dependency
-        weaponPool = sharedPool;
-
         nextAttackTime = Time.time + Random.Range(0.5f, 2f);
+    }
+
+    public void UpdateStrategy(EnemyAttackSO newAttack)
+    {
+        if (newAttack != null) attackStrategy = newAttack;
     }
 
     void Update()
@@ -51,14 +78,12 @@ public class EnemyWeapon : MonoBehaviour, IGameComponent
         if (attackStrategy != null && Time.time >= nextAttackTime)
         {
             IActor attacker = GetComponent<IActor>();
-
-            // Pass the bullet speed multiplier from the enemy config
             float speedMult = enemyData != null ? enemyData.bulletSpeedMultiplier : 1.0f;
 
-            // Execute attack using the injected pool
-            attackStrategy.ExecuteAttack(attacker, muzzlePoint, target, enemyData, weaponPool, speedMult);
+            // Pass 'this' (the weapon component) as the muzzle provider
+            float cooldown = attackStrategy.ExecuteAttack(attacker, this, target, enemyData, speedMult);
 
-            nextAttackTime = Time.time + fireRate;
+            nextAttackTime = Time.time + cooldown;
         }
     }
 }

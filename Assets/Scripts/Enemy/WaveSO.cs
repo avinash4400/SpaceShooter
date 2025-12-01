@@ -11,10 +11,10 @@ public class WaveSO : ScriptableObject
     [System.Serializable]
     public struct WaveStep
     {
-        [Tooltip("The Logic Strategy (e.g. 'StandardSequence', 'BossWait').")]
+        [Tooltip("The Logic Strategy (e.g. 'StandardSequence', 'EliminationLogic').")]
         public SpawnPatternSO patternLogic;
 
-        [Tooltip("The Data (e.g. '5 Drones', '10 Seconds').")]
+        [Tooltip("The Data (e.g. '5 Drones', 'Kill 10 Enemies').")]
         public SpawnConfig config;
     }
 

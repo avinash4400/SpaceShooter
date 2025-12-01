@@ -5,7 +5,7 @@ using System.Collections;
 /// <summary>
 /// Abstract base class for all projectiles.
 /// Implements IDamageSource, IActor, and pooling/recycling logic.
-/// Automatically handles Layer assignment for collision filtering.
+/// Automatically handles Layer assignment and Out-of-Bounds recycling.
 /// </summary>
 public abstract class BaseProjectile : MonoBehaviour, IDamageSource, IActor
 {
@@ -18,6 +18,7 @@ public abstract class BaseProjectile : MonoBehaviour, IDamageSource, IActor
         return new DamageInfo(DamageAmount, SourceActor);
     }
 
+    // Used by the BulletPool to recycle this instance
     public event Action<BaseProjectile> OnProjectileExpired;
 
     // --- State & Config ---
@@ -26,7 +27,7 @@ public abstract class BaseProjectile : MonoBehaviour, IDamageSource, IActor
     protected float lifeTimer;
     protected Vector3 fireDirection;
 
-    // Physics component
+    // Physics & Rendering
     protected Rigidbody rb;
     private Camera mainCamera;
 
@@ -36,6 +37,7 @@ public abstract class BaseProjectile : MonoBehaviour, IDamageSource, IActor
     public Transform GetTransform() => transform;
     public Rigidbody GetRigidbody() => rb;
     public Vector2 GetCurrentVelocity() => fireDirection * moveSpeed;
+
     public void SetCurrentVelocity(Vector2 velocity)
     {
         moveSpeed = velocity.magnitude;
@@ -48,7 +50,7 @@ public abstract class BaseProjectile : MonoBehaviour, IDamageSource, IActor
     }
 
     /// <summary>
-    /// Initializes the projectile and sets the correct Physics Layer.
+    /// Initializes the projectile, sets layers, and prepares for movement.
     /// </summary>
     public virtual void Initialize(BulletTypeSO bulletConfig, IActor source, Vector3 direction, float speedMultiplier = 1f)
     {
@@ -59,7 +61,6 @@ public abstract class BaseProjectile : MonoBehaviour, IDamageSource, IActor
         lifeTimer = config.lifetime;
         fireDirection = direction.normalized;
 
-        // --- Layer Assignment Logic ---
         AssignLayerBasedOnSource(source);
 
         if (rb == null)
@@ -72,13 +73,17 @@ public abstract class BaseProjectile : MonoBehaviour, IDamageSource, IActor
         rb.isKinematic = true;
         rb.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
 
+        // Cache camera for bounds checking
+        if (mainCamera == null)
+        {
+            mainCamera = Camera.main;
+            if (mainCamera == null) mainCamera = FindAnyObjectByType<Camera>();
+        }
+
         gameObject.SetActive(true);
         StartCoroutine(LifeCountdownCoroutine());
     }
 
-    /// <summary>
-    /// Sets the bullet's layer based on the source actor's layer.
-    /// </summary>
     private void AssignLayerBasedOnSource(IActor source)
     {
         int sourceLayer = source.GetTransform().gameObject.layer;
@@ -106,6 +111,26 @@ public abstract class BaseProjectile : MonoBehaviour, IDamageSource, IActor
     void FixedUpdate()
     {
         Move();
+        CheckOutOfBounds();
+    }
+
+    /// <summary>
+    /// Checks if the projectile has left the viewport.
+    /// Recycles it if it goes too far off-screen.
+    /// </summary>
+    private void CheckOutOfBounds()
+    {
+        if (mainCamera == null) return;
+
+        // Convert world position to viewport (0,0 is bottom-left, 1,1 is top-right)
+        Vector3 viewPos = mainCamera.WorldToViewportPoint(transform.position);
+
+        // Check if out of bounds with a buffer (0.1 = 10% screen width)
+        // This ensures the bullet is fully off-screen before disappearing.
+        if (viewPos.x < -0.1f || viewPos.x > 1.1f || viewPos.y < -0.1f || viewPos.y > 1.1f)
+        {
+            Expire();
+        }
     }
 
     protected abstract void HandleCollision(Collider other);
