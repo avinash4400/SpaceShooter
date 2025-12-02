@@ -15,5 +15,7 @@ public class LevelSO : ScriptableObject
 
     [Header("Environment")]
     public AudioClip backgroundMusic;
-    // public Sprite backgroundArt;
+
+    [Tooltip("The scrolling sprite to apply to the background for this level.")]
+    public Sprite levelBackgroundSprite;
 }
