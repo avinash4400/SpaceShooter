@@ -10,7 +10,7 @@ public class EvasiveMovementSO : EnemyMovementSO
 
     private static readonly Collider[] hitBuffer = new Collider[5];
 
-    public override Vector3 CalculateMovement(Vector3 currentPos, IActor target, float timeAlive, float speed, ref Vector3? storedPosition)
+    public override Vector3 CalculateMovement(Vector3 currentPos, IActor target, float timeAlive, float speed, ref object runtimeState)
     {
         Vector3 moveStep = baseDirection.normalized * speed * Time.fixedDeltaTime;
         Vector3 avoidanceVector = Vector3.zero;
@@ -22,13 +22,10 @@ public class EvasiveMovementSO : EnemyMovementSO
             {
                 Collider threat = hitBuffer[i];
                 if (threat == null) continue;
-
                 Vector3 threatPos = threat.transform.position;
                 Vector3 awayFromThreat = currentPos - threatPos;
-
                 float dist = awayFromThreat.magnitude;
                 float weight = 1f / (dist * dist + 0.1f);
-
                 avoidanceVector += awayFromThreat.normalized * weight;
             }
             avoidanceVector = avoidanceVector.normalized * evasionStrength * Time.fixedDeltaTime;

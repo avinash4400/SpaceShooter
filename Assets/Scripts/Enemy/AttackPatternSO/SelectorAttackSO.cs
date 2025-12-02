@@ -10,21 +10,21 @@ public class SelectorAttackSO : EnemyAttackSO
     [SerializeField] private EnemyAttackSO closeRangeAttack;
     [SerializeField] private EnemyAttackSO longRangeAttack;
 
-    public override float ExecuteAttack(IActor attacker, EnemyWeapon weapon, IActor target, EnemyDataSO data, float speedMultiplier)
+    public override float ExecuteAttack(IActor attacker, EnemyWeapon weapon, IActor target, EnemyDataSO data)
     {
-        if (target == null) return data.fireRate;
+        if (target == null) return attackCooldown;
 
         float dist = Vector3.Distance(attacker.GetTransform().position, target.GetTransform().position);
 
         if (dist < closeRangeThreshold && closeRangeAttack != null)
         {
-            return closeRangeAttack.ExecuteAttack(attacker, weapon, target, data, speedMultiplier);
+            return closeRangeAttack.ExecuteAttack(attacker, weapon, target, data);
         }
         else if (longRangeAttack != null)
         {
-            return longRangeAttack.ExecuteAttack(attacker, weapon, target, data, speedMultiplier);
+            return longRangeAttack.ExecuteAttack(attacker, weapon, target, data);
         }
 
-        return data.fireRate;
+        return attackCooldown;
     }
 }

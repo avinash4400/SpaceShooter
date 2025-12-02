@@ -17,7 +17,7 @@ public class PlayerShooting : MonoBehaviour, IGameComponent
     public void Initialize(IActor actor)
     {
         this.actor = actor;
-        inventory = actor.GetTransform().GetComponent<BulletInventory>();
+        inventory = actor.GetAttachedComponent<BulletInventory>();
 
         if (inventory == null)
         {

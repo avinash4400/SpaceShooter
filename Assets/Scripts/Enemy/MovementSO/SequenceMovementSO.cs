@@ -13,15 +13,13 @@ public class SequenceMovementSO : EnemyMovementSO
 
     [SerializeField] private List<MovementStep> sequence;
 
-    public override Vector3 CalculateMovement(Vector3 currentPos, IActor target, float timeAlive, float speed, ref Vector3? storedPosition)
+    public override Vector3 CalculateMovement(Vector3 currentPos, IActor target, float timeAlive, float speed, ref object runtimeState)
     {
         if (sequence.Count == 0) return currentPos;
 
-        // Calculate total cycle time
         float totalTime = 0f;
         foreach (var step in sequence) totalTime += step.duration;
 
-        // Where are we in the cycle?
         float currentCycleTime = timeAlive % totalTime;
         float timeAccumulator = 0f;
 
@@ -29,9 +27,7 @@ public class SequenceMovementSO : EnemyMovementSO
         {
             if (currentCycleTime < timeAccumulator + step.duration)
             {
-                // Found active step
-                // We pass 'currentCycleTime' as timeAlive to keep patterns consistent within the loop
-                return step.strategy.CalculateMovement(currentPos, target, currentCycleTime, speed, ref storedPosition);
+                return step.strategy.CalculateMovement(currentPos, target, currentCycleTime, speed, ref runtimeState);
             }
             timeAccumulator += step.duration;
         }

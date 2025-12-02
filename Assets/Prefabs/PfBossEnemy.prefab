@@ -244,7 +244,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8d5fe695891b54b49ac547eefcb3afa7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  muzzlePoint: {fileID: 5388544344647944662}
+  muzzles:
+  - type: 0
+    transform: {fileID: 5388544344647944662}
+  - type: 1
+    transform: {fileID: 7166036218210329927}
+  - type: 2
+    transform: {fileID: 6799814383159078663}
+  - type: 3
+    transform: {fileID: 1544454393937569377}
+  - type: 4
+    transform: {fileID: 2011067838358114617}
 --- !u!114 &3448083130830418483
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -270,8 +280,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   phases:
-  - healthThreshold: 0.75
-    movementPattern: {fileID: 11400000, guid: a1493ca9f45c2784188875d142e95d7b, type: 2}
+  - healthThreshold: 0.8
+    movementPattern: {fileID: 11400000, guid: 30c8cd37de0e73443ae222824a62ace0, type: 2}
+    rotationPattern: {fileID: 11400000, guid: 10a6686bafc15f04696dd57ae3189f1c, type: 2}
+    attackPattern: {fileID: 11400000, guid: 43d14e5097eae27499f59fc9abf1ee6b, type: 2}
+  - healthThreshold: 0.5
+    movementPattern: {fileID: 11400000, guid: 30c8cd37de0e73443ae222824a62ace0, type: 2}
     rotationPattern: {fileID: 11400000, guid: 10a6686bafc15f04696dd57ae3189f1c, type: 2}
     attackPattern: {fileID: 11400000, guid: 41804073fd4c05f44a11125a813b7d55, type: 2}
   - healthThreshold: 0.3

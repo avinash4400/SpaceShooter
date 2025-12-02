@@ -11,17 +11,16 @@ public class CompositeAttackSO : EnemyAttackSO
         IActor attacker,
         EnemyWeapon weapon,
         IActor target,
-        EnemyDataSO data,
-        float speedMultiplier)
+        EnemyDataSO data)
     {
         foreach (var attack in subAttacks)
         {
             if (attack != null)
             {
-                attack.ExecuteAttack(attacker, weapon, target, data, speedMultiplier);
+                attack.ExecuteAttack(attacker, weapon, target, data);
             }
         }
 
-        return data.fireRate;
+        return attackCooldown;
     }
 }

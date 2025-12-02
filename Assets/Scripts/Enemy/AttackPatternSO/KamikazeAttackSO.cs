@@ -7,12 +7,15 @@ public class KamikazeAttackSO : EnemyAttackSO
     [SerializeField] private int damage = 1;
     [SerializeField] private float triggerDistance = 0.5f;
 
-    public override float ExecuteAttack(IActor attacker, EnemyWeapon weapon, IActor target, EnemyDataSO data, float speedMultiplier)
+    public override float ExecuteAttack(IActor attacker, EnemyWeapon weapon, IActor target, EnemyDataSO data)
     {
         EnemyMovement movement = attacker.GetAttachedComponent<EnemyMovement>();
-        if (movement == null || !movement.StoredPosition.HasValue) return 0.1f;
+        if (movement == null) return 0.1f;
 
-        float dist = Vector3.Distance(attacker.GetTransform().position, movement.StoredPosition.Value);
+        Vector3? lockedTargetPos = movement.RuntimeState as Vector3?;
+        if (!lockedTargetPos.HasValue) return 0.1f;
+
+        float dist = Vector3.Distance(attacker.GetTransform().position, lockedTargetPos.Value);
 
         if (dist <= triggerDistance)
         {

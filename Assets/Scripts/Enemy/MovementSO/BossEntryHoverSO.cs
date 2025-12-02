@@ -1,8 +1,5 @@
 using UnityEngine;
 
-/// <summary>
-/// Moves boss to a screen position, then oscillates horizontally.
-/// </summary>
 [CreateAssetMenu(fileName = "BossEntryHover", menuName = "Game/Enemy/Movement/Boss/Entry Hover")]
 public class BossEntryHoverSO : EnemyMovementSO
 {
@@ -15,31 +12,41 @@ public class BossEntryHoverSO : EnemyMovementSO
     [SerializeField] private float hoverAmplitude = 3f;
     [SerializeField] private float hoverFrequency = 1f;
 
-    public override Vector3 CalculateMovement(Vector3 currentPos, IActor target, float timeAlive, float speed, ref Vector3? storedPosition)
+    public override Vector3 CalculateMovement(Vector3 currentPos, IActor target, float timeAlive, float speed, ref object runtimeState)
     {
-        // 1. Calculate Target World Position
         if (Camera.main == null) return currentPos;
         Vector3 anchorPos = Camera.main.ViewportToWorldPoint(new Vector3(anchorViewportPos.x, anchorViewportPos.y, Camera.main.nearClipPlane + 10));
         anchorPos.z = 0f;
 
-        // 2. State Check (Have we reached the anchor?)
-        // We use storedPosition.x as a flag: 0 = Entering, 1 = Hovering
-        // Since we can't easily store a bool, we check distance.
+        // Use bool flag: true = has arrived
+        bool hasArrived = runtimeState is bool arrived && arrived;
 
-        // Simpler: Just calculate distance every frame. 
-        // If close enough OR we've been alive long enough, switch to hover math relative to anchor.
+        // 1. Calculate the ideal Hover Position based on time
+        float sineOffset = Mathf.Sin(timeAlive * hoverFrequency) * hoverAmplitude;
+        Vector3 targetHoverPos = anchorPos + (Vector3.right * sineOffset);
 
-        float dist = Vector3.Distance(currentPos, anchorPos);
+        // 2. Determine immediate target
+        // If arrived, we target the calculated hover position.
+        // If NOT arrived, we target the anchor first.
+        Vector3 immediateTarget = hasArrived ? targetHoverPos : anchorPos;
 
-        // Entering Phase
-        if (dist > 0.1f && timeAlive < 5f) // Hard timeout to force hover eventually
+        // 3. Move smoothly towards immediate target
+        // This prevents snapping. Even if we switch states, we MoveTowards the new target point.
+        float moveStep = speed * entrySpeedMultiplier * Time.fixedDeltaTime;
+        Vector3 newPos = Vector3.MoveTowards(currentPos, immediateTarget, moveStep);
+
+        // 4. Check Arrival (State Transition)
+        if (!hasArrived)
         {
-            return Vector3.MoveTowards(currentPos, anchorPos, speed * entrySpeedMultiplier * Time.fixedDeltaTime);
+            float dist = Vector3.Distance(currentPos, anchorPos);
+
+            // Check if close enough to anchor to start hovering
+            if (dist < 0.1f || timeAlive > 5f)
+            {
+                runtimeState = true; // Set state
+            }
         }
 
-        // Hovering Phase
-        // Move relative to the Anchor Point
-        float offset = Mathf.Sin(timeAlive * hoverFrequency) * hoverAmplitude;
-        return anchorPos + (Vector3.right * offset);
+        return newPos;
     }
 }

@@ -9,9 +9,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 756103b8d22c33b428954e0a7a364061, type: 3}
-  m_Name: BulletFactory
+  m_Script: {fileID: 11500000, guid: 03559fa3940856c4f8894af037c22910, type: 3}
+  m_Name: SpreadAttack
   m_EditorClassIdentifier: 
-  allBulletTypes:
-  - {fileID: 11400000, guid: 5c34bba7f008e3c4d889d6c260a7f4b6, type: 2}
-  - {fileID: 11400000, guid: 4a81313010a30014a8f17fa4b8236c8e, type: 2}
+  bulletType: {fileID: 11400000, guid: 2614ef3f51a9e65489661a762e210156, type: 2}
+  muzzleType: 0
+  attackCooldown: 1
+  speedMultiplier: 1
+  projectileCount: 3
+  spreadAngle: 15

@@ -3,29 +3,29 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "RandomWaypoint", menuName = "Game/Enemy/Movement/Random Waypoint")]
 public class RandomWaypointMovementSO : EnemyMovementSO
 {
-    [Header("Arena Viewport Bounds")]
     [SerializeField] private Vector2 minViewport = new Vector2(0.1f, 0.5f);
     [SerializeField] private Vector2 maxViewport = new Vector2(0.9f, 0.9f);
     [SerializeField] private float reachThreshold = 0.5f;
 
-    public override Vector3 CalculateMovement(Vector3 currentPos, IActor target, float timeAlive, float speed, ref Vector3? storedPosition)
+    public override Vector3 CalculateMovement(Vector3 currentPos, IActor target, float timeAlive, float speed, ref object runtimeState)
     {
         if (Camera.main == null) return currentPos;
 
-        // Initialize target if null
-        if (!storedPosition.HasValue)
+        Vector3? targetPos = runtimeState as Vector3?;
+
+        if (!targetPos.HasValue)
         {
-            storedPosition = PickRandomPoint();
+            targetPos = PickRandomPoint();
+            runtimeState = targetPos; // Update state
         }
 
-        // Check distance
-        if (Vector3.Distance(currentPos, storedPosition.Value) < reachThreshold)
+        if (Vector3.Distance(currentPos, targetPos.Value) < reachThreshold)
         {
-            storedPosition = PickRandomPoint();
+            targetPos = PickRandomPoint();
+            runtimeState = targetPos; // Update state
         }
 
-        // Move
-        return Vector3.MoveTowards(currentPos, storedPosition.Value, speed * Time.fixedDeltaTime);
+        return Vector3.MoveTowards(currentPos, targetPos.Value, speed * Time.fixedDeltaTime);
     }
 
     private Vector3 PickRandomPoint()

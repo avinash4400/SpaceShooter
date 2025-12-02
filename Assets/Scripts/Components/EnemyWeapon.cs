@@ -13,57 +13,36 @@ public class EnemyWeapon : MonoBehaviour, IGameComponent
     [Header("Visuals")]
     [SerializeField] private List<MuzzleDefinition> muzzles;
 
-    // Strategies
     private EnemyAttackSO attackStrategy;
     private EnemyDataSO enemyData;
-
-    // State
     private IActor target;
-    private float fireRate;
     private float nextAttackTime;
 
-    // Internal cache
     private Dictionary<MuzzleType, Transform> muzzleLookup;
-    private Transform defaultMuzzle; // Fallback
+    private Transform defaultMuzzle;
 
     public void Initialize(IActor actor)
     {
         muzzleLookup = new Dictionary<MuzzleType, Transform>();
-
-        // Build lookup
         foreach (var def in muzzles)
         {
-            if (!muzzleLookup.ContainsKey(def.type))
-            {
-                muzzleLookup.Add(def.type, def.transform);
-            }
+            if (!muzzleLookup.ContainsKey(def.type)) muzzleLookup.Add(def.type, def.transform);
         }
 
-        // Set default muzzle (Main or Actor Transform)
-        if (muzzleLookup.ContainsKey(MuzzleType.Main))
-        {
-            defaultMuzzle = muzzleLookup[MuzzleType.Main];
-        }
-        else
-        {
-            defaultMuzzle = actor.GetTransform();
-        }
+        if (muzzleLookup.ContainsKey(MuzzleType.Main)) defaultMuzzle = muzzleLookup[MuzzleType.Main];
+        else defaultMuzzle = actor.GetTransform();
     }
 
     public Transform GetMuzzle(MuzzleType type)
     {
-        if (muzzleLookup != null && muzzleLookup.TryGetValue(type, out Transform t))
-        {
-            return t;
-        }
+        if (muzzleLookup != null && muzzleLookup.TryGetValue(type, out Transform t)) return t;
         return defaultMuzzle;
     }
 
-    public void Setup(EnemyAttackSO attackStrat, EnemyDataSO data, float rate, IActor playerTarget)
+    public void Setup(EnemyAttackSO attackStrat, EnemyDataSO data, IActor playerTarget)
     {
         attackStrategy = attackStrat;
         enemyData = data;
-        fireRate = rate;
         target = playerTarget;
         nextAttackTime = Time.time + Random.Range(0.5f, 2f);
     }
@@ -78,10 +57,9 @@ public class EnemyWeapon : MonoBehaviour, IGameComponent
         if (attackStrategy != null && Time.time >= nextAttackTime)
         {
             IActor attacker = GetComponent<IActor>();
-            float speedMult = enemyData != null ? enemyData.bulletSpeedMultiplier : 1.0f;
 
-            // Pass 'this' (the weapon component) as the muzzle provider
-            float cooldown = attackStrategy.ExecuteAttack(attacker, this, target, enemyData, speedMult);
+            // ExecuteAttack now handles its own speed/timing
+            float cooldown = attackStrategy.ExecuteAttack(attacker, this, target, enemyData);
 
             nextAttackTime = Time.time + cooldown;
         }

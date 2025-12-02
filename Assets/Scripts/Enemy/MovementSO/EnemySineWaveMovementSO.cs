@@ -8,7 +8,7 @@ public class EnemySineWaveMovementSO : EnemyMovementSO
     [SerializeField] private float amplitude = 1f;
     [SerializeField] private Vector3 waveAxis = Vector3.right;
 
-    public override Vector3 CalculateMovement(Vector3 currentPos, IActor target, float timeAlive, float speed, ref Vector3? storedPosition)
+    public override Vector3 CalculateMovement(Vector3 currentPos, IActor target, float timeAlive, float speed, ref object runtimeState)
     {
         Vector3 linearMove = travelDirection.normalized * speed * Time.fixedDeltaTime;
 

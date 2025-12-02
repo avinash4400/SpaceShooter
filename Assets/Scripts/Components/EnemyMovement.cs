@@ -11,10 +11,11 @@ public class EnemyMovement : MonoBehaviour, IGameComponent
     private Rigidbody rb;
     private Vector2 currentVelocity;
 
-    // Memory for Strategies (Encapsulated)
-    private Vector3? storedPosition;
+    // Generic Memory for Strategies (The Blackboard)
+    private object runtimeState;
 
-    public Vector3? StoredPosition => storedPosition;
+    // Public getter if needed by attacks (cast as needed)
+    public object RuntimeState => runtimeState;
 
     public void Initialize(IActor actor) { }
 
@@ -25,7 +26,7 @@ public class EnemyMovement : MonoBehaviour, IGameComponent
         target = playerTarget;
         moveSpeed = speed;
         timeAlive = 0f;
-        storedPosition = null;
+        runtimeState = null; // Reset memory
 
         rb = GetComponentInChildren<Rigidbody>();
         if (rb == null)
@@ -41,11 +42,15 @@ public class EnemyMovement : MonoBehaviour, IGameComponent
     /// </summary>
     public void UpdateStrategies(EnemyMovementSO newMove, EnemyRotationSO newRot)
     {
-        if (newMove != null) movementStrategy = newMove;
-        if (newRot != null) rotationStrategy = newRot;
+        if (newMove != null)
+        {
+            // If switching strategies, we generally want to reset the state memory
+            // to avoid the new strategy trying to interpret old data.
+            if (movementStrategy != newMove) runtimeState = null;
 
-        // Optionally reset memory when switching strategies?
-        // storedPosition = null; 
+            movementStrategy = newMove;
+        }
+        if (newRot != null) rotationStrategy = newRot;
     }
 
     void FixedUpdate()
@@ -56,7 +61,8 @@ public class EnemyMovement : MonoBehaviour, IGameComponent
         {
             Vector3 currentPos = rb != null ? rb.position : transform.position;
 
-            Vector3 nextPos = movementStrategy.CalculateMovement(currentPos, target, timeAlive, moveSpeed, ref storedPosition);
+            // Pass runtimeState by ref
+            Vector3 nextPos = movementStrategy.CalculateMovement(currentPos, target, timeAlive, moveSpeed, ref runtimeState);
 
             currentVelocity = (nextPos - currentPos) / Time.fixedDeltaTime;
 

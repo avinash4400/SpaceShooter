@@ -1,16 +1,19 @@
 using UnityEngine;
 
+/// <summary>
+/// Strategy for calculating enemy position updates.
+/// </summary>
 public abstract class EnemyMovementSO : ScriptableObject
 {
     /// <summary>
     /// Calculates the new position for the enemy.
-    /// Updated to use ref parameter for state instead of component context.
+    /// Uses 'runtimeState' as a generic blackboard for the strategy to store memory (Timer, State Machine, etc).
     /// </summary>
     public abstract Vector3 CalculateMovement(
         Vector3 currentPos,
         IActor target,
         float timeAlive,
         float speed,
-        ref Vector3? storedPosition
+        ref object runtimeState
     );
 }

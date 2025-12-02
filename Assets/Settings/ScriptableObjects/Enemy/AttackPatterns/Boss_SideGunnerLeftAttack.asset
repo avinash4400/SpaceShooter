@@ -9,9 +9,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 756103b8d22c33b428954e0a7a364061, type: 3}
-  m_Name: BulletFactory
+  m_Script: {fileID: 11500000, guid: a3d126e820d2b724e845d6f27db70ad6, type: 3}
+  m_Name: Boss_SideGunnerLeftAttack
   m_EditorClassIdentifier: 
-  allBulletTypes:
-  - {fileID: 11400000, guid: 5c34bba7f008e3c4d889d6c260a7f4b6, type: 2}
-  - {fileID: 11400000, guid: 4a81313010a30014a8f17fa4b8236c8e, type: 2}
+  bulletType: {fileID: 11400000, guid: 9f6484adf5c29664bb5a5e86145b53da, type: 2}
+  muzzleType: 3
+  attackCooldown: 0.8

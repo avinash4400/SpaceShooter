@@ -7,15 +7,15 @@ public class StandardAttackSO : EnemyAttackSO
         IActor attacker,
         EnemyWeapon weapon,
         IActor target,
-        EnemyDataSO data,
-        float speedMultiplier)
+        EnemyDataSO data)
     {
-        ObjectPool<BaseProjectile> pool = GetPool();
-        if (pool == null || weapon == null) return data.fireRate;
+        if (weapon == null) return attackCooldown;
 
-        // Get the specific muzzle
+        ObjectPool<BaseProjectile> pool = GetPool();
+        if (pool == null) return attackCooldown;
+
         Transform muzzleTransform = weapon.GetMuzzle(muzzleType);
-        if (muzzleTransform == null) return data.fireRate;
+        if (muzzleTransform == null) return attackCooldown;
 
         Vector3 fireDirection = muzzleTransform.up;
 
@@ -26,9 +26,9 @@ public class StandardAttackSO : EnemyAttackSO
         bullet.transform.position = spawnPos;
         bullet.transform.rotation = muzzleTransform.rotation;
 
-        // Use local bulletType, not data.bulletType
+        // Pass the locally configured speedMultiplier
         bullet.Initialize(bulletType, attacker, fireDirection, speedMultiplier);
 
-        return data.fireRate;
+        return attackCooldown;
     }
 }

@@ -12,6 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fa4640469630f364180e8f24f7fdb87e, type: 3}
   m_Name: SpawnMinionsAttack
   m_EditorClassIdentifier: 
+  bulletType: {fileID: 11400000, guid: 2614ef3f51a9e65489661a762e210156, type: 2}
+  muzzleType: 0
   minionPrefab: {fileID: -815993105983958437, guid: bc5749eaadb203044a2e3afe7a642bdc, type: 3}
   minionConfig: {fileID: 11400000, guid: 3d31d64a2b5003644add25065174a7f6, type: 2}
   count: 2

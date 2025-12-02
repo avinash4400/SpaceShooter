@@ -20,8 +20,7 @@ public class EnemyDataSO : ScriptableObject
 
     [Header("Attack Strategy")]
     public EnemyAttackSO attackPattern;
-    // bulletType removed - now in AttackSO
-    public float fireRate = 1.5f;
 
-    public float bulletSpeedMultiplier = 1.0f;
+    // Note: FireRate and BulletSpeed removed. 
+    // They are now configured inside the EnemyAttackSO.
 }

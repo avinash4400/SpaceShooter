@@ -10,15 +10,15 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 46e273b1a5e5aa843a80b41e76f8475f, type: 3}
-  m_Name: SingleShotBullet
+  m_Name: TurretShotBullet
   m_EditorClassIdentifier: 
   type: 0
-  bulletName: SingleShot
+  bulletName: TurretShot
   patternLogic: {fileID: 11400000, guid: 8e5a4e103c69a8440bdf875397a5d858, type: 2}
   projectilePrefab: {fileID: 5366986491365022919, guid: b0997fa5a58082e44b094b5407d6bd5c, type: 3}
   projectileCount: 1
-  damage: 5
-  speed: 15
+  damage: 2
+  speed: 12
   lifetime: 60
   hasLimitedAmmo: 0
   icon: {fileID: 21300000, guid: 98be93167ed6cd54d82a8e882da6f3e1, type: 3}

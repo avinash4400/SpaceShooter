@@ -24,9 +24,7 @@ public class Enemy : MonoBehaviour, IActor, ILootSource
 
     public LootTableSO GetLootTable() => config != null ? config.lootTable : null;
 
-    // --- Initialization ---
-
-    public void Initialize(EnemyDataSO data, IActor targetPlayer)
+    public void Initialize(EnemyDataSO data, IActor targetPlayer, BulletPool bulletPool = null)
     {
         config = data;
 
@@ -62,8 +60,8 @@ public class Enemy : MonoBehaviour, IActor, ILootSource
             gameComponents.Add(weapon);
             weapon.Initialize(this);
 
-            // Removed bulletPool argument
-            weapon.Setup(config.attackPattern, config, config.fireRate, targetPlayer);
+            // Updated: Removed fireRate and pool arguments
+            weapon.Setup(config.attackPattern, config, targetPlayer);
         }
 
         bounds = GetOrAddComponent<ScreenBoundsHandlerComponent>();
@@ -71,8 +69,6 @@ public class Enemy : MonoBehaviour, IActor, ILootSource
         bounds.Configure(0.2f);
         gameComponents.Add(bounds);
     }
-
-    // ... OverrideMovement, OverrideAttack, GetOrAddComponent, OnDeath, OnDestroy ...
 
     public void OverrideMovement(EnemyMovementSO move, EnemyRotationSO rot)
     {

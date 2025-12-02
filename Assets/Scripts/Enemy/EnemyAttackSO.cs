@@ -2,7 +2,7 @@ using UnityEngine;
 
 /// <summary>
 /// Strategy for enemy firing logic.
-/// Updated to handle Muzzle and Bullet selection internally.
+/// Holds configuration for Cooldown (Fire Rate) and Bullet Speed.
 /// </summary>
 public abstract class EnemyAttackSO : ScriptableObject
 {
@@ -13,26 +13,24 @@ public abstract class EnemyAttackSO : ScriptableObject
     [Tooltip("Which muzzle on the enemy weapon to fire from.")]
     public MuzzleType muzzleType = MuzzleType.Main;
 
+    [Header("Timing & Physics")]
+    [Tooltip("Time in seconds to wait after this attack before firing again.")]
+    [SerializeField] protected float attackCooldown = 1f;
+
+    [Tooltip("Multiplier for the bullet speed. 1.0 = Default Speed from BulletConfig.")]
+    [SerializeField] protected float speedMultiplier = 1f;
+
     /// <summary>
     /// Executes the attack logic.
     /// </summary>
-    /// <param name="attacker">The enemy actor.</param>
-    /// <param name="weapon">The weapon component to query for muzzles.</param>
-    /// <param name="target">The player target.</param>
-    /// <param name="data">Enemy config data.</param>
-    /// <param name="speedMultiplier">Speed modifier.</param>
-    /// <returns>Cooldown time.</returns>
+    /// <returns>The time (in seconds) to wait before attacking again.</returns>
     public abstract float ExecuteAttack(
         IActor attacker,
         EnemyWeapon weapon,
         IActor target,
-        EnemyDataSO data,
-        float speedMultiplier
+        EnemyDataSO data
     );
 
-    /// <summary>
-    /// Helper to get the correct pool from the global manager.
-    /// </summary>
     protected ObjectPool<BaseProjectile> GetPool()
     {
         if (bulletType != null && BulletManager.Instance != null)

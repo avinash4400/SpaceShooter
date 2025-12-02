@@ -10,19 +10,19 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9fbdf636b6285444c8ef2c481a962536, type: 3}
-  m_Name: Wave_1
+  m_Name: Wave_Boss
   m_EditorClassIdentifier: 
   spawnSteps:
   - patternLogic: {fileID: 11400000, guid: e1de21f2d842dd5479a5145950229ed3, type: 2}
     config:
       mode: 1
-      enemyPrefab: {fileID: -815993105983958437, guid: bc5749eaadb203044a2e3afe7a642bdc, type: 3}
-      enemyConfig: {fileID: 11400000, guid: 5cff3c20abf36cc4fb5927313d0faeaf, type: 2}
+      enemyPrefab: {fileID: -815993105983958437, guid: d8de1658feaa67444a64e185bade1424, type: 3}
+      enemyConfig: {fileID: 11400000, guid: 83f32c95efb67e14aabe9f69b69aaf8b, type: 2}
       spawnStrategy: {fileID: 11400000, guid: bf3a567e481732a4fa75c12f2254662d, type: 2}
       enemyPool: []
       count: 1
       interval: 2
       duration: 0
       initialDelay: 2
-  runInParallel: 1
+  runInParallel: 0
   startDelay: 1

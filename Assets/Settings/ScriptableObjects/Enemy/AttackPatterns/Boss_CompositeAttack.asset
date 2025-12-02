@@ -12,5 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e6114f68280cafd48aa190d1b4ece340, type: 3}
   m_Name: Boss_CompositeAttack
   m_EditorClassIdentifier: 
+  bulletType: {fileID: 11400000, guid: 2614ef3f51a9e65489661a762e210156, type: 2}
+  muzzleType: 0
+  attackCooldown: 1
   subAttacks:
   - {fileID: 11400000, guid: 479ee233b4f35aa4eb74e09f0520055d, type: 2}
+  - {fileID: 11400000, guid: 9251ef256c63b0c40bbbfbdb8b3e7667, type: 2}
+  - {fileID: 11400000, guid: 6e34c7d1671cf6d4db3f83f58d85ec87, type: 2}

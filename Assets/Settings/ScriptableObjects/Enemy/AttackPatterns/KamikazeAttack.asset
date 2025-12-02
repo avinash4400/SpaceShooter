@@ -12,6 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ac04f72b52f94e540bdd11ef2067b042, type: 3}
   m_Name: KamikazeAttack
   m_EditorClassIdentifier: 
+  bulletType: {fileID: 11400000, guid: 2614ef3f51a9e65489661a762e210156, type: 2}
+  muzzleType: 0
   explosionRadius: 2
   damage: 1
   triggerDistance: 0.5
