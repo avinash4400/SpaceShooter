@@ -16,8 +16,8 @@ MonoBehaviour:
   patrolSpeedMult: 1
   diveCooldown: 5
   detectionRadius: 3
-  evasionStrength: 25
-  evasionCooldown: 0.2
+  evasionStrength: 50
+  evasionCooldown: 0.5
   dangerLayers:
     serializedVersion: 2
     m_Bits: 640

@@ -119,7 +119,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8d5fe695891b54b49ac547eefcb3afa7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  muzzlePoint: {fileID: 5388544344647944662}
+  muzzles:
+  - type: 0
+    transform: {fileID: 5388544344647944662}
 --- !u!114 &3448083130830418483
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -144,6 +146,7 @@ GameObject:
   - component: {fileID: 2333590894576292138}
   - component: {fileID: 4327848201618954047}
   - component: {fileID: 6870314647248741184}
+  - component: {fileID: 1347746754475158421}
   m_Layer: 10
   m_Name: Ship
   m_TagString: Untagged
@@ -267,3 +270,20 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!114 &1347746754475158421
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8604164738541283319}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 21d69faa74113634a9f3bab9f5b0b353, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  damageToTarget: 2
+  killSelfOnCollision: 1
+  targetLayers:
+    serializedVersion: 2
+    m_Bits: 512

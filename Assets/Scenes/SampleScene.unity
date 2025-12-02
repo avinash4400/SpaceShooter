@@ -1683,6 +1683,7 @@ MonoBehaviour:
   levelStartDelay: 1
   levelTransitionDelay: 4
   campaignLevels:
+  - {fileID: 11400000, guid: bd8ee928c76208e409e962426cd786c1, type: 2}
   - {fileID: 11400000, guid: 29bcd01e1df60b84bb83a6952d9e168f, type: 2}
 --- !u!4 &1133732880
 Transform:
