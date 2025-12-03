@@ -88,6 +88,7 @@ public class ScreenBoundsHandlerComponent : MonoBehaviour, IGameComponent
 
     private void HandleExit()
     {
+        Debug.LogWarning($"[ScreenBoundsHandler] {name} exited screen and will be destroyed.");
         Destroy(gameObject);
     }
 }

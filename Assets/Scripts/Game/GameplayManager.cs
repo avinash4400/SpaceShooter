@@ -1,5 +1,6 @@
 using UnityEngine;
 using System;
+using System.Collections;
 
 /// <summary>
 /// Core system responsible for managing the state machine and overall flow of the game.
@@ -14,6 +15,9 @@ public class GameplayManager : Singleton<GameplayManager>
     [Header("Current State")]
     [SerializeField] private GameState currentState = GameState.TitleScreen;
 
+    [Header("Game Over Settings")]
+    [SerializeField] private float gameOverDuration = 3.0f;
+
     void Start()
     {
         // Start the game loop on the Title Screen
@@ -26,8 +30,8 @@ public class GameplayManager : Singleton<GameplayManager>
         {
             EventManager.Instance.OnPlayerDeath += OnPlayerDeath;
             EventManager.Instance.OnLevelCompleted += OnLevelCompleted;
-            EventManager.Instance.OnLevelStarted += OnLevelStarted; // New listener
-            EventManager.Instance.OnGameVictory += OnGameVictory;   // New listener
+            EventManager.Instance.OnLevelStarted += OnLevelStarted;
+            EventManager.Instance.OnGameVictory += OnGameVictory;
         }
 
         PlayerController.OnEscapeKeyPressed += OnEscapeKeyInput;
@@ -50,10 +54,12 @@ public class GameplayManager : Singleton<GameplayManager>
 
     public void HandleStartGameInput()
     {
-        if (currentState == GameState.TitleScreen || currentState == GameState.GameOver || currentState == GameState.StageClear)
+        if (currentState == GameState.TitleScreen || currentState == GameState.StageClear)
         {
             UpdateGameState(GameState.PreStage);
         }
+        // Note: We don't allow restart from GameOver here immediately, 
+        // as the coroutine handles the transition back to Title.
     }
 
     public void UpdateGameState(GameState newState)
@@ -66,17 +72,20 @@ public class GameplayManager : Singleton<GameplayManager>
         switch (newState)
         {
             case GameState.TitleScreen:
+                // Reset Time Scale in case we came from Pause
+                Time.timeScale = 1f;
                 break;
             case GameState.PreStage:
-                // PreStage usually handles setup, then immediately goes to Active 
-                // OR waits for LevelManager to fire OnLevelStarted.
-                // For now, we allow LevelManager's event to trigger StageActive.
+                // HandlePreStage();
+                // Typically waits for initialization then goes to Active
+                UpdateGameState(GameState.StageActive);
                 break;
             case GameState.StageActive:
-                // Enable Input, Hide Cursor, etc.
+                Time.timeScale = 1f;
                 break;
             case GameState.GameOver:
-                // Show Game Over UI
+                // Start the sequence to return to main menu
+                StartCoroutine(HandleGameOverSequence());
                 break;
             case GameState.StageClear:
                 // Show Victory UI, Stop Timer
@@ -87,6 +96,15 @@ public class GameplayManager : Singleton<GameplayManager>
         }
 
         OnGameStateChanged?.Invoke(newState);
+    }
+
+    private IEnumerator HandleGameOverSequence()
+    {
+        // Wait for the duration (Realtime, in case we want to slowmo the game)
+        yield return new WaitForSecondsRealtime(gameOverDuration);
+
+        // Return to Title Screen
+        UpdateGameState(GameState.TitleScreen);
     }
 
     private void HandleUnpause()
@@ -122,9 +140,6 @@ public class GameplayManager : Singleton<GameplayManager>
 
     private void OnGameVictory()
     {
-        // Separate state for finishing the entire campaign
-        // For simplicity, we can use StageClear or a dedicated Victory state
-        // Assuming GameState enum has GameVictory, otherwise fallback to StageClear
         Debug.Log("Campaign Complete!");
         UpdateGameState(GameState.StageClear);
     }

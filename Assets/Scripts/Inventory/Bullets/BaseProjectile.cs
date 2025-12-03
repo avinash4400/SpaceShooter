@@ -18,7 +18,6 @@ public abstract class BaseProjectile : MonoBehaviour, IDamageSource, IActor
         return new DamageInfo(DamageAmount, SourceActor);
     }
 
-    // Used by the BulletPool to recycle this instance
     public event Action<BaseProjectile> OnProjectileExpired;
 
     // --- State & Config ---
@@ -26,6 +25,9 @@ public abstract class BaseProjectile : MonoBehaviour, IDamageSource, IActor
     protected float moveSpeed;
     protected float lifeTimer;
     protected Vector3 fireDirection;
+
+    // NEW: Target reference for Homing/Tracking logic
+    protected IActor target;
 
     // Physics & Rendering
     protected Rigidbody rb;
@@ -50,13 +52,22 @@ public abstract class BaseProjectile : MonoBehaviour, IDamageSource, IActor
     }
 
     /// <summary>
-    /// Initializes the projectile, sets layers, and prepares for movement.
+    /// Initializes the projectile.
+    /// Updated to accept a specific Target actor (for homing logic).
     /// </summary>
-    public virtual void Initialize(BulletTypeSO bulletConfig, IActor source, Vector3 direction, float speedMultiplier = 1f)
+    public virtual void Initialize(
+        BulletTypeSO bulletConfig,
+        IActor source,
+        Vector3 direction,
+        float speedMultiplier = 1f,
+        IActor target = null // <--- NEW PARAMETER
+    )
     {
         config = bulletConfig;
         DamageAmount = config.damage;
         SourceActor = source;
+        this.target = target; // Store it for Move() logic
+
         moveSpeed = config.speed * speedMultiplier;
         lifeTimer = config.lifetime;
         fireDirection = direction.normalized;
@@ -73,7 +84,6 @@ public abstract class BaseProjectile : MonoBehaviour, IDamageSource, IActor
         rb.isKinematic = true;
         rb.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
 
-        // Cache camera for bounds checking
         if (mainCamera == null)
         {
             mainCamera = Camera.main;
@@ -114,19 +124,12 @@ public abstract class BaseProjectile : MonoBehaviour, IDamageSource, IActor
         CheckOutOfBounds();
     }
 
-    /// <summary>
-    /// Checks if the projectile has left the viewport.
-    /// Recycles it if it goes too far off-screen.
-    /// </summary>
     private void CheckOutOfBounds()
     {
         if (mainCamera == null) return;
 
-        // Convert world position to viewport (0,0 is bottom-left, 1,1 is top-right)
         Vector3 viewPos = mainCamera.WorldToViewportPoint(transform.position);
 
-        // Check if out of bounds with a buffer (0.1 = 10% screen width)
-        // This ensures the bullet is fully off-screen before disappearing.
         if (viewPos.x < -0.1f || viewPos.x > 1.1f || viewPos.y < -0.1f || viewPos.y > 1.1f)
         {
             Expire();

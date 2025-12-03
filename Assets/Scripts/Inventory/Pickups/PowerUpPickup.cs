@@ -25,7 +25,7 @@ public class PowerUpPickup : BasePickup
         }
 
         // Find the inventory via the Actor's Transform
-        PowerUpInventory inventory = target.GetTransform().GetComponent<PowerUpInventory>();
+        PowerUpInventory inventory = target.GetAttachedComponent<PowerUpInventory>();
 
         if (inventory != null)
         {

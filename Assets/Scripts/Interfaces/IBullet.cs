@@ -14,5 +14,6 @@ public interface IBullet
     /// <param name="direction">Aiming direction.</param>
     /// <param name="config">Configuration data (speed, damage, count).</param>
     /// <param name="pool">The object pool to retrieve projectiles from.</param>
-    void Fire(IActor source, Vector3 origin, Vector3 direction, BulletTypeSO config, ObjectPool<BaseProjectile> pool);
+    /// <param name="target">Optional target for homing projectiles.</param>
+    void Fire(IActor source, Vector3 origin, Vector3 direction, BulletTypeSO config, ObjectPool<BaseProjectile> pool, IActor target);
 }

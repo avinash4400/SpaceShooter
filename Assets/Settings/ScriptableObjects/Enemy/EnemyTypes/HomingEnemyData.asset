@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 18ef1b5d88a54b9408d6faabacd52734, type: 3}
+  m_Name: HomingEnemyData
+  m_EditorClassIdentifier: 
+  enemyName: 
+  maxHealth: 10
+  scoreValue: 100
+  moveSpeed: 2
+  lootTable: {fileID: 11400000, guid: e1f49eb4fa114d240a93a5a768665376, type: 2}
+  movementPattern: {fileID: 11400000, guid: 48328177e3bf1ec4a886c4155fe8cc86, type: 2}
+  rotationPattern: {fileID: 11400000, guid: daf09ca5cbb8b564bb357043a8ce0c70, type: 2}
+  attackPattern: {fileID: 11400000, guid: b55dfe99eb70b26429b0f28205d86b8f, type: 2}

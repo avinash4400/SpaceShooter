@@ -18,7 +18,7 @@ public class PlayerController : MonoBehaviour
     public static event Action OnSwitchBulletInput;
     public static event Action OnSwitchPowerupInput;
 
-    // NEW: Activation input
+    // Activation input
     public static event Action OnActivatePowerupInput;
 
     // Events for Universal actions (used across multiple states)
@@ -60,6 +60,27 @@ public class PlayerController : MonoBehaviour
         // By default, only the Game map should be enabled at start (for Title Screen/StartGame)
         PlayerMap.Disable();
         GameMap.Enable();
+    }
+
+    private void OnEnable()
+    {
+        // Subscribe to GameState changes to handle map switching
+        GameplayManager.OnGameStateChanged += HandleGameStateChanged;
+    }
+
+    private void OnDisable()
+    {
+        GameplayManager.OnGameStateChanged -= HandleGameStateChanged;
+    }
+
+    private void HandleGameStateChanged(GameState newState)
+    {
+        if (newState == GameState.GameOver)
+        {
+            // Disable Player controls (Movement/Shoot) and enable Game controls (Restart)
+            PlayerMap.Disable();
+            GameMap.Enable();
+        }
     }
 
     private void OnDestroy()

@@ -9,7 +9,7 @@ public class SingleShotPatternSO : BulletPatternSO
     [Tooltip("Spread angle in degrees. Ignored if Projectile Count is 1.")]
     [SerializeField] private float spreadAngle = 15f;
 
-    public override void Fire(IActor source, Vector3 origin, Vector3 direction, BulletTypeSO config, ObjectPool<BaseProjectile> pool)
+    public override void Fire(IActor source, Vector3 origin, Vector3 direction, BulletTypeSO config, ObjectPool<BaseProjectile> pool, IActor target)
     {
         int count = config.projectileCount;
 
@@ -30,8 +30,8 @@ public class SingleShotPatternSO : BulletPatternSO
             Quaternion rotation = Quaternion.Euler(0, 0, currentAngle);
             Vector3 finalDirection = rotation * direction;
 
-            // Spawn
-            SpawnProjectile(pool, config, source, origin, finalDirection);
+            // Spawn with target
+            SpawnProjectile(pool, config, source, origin, finalDirection, target);
         }
     }
 }

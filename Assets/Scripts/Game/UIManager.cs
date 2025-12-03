@@ -32,8 +32,7 @@ public class UIManager : MonoBehaviour
 
     private void HandleStateChanged(GameState newState)
     {
-        // Determine which panel "Key" should be active based on the state group
-        // This solves the issue where Pause/GameOver states would hide the Game UI
+        // Determine which main panel "Key" should be active based on the state group
         GameState activeKey = GameState.TitleScreen; // Default
 
         switch (newState)
@@ -43,23 +42,23 @@ public class UIManager : MonoBehaviour
                 break;
 
             // Group all gameplay-related states to show the HUD/Game Panel
-            // This ensures the Game UI stays visible during Pause, GameOver, etc.
             case GameState.PreStage:
             case GameState.StageActive:
             case GameState.StageClear:
-            case GameState.GameOver:
             case GameState.Pause:
                 activeKey = GameState.StageActive;
                 break;
+            default: // HUD remains visible; specific Game Over UI can be overlaid or handled separately if needed
+                activeKey = newState;
+                break;
         }
 
-        // Apply visibility
+        // Apply visibility to main panels
         foreach (var entry in panels)
         {
             if (entry.panel != null)
             {
                 // Enable only the panel that matches the determined key
-                // For example, if we are in 'Pause', activeKey is 'StageActive', so the HUD stays on.
                 bool shouldActive = entry.state == activeKey;
 
                 if (entry.panel.activeSelf != shouldActive)

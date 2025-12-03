@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9fbdf636b6285444c8ef2c481a962536, type: 3}
+  m_Name: HordeWave_L1
+  m_EditorClassIdentifier: 
+  spawnSteps:
+  - patternLogic: {fileID: 11400000, guid: e1de21f2d842dd5479a5145950229ed3, type: 2}
+    config:
+      mode: 0
+      enemyPrefab: {fileID: -815993105983958437, guid: bc5749eaadb203044a2e3afe7a642bdc, type: 3}
+      enemyConfig: {fileID: 11400000, guid: 3d31d64a2b5003644add25065174a7f6, type: 2}
+      spawnStrategy: {fileID: 11400000, guid: bf3a567e481732a4fa75c12f2254662d, type: 2}
+      enemyPool: []
+      count: 1
+      interval: 2
+      duration: 0
+      initialDelay: 2
+  runInParallel: 1
+  startDelay: 1

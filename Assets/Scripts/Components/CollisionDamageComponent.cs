@@ -56,15 +56,23 @@ public class CollisionDamageComponent : MonoBehaviour, IGameComponent
 
     private void HandleSelfDestruct(Collider target)
     {
-        // We find our own health component
-        // Note: Using GetAttachedComponent if implemented, or GetComponent
-        IDamageHandler selfHealth = GetComponent<IDamageHandler>();
+        if (selfActor == null)
+        {
+            Debug.LogWarning($"[CollisionDamage] {name} has no actor reference, destroying on crash.");
+            Destroy(gameObject);
+            return;
+        }
+
+        // Use the injected actor reference to find the health component.
+        // We request HealthComponent because GetAttachedComponent requires IGameComponent,
+        // and HealthComponent is the specific class that implements both.
+        IDamageHandler selfHealth = selfActor.GetAttachedComponent<HealthComponent>();
 
         if (selfHealth != null)
         {
             // We attribute the crash damage to the thing we hit (so it counts as a kill for the player if they shielded)
             IActor targetActor = target.GetComponentInParent<IActor>();
-
+            Debug.Log($"[CollisionDamage] {name} is self-destructing due to crash with {target.name}.");
             // Deal massive damage to ensure death
             DamageInfo crashInfo = new DamageInfo(9999, targetActor);
             selfHealth.HandleDamage(crashInfo);
@@ -72,6 +80,7 @@ public class CollisionDamageComponent : MonoBehaviour, IGameComponent
         else
         {
             // Fallback if no health component (just destroy)
+            Debug.LogWarning($"[CollisionDamage] {name} has no HealthComponent, destroying on crash.");
             Destroy(gameObject);
         }
     }

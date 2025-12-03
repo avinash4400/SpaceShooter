@@ -63,7 +63,6 @@ public class BulletInventory : MonoBehaviour, IGameComponent
 
     private void InitializeAmmo()
     {
-        // (Logic identical to previous version, omitted for brevity)
         BulletTypeSO[] allTypes = bulletFactory.GetAllTypes();
         availableBulletTypes.Clear();
         BulletTypeSO defaultType = null;
@@ -84,7 +83,12 @@ public class BulletInventory : MonoBehaviour, IGameComponent
         availableBulletTypes = availableBulletTypes.OrderBy(b => b.type).ToList();
     }
 
-    public void AttemptFire(Vector3 spawnPosition, Vector3 fireDirection, IActor sourceActor)
+    /// <summary>
+    /// Attempts to fire the currently selected bullet.
+    /// Handles ammo check, consumption, and spawning.
+    /// Updated to accept optional target.
+    /// </summary>
+    public void AttemptFire(Vector3 spawnPosition, Vector3 fireDirection, IActor sourceActor, IActor target = null)
     {
         if (SelectedBullet == null) return;
         if (!ConsumeAmmo(SelectedBullet)) return;
@@ -92,17 +96,33 @@ public class BulletInventory : MonoBehaviour, IGameComponent
         if (bulletPools == null || !bulletPools.ContainsKey(SelectedBullet.type)) return;
         BulletPool pool = bulletPools[SelectedBullet.type];
 
-        // Force Spawn Position Z to 0
         Vector3 flatSpawnPos = spawnPosition;
         flatSpawnPos.z = 0f;
 
         if (SelectedBullet.patternLogic != null)
         {
-            SelectedBullet.patternLogic.Fire(sourceActor, flatSpawnPos, fireDirection, SelectedBullet, pool);
+            // Pass the target to the pattern logic
+            SelectedBullet.patternLogic.Fire(sourceActor, flatSpawnPos, fireDirection, SelectedBullet, pool, target);
+        }
+        else
+        {
+            // Fallback for direct firing
+            SpawnBullet(SelectedBullet, flatSpawnPos, fireDirection, sourceActor, target);
         }
     }
 
-    // (SwitchBullet, SelectBullet, ConsumeAmmo methods remain the same)
+    private void SpawnBullet(BulletTypeSO bulletConfig, Vector3 position, Vector3 direction, IActor source, IActor target)
+    {
+        if (bulletPools == null || !bulletPools.ContainsKey(bulletConfig.type)) return;
+        BulletPool pool = bulletPools[bulletConfig.type];
+        BaseProjectile projectile = pool.Get();
+
+        projectile.transform.position = position;
+        projectile.transform.rotation = Quaternion.identity;
+
+        projectile.Initialize(bulletConfig, source, direction, 1f, target);
+    }
+
     public void SwitchBullet()
     {
         if (availableBulletTypes.Count <= 1) return;

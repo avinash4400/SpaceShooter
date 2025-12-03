@@ -10,19 +10,19 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9fbdf636b6285444c8ef2c481a962536, type: 3}
-  m_Name: Wave_1
+  m_Name: HordeWave_L2
   m_EditorClassIdentifier: 
   spawnSteps:
   - patternLogic: {fileID: 11400000, guid: e1de21f2d842dd5479a5145950229ed3, type: 2}
     config:
       mode: 0
       enemyPrefab: {fileID: -815993105983958437, guid: bc5749eaadb203044a2e3afe7a642bdc, type: 3}
-      enemyConfig: {fileID: 11400000, guid: 5cff3c20abf36cc4fb5927313d0faeaf, type: 2}
-      spawnStrategy: {fileID: 11400000, guid: bf3a567e481732a4fa75c12f2254662d, type: 2}
+      enemyConfig: {fileID: 11400000, guid: 261d2dec867c8e94ebd3b5afa091737b, type: 2}
+      spawnStrategy: {fileID: 11400000, guid: d40f94fea9ab177439856dc77b7c0e3a, type: 2}
       enemyPool: []
-      count: 1
-      interval: 2
+      count: 2
+      interval: 3
       duration: 0
-      initialDelay: 2
+      initialDelay: 1
   runInParallel: 1
   startDelay: 1

@@ -14,6 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   bulletType: {fileID: 11400000, guid: 2614ef3f51a9e65489661a762e210156, type: 2}
   muzzleType: 0
-  closeRangeThreshold: 4
-  closeRangeAttack: {fileID: 11400000, guid: 22d52a21016ede042a25dba6365a1797, type: 2}
-  longRangeAttack: {fileID: 11400000, guid: 57b2bb91db677f0469580971cc2f7d2a, type: 2}
+  attackCooldown: 1
+  speedMultiplier: 1
+  closeRangeThreshold: 5
+  closeRangeAttack: {fileID: 11400000, guid: 57b2bb91db677f0469580971cc2f7d2a, type: 2}
+  longRangeAttack: {fileID: 0}
