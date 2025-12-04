@@ -15,8 +15,10 @@ public class GameplayManager : Singleton<GameplayManager>
     [Header("Current State")]
     [SerializeField] private GameState currentState = GameState.TitleScreen;
 
-    [Header("Game Over Settings")]
+    [Header("Flow Settings")]
     [SerializeField] private float gameOverDuration = 3.0f;
+    [Tooltip("How long to show the Game Cleared screen before returning to title.")]
+    [SerializeField] private float gameVictoryDuration = 5.0f;
 
     void Start()
     {
@@ -58,8 +60,6 @@ public class GameplayManager : Singleton<GameplayManager>
         {
             UpdateGameState(GameState.PreStage);
         }
-        // Note: We don't allow restart from GameOver here immediately, 
-        // as the coroutine handles the transition back to Title.
     }
 
     public void UpdateGameState(GameState newState)
@@ -72,23 +72,23 @@ public class GameplayManager : Singleton<GameplayManager>
         switch (newState)
         {
             case GameState.TitleScreen:
-                // Reset Time Scale in case we came from Pause
                 Time.timeScale = 1f;
                 break;
             case GameState.PreStage:
-                // HandlePreStage();
-                // Typically waits for initialization then goes to Active
                 UpdateGameState(GameState.StageActive);
                 break;
             case GameState.StageActive:
                 Time.timeScale = 1f;
                 break;
             case GameState.GameOver:
-                // Start the sequence to return to main menu
                 StartCoroutine(HandleGameOverSequence());
                 break;
             case GameState.StageClear:
-                // Show Victory UI, Stop Timer
+                // Just wait for LevelManager to load next level
+                break;
+            case GameState.GameVictory:
+                // All levels done. Start sequence to return to title.
+                StartCoroutine(HandleGameVictorySequence());
                 break;
             case GameState.Pause:
                 Time.timeScale = 0f;
@@ -100,10 +100,17 @@ public class GameplayManager : Singleton<GameplayManager>
 
     private IEnumerator HandleGameOverSequence()
     {
-        // Wait for the duration (Realtime, in case we want to slowmo the game)
         yield return new WaitForSecondsRealtime(gameOverDuration);
+        UpdateGameState(GameState.TitleScreen);
+    }
 
-        // Return to Title Screen
+    private IEnumerator HandleGameVictorySequence()
+    {
+        // Keep game running or pause it? Usually nice to see fireworks/particles move.
+        Time.timeScale = 1f;
+
+        yield return new WaitForSecondsRealtime(gameVictoryDuration);
+
         UpdateGameState(GameState.TitleScreen);
     }
 
@@ -134,14 +141,13 @@ public class GameplayManager : Singleton<GameplayManager>
 
     private void OnLevelStarted(LevelSO level)
     {
-        // When a new level starts, ensure we are in the Active state (hiding stage clear UI)
         UpdateGameState(GameState.StageActive);
     }
 
     private void OnGameVictory()
     {
         Debug.Log("Campaign Complete!");
-        UpdateGameState(GameState.StageClear);
+        UpdateGameState(GameState.GameVictory);
     }
 
     private void OnEscapeKeyInput()

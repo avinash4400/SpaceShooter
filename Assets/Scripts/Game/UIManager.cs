@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 /// <summary>
 /// Manages the high-level UI Panels based on the current GameState.
-/// Uses a switch statement to group states into specific UI screens (Title vs Game).
+/// Uses a switch statement to group states into specific UI screens.
 /// </summary>
 public class UIManager : MonoBehaviour
 {
@@ -33,7 +33,7 @@ public class UIManager : MonoBehaviour
     private void HandleStateChanged(GameState newState)
     {
         // Determine which main panel "Key" should be active based on the state group
-        GameState activeKey = GameState.TitleScreen; // Default
+        GameState activeKey = GameState.TitleScreen; // Default fallback
 
         switch (newState)
         {
@@ -45,11 +45,14 @@ public class UIManager : MonoBehaviour
             case GameState.PreStage:
             case GameState.StageActive:
             case GameState.StageClear:
+            case GameState.GameOver:
             case GameState.Pause:
                 activeKey = GameState.StageActive;
                 break;
-            default: // HUD remains visible; specific Game Over UI can be overlaid or handled separately if needed
-                activeKey = newState;
+
+            // Special Case for Final Victory Screen
+            case GameState.GameVictory:
+                activeKey = GameState.GameVictory;
                 break;
         }
 
@@ -59,6 +62,7 @@ public class UIManager : MonoBehaviour
             if (entry.panel != null)
             {
                 // Enable only the panel that matches the determined key
+                // You can now add an entry in the inspector: Key=GameVictory -> Panel=VictoryPanel
                 bool shouldActive = entry.state == activeKey;
 
                 if (entry.panel.activeSelf != shouldActive)

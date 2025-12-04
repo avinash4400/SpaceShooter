@@ -88,7 +88,10 @@ public class HealthComponent : MonoBehaviour, IDamageHandler, IGameComponent
         // Broadcast the death event (instance)
         OnDeath?.Invoke(gameObject);
         Debug.Log($"{gameObject.name} Died. Notifying systems.");
-        gameObject.SetActive(false); // Simple removal
+
+        // REMOVED: gameObject.SetActive(false); 
+        // We now rely on the listener (Enemy.cs, Player.cs) to handle the destruction/disabling
+        // to allow for death sequences (VFX/Animation) to play out first.
     }
 
     /// <summary>

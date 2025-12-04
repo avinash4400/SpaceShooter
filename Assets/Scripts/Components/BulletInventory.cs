@@ -3,12 +3,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-/// <summary>
-/// Manages the player's current bullet type selection, limited ammo counts,
-/// AND handles the actual spawning/pooling of projectiles (Weapon System).
-/// </summary>
 public class BulletInventory : MonoBehaviour, IGameComponent
 {
+    // ... (Configuration fields)
     [Header("Configuration")]
     [SerializeField] private BulletFactory bulletFactory;
     [SerializeField] private int initialPoolSize = 20;
@@ -17,11 +14,9 @@ public class BulletInventory : MonoBehaviour, IGameComponent
     [SerializeField] private int doubleShotStartAmmo = 50;
     [SerializeField] private int tripleShotStartAmmo = 30;
 
-    // --- Events ---
     public static event Action<BulletTypeSO, int> OnAmmoCountChanged;
     public static event Action<BulletTypeSO> OnBulletSelected;
 
-    // --- State ---
     private IActor actor;
     private Dictionary<BulletType, BulletPool> bulletPools;
     private Dictionary<BulletType, int> limitedAmmoCounts = new Dictionary<BulletType, int>();
@@ -37,15 +32,10 @@ public class BulletInventory : MonoBehaviour, IGameComponent
         InitializePools();
     }
 
-    void OnEnable()
-    {
-        PlayerController.OnSwitchBulletInput += SwitchBullet;
-    }
+    // ... (OnEnable/Disable, InitializePools, InitializeAmmo, SwitchBullet, SelectBullet, ConsumeAmmo unchanged) ...
 
-    void OnDisable()
-    {
-        PlayerController.OnSwitchBulletInput -= SwitchBullet;
-    }
+    void OnEnable() { PlayerController.OnSwitchBulletInput += SwitchBullet; }
+    void OnDisable() { PlayerController.OnSwitchBulletInput -= SwitchBullet; }
 
     private void InitializePools()
     {
@@ -78,49 +68,8 @@ public class BulletInventory : MonoBehaviour, IGameComponent
                 OnAmmoCountChanged?.Invoke(typeSO, startAmount);
             }
         }
-
         if (defaultType != null) SelectBullet(defaultType);
         availableBulletTypes = availableBulletTypes.OrderBy(b => b.type).ToList();
-    }
-
-    /// <summary>
-    /// Attempts to fire the currently selected bullet.
-    /// Handles ammo check, consumption, and spawning.
-    /// Updated to accept optional target.
-    /// </summary>
-    public void AttemptFire(Vector3 spawnPosition, Vector3 fireDirection, IActor sourceActor, IActor target = null)
-    {
-        if (SelectedBullet == null) return;
-        if (!ConsumeAmmo(SelectedBullet)) return;
-
-        if (bulletPools == null || !bulletPools.ContainsKey(SelectedBullet.type)) return;
-        BulletPool pool = bulletPools[SelectedBullet.type];
-
-        Vector3 flatSpawnPos = spawnPosition;
-        flatSpawnPos.z = 0f;
-
-        if (SelectedBullet.patternLogic != null)
-        {
-            // Pass the target to the pattern logic
-            SelectedBullet.patternLogic.Fire(sourceActor, flatSpawnPos, fireDirection, SelectedBullet, pool, target);
-        }
-        else
-        {
-            // Fallback for direct firing
-            SpawnBullet(SelectedBullet, flatSpawnPos, fireDirection, sourceActor, target);
-        }
-    }
-
-    private void SpawnBullet(BulletTypeSO bulletConfig, Vector3 position, Vector3 direction, IActor source, IActor target)
-    {
-        if (bulletPools == null || !bulletPools.ContainsKey(bulletConfig.type)) return;
-        BulletPool pool = bulletPools[bulletConfig.type];
-        BaseProjectile projectile = pool.Get();
-
-        projectile.transform.position = position;
-        projectile.transform.rotation = Quaternion.identity;
-
-        projectile.Initialize(bulletConfig, source, direction, 1f, target);
     }
 
     public void SwitchBullet()
@@ -167,5 +116,44 @@ public class BulletInventory : MonoBehaviour, IGameComponent
             return true;
         }
         return false;
+    }
+
+    public void AttemptFire(Vector3 spawnPosition, Vector3 fireDirection, IActor sourceActor, IActor target = null)
+    {
+        if (SelectedBullet == null) return;
+        if (!ConsumeAmmo(SelectedBullet)) return;
+
+        if (bulletPools == null || !bulletPools.ContainsKey(SelectedBullet.type)) return;
+        BulletPool pool = bulletPools[SelectedBullet.type];
+
+        Vector3 flatSpawnPos = spawnPosition;
+        flatSpawnPos.z = 0f;
+
+        if (SelectedBullet.patternLogic != null)
+        {
+            SelectedBullet.patternLogic.Fire(sourceActor, flatSpawnPos, fireDirection, SelectedBullet, pool, target);
+        }
+        else
+        {
+            SpawnBullet(SelectedBullet, flatSpawnPos, fireDirection, sourceActor, target);
+        }
+
+        // NEW: Trigger Audio Event
+        if (EventManager.Instance != null)
+        {
+            EventManager.Instance.TriggerPlayerFired(SelectedBullet);
+        }
+    }
+
+    private void SpawnBullet(BulletTypeSO bulletConfig, Vector3 position, Vector3 direction, IActor source, IActor target)
+    {
+        if (bulletPools == null || !bulletPools.ContainsKey(bulletConfig.type)) return;
+        BulletPool pool = bulletPools[bulletConfig.type];
+        BaseProjectile projectile = pool.Get();
+
+        projectile.transform.position = position;
+        projectile.transform.rotation = Quaternion.identity;
+
+        projectile.Initialize(bulletConfig, source, direction, 1f, target);
     }
 }

@@ -62,6 +62,9 @@ public class Player : MonoBehaviour, IActor
             healthComponent.OnDeath += OnLocalDeath;
             healthComponent.OnHealthChanged += OnLocalHealthChanged;
 
+            // NEW: Listen for damage impact
+            healthComponent.OnHit += OnLocalHit;
+
             // Initial broadcast so UI updates on start
             OnLocalHealthChanged(gameObject, healthComponent.CurrentHealth);
         }
@@ -113,6 +116,7 @@ public class Player : MonoBehaviour, IActor
         {
             healthComponent.OnDeath -= OnLocalDeath;
             healthComponent.OnHealthChanged -= OnLocalHealthChanged;
+            healthComponent.OnHit -= OnLocalHit;
         }
     }
 
@@ -125,14 +129,20 @@ public class Player : MonoBehaviour, IActor
         }
     }
 
-    /// <summary>
-    /// Forwards the local health change to the global event manager for UI updates.
-    /// </summary>
     private void OnLocalHealthChanged(GameObject source, int currentHealth)
     {
         if (EventManager.Instance != null && healthComponent != null)
         {
             EventManager.Instance.TriggerPlayerHealthChanged(currentHealth, healthComponent.MaxHealth);
+        }
+    }
+
+    // NEW: Forward hit event to EventManager for Screen Shake
+    private void OnLocalHit(GameObject source)
+    {
+        if (EventManager.Instance != null)
+        {
+            EventManager.Instance.TriggerCameraShake();
         }
     }
 }

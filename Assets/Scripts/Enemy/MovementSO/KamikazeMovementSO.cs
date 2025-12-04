@@ -78,7 +78,6 @@ public class KamikazeMovementSO : EnemyMovementSO
 
             float chargeSpeed = speed * chargeSpeedMultiplier;
             float moveStep = chargeSpeed * Time.fixedDeltaTime;
-
             // FIX: Check if we are close enough to snap directly to the target
             // This prevents overshooting and flickering
             if (distanceToTarget <= moveStep)
@@ -104,7 +103,6 @@ public class KamikazeMovementSO : EnemyMovementSO
                     return currentPos;
                 }
             }
-
             // Move in the calculated patrol direction
             float patrolSpeed = speed * patrolSpeedMultiplier;
             return currentPos + (state.patrolDirection.normalized * patrolSpeed * Time.fixedDeltaTime);

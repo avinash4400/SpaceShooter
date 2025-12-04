@@ -43,7 +43,6 @@ public class CollisionDamageComponent : MonoBehaviour, IGameComponent
                 DamageInfo info = new DamageInfo(damageToTarget, selfActor);
                 targetHandler.HandleDamage(info);
 
-                Debug.Log($"[CollisionDamage] {name} crashed into {other.name}!");
             }
 
             // 3. Crash Logic (Damage Self)

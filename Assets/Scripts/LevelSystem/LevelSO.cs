@@ -1,10 +1,6 @@
 using UnityEngine;
 using System.Collections.Generic;
 
-/// <summary>
-/// Defines a full game level (e.g. "Level 1", "Boss Stage").
-/// Contains a sequence of Waves to execute.
-/// </summary>
 [CreateAssetMenu(fileName = "NewLevel", menuName = "Game/Spawning/Level")]
 public class LevelSO : ScriptableObject
 {
@@ -15,6 +11,7 @@ public class LevelSO : ScriptableObject
 
     [Header("Environment")]
     public AudioClip backgroundMusic;
+    // Removed bossMusic as Boss Levels are now just Levels
 
     [Tooltip("The scrolling sprite to apply to the background for this level.")]
     public Sprite levelBackgroundSprite;

@@ -16,5 +16,6 @@ MonoBehaviour:
   waves:
   - {fileID: 11400000, guid: c4846b0bc5bd40f44a23763961c73d0d, type: 2}
   - {fileID: 11400000, guid: 35c6ca99d359b8d40815e87d7f2a4d18, type: 2}
-  backgroundMusic: {fileID: 0}
+  backgroundMusic: {fileID: 8300000, guid: ec805d408f1b4ad4eaa87c4b40d2e6db, type: 3}
+  bossMusic: {fileID: 0}
   levelBackgroundSprite: {fileID: 21300000, guid: c201c965903fdd2429586c8af8f3ead5, type: 3}

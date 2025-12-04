@@ -1,10 +1,6 @@
 using UnityEngine;
 using System;
 
-/// <summary>
-/// A centralized hub for global game events.
-/// Inherits from Singleton to ensure a single instance persists across scenes.
-/// </summary>
 public class EventManager : Singleton<EventManager>
 {
     // --- Global Events ---
@@ -12,7 +8,16 @@ public class EventManager : Singleton<EventManager>
     public event Action<int, int> OnPlayerHealthChanged;
     public event Action<Vector3, ILootSource> OnEnemyDeath;
 
-    // --- Enemy Lifecycle Events (Optimization for Wave Clearing) ---
+    // --- Audio / VFX Events ---
+    public event Action OnCameraShake;
+    public event Action<Vector3, AudioClip> OnExplosion;
+    public event Action<BulletTypeSO> OnPlayerFired;
+    public event Action<PowerUpDataSO> OnPowerUpCollected;
+
+    // NEW: UI Interaction Event
+    public event Action OnUISubmit;
+
+    // --- Enemy Lifecycle Events ---
     public event Action<Enemy> OnEnemySpawned;
     public event Action<Enemy> OnEnemyDespawned;
 
@@ -36,9 +41,16 @@ public class EventManager : Singleton<EventManager>
 
     public void TriggerPlayerDeath() => OnPlayerDeath?.Invoke();
     public void TriggerPlayerHealthChanged(int current, int max) => OnPlayerHealthChanged?.Invoke(current, max);
-    public void TriggerEnemyDeath(Vector3 deathPosition, ILootSource lootSource) => OnEnemyDeath?.Invoke(deathPosition, lootSource);
 
-    // NEW: Lifecycle Triggers
+    public void TriggerCameraShake() => OnCameraShake?.Invoke();
+    public void TriggerExplosion(Vector3 position, AudioClip clip) => OnExplosion?.Invoke(position, clip);
+    public void TriggerPlayerFired(BulletTypeSO bullet) => OnPlayerFired?.Invoke(bullet);
+    public void TriggerPowerUpCollected(PowerUpDataSO data) => OnPowerUpCollected?.Invoke(data);
+
+    // NEW Trigger
+    public void TriggerUISubmit() => OnUISubmit?.Invoke();
+
+    public void TriggerEnemyDeath(Vector3 deathPosition, ILootSource lootSource) => OnEnemyDeath?.Invoke(deathPosition, lootSource);
     public void TriggerEnemySpawned(Enemy enemy) => OnEnemySpawned?.Invoke(enemy);
     public void TriggerEnemyDespawned(Enemy enemy) => OnEnemyDespawned?.Invoke(enemy);
 

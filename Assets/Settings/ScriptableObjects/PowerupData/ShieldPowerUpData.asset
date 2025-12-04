@@ -16,4 +16,5 @@ MonoBehaviour:
   powerUpName: Shield
   icon: {fileID: 21300000, guid: 1932640e6cf290044a4ee6967192234d, type: 3}
   description: 
+  pickupSound: {fileID: 8300000, guid: 78023e7009f673b44aa00098e0ec2582, type: 3}
   effect: {fileID: 11400000, guid: 8f77e9a032e8918429d8b5c9bfee98dc, type: 2}

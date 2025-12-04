@@ -9,6 +9,9 @@ public class EnemyDataSO : ScriptableObject
     public int scoreValue = 100;
     public float moveSpeed = 5f;
 
+    [Header("Audio")]
+    public AudioClip deathSound; // New
+
     [Header("Loot")]
     public LootTableSO lootTable;
 
@@ -21,6 +24,5 @@ public class EnemyDataSO : ScriptableObject
     [Header("Attack Strategy")]
     public EnemyAttackSO attackPattern;
 
-    // Note: FireRate and BulletSpeed removed. 
-    // They are now configured inside the EnemyAttackSO.
+    public float bulletSpeedMultiplier = 1.0f;
 }

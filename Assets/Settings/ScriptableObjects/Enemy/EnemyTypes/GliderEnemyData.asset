@@ -16,7 +16,9 @@ MonoBehaviour:
   maxHealth: 10
   scoreValue: 100
   moveSpeed: 2
+  deathSound: {fileID: 8300000, guid: 055e2c1e1e386284696b23928b8f80f6, type: 3}
   lootTable: {fileID: 11400000, guid: e1f49eb4fa114d240a93a5a768665376, type: 2}
   movementPattern: {fileID: 11400000, guid: 48328177e3bf1ec4a886c4155fe8cc86, type: 2}
   rotationPattern: {fileID: 11400000, guid: daf09ca5cbb8b564bb357043a8ce0c70, type: 2}
   attackPattern: {fileID: 11400000, guid: 57b2bb91db677f0469580971cc2f7d2a, type: 2}
+  bulletSpeedMultiplier: 1

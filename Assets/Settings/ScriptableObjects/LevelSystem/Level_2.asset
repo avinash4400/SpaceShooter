@@ -17,5 +17,6 @@ MonoBehaviour:
   - {fileID: 11400000, guid: d49f896b8199a0d499ebc11b70e90310, type: 2}
   - {fileID: 11400000, guid: f30045c974ac91841adb423e12a9d80f, type: 2}
   - {fileID: 11400000, guid: 7a0b21ef19243b740be95ebf5b83eb7d, type: 2}
-  backgroundMusic: {fileID: 0}
+  backgroundMusic: {fileID: 8300000, guid: ec805d408f1b4ad4eaa87c4b40d2e6db, type: 3}
+  bossMusic: {fileID: 0}
   levelBackgroundSprite: {fileID: 21300000, guid: c201c965903fdd2429586c8af8f3ead5, type: 3}

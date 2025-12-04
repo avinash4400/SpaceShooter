@@ -2,44 +2,27 @@ using UnityEngine;
 using System;
 using UnityEngine.InputSystem;
 
-/// <summary>
-/// Handles all player input and broadcasts it as events (C# Actions).
-/// This component now manages enabling/disabling the "Player" and "Game" Action Maps 
-/// based on signals from the GameplayManager.
-/// </summary>
 public class PlayerController : MonoBehaviour
 {
-    // Events for Player actions (used during StageActive)
+    // ... (Existing Events) ...
     public static event Action<Vector2> OnMovementInput;
     public static event Action OnDashAttempt;
     public static event Action<bool> OnShootInput;
-
-    // Switching inputs
     public static event Action OnSwitchBulletInput;
     public static event Action OnSwitchPowerupInput;
-
-    // Activation input
     public static event Action OnActivatePowerupInput;
-
-    // Events for Universal actions (used across multiple states)
     public static event Action OnEscapeKeyPressed;
-
-    // Broadcasts that the start game input was detected.
     public static event Action OnStartGameInput;
 
-    // Reference to the auto-generated Input Action asset class
     private GameControlSystem mGameControlSystem;
 
-    // Public accessors for the action maps
     public InputActionMap PlayerMap => mGameControlSystem.Player.Get();
     public InputActionMap GameMap => mGameControlSystem.Game.Get();
 
     private void Awake()
     {
-        // 1. Initialize the Input System
         mGameControlSystem = new GameControlSystem();
 
-        // 2. Bind the Player Map Actions
         mGameControlSystem.Player.Movement.performed += OnMovementPerformed;
         mGameControlSystem.Player.Movement.canceled += OnMovementCanceled;
         mGameControlSystem.Player.Dash.performed += OnDashPerformed;
@@ -47,24 +30,20 @@ public class PlayerController : MonoBehaviour
         mGameControlSystem.Player.Shoot.started += OnShootStarted;
         mGameControlSystem.Player.Shoot.canceled += OnShootCanceled;
 
-        // Bind Switching Actions
         mGameControlSystem.Player.SwitchBullet.performed += OnSwitchBulletPerformed;
         mGameControlSystem.Player.SwitchPowerup.performed += OnSwitchPowerupPerformed;
-
-        // Bind Activation Action
         mGameControlSystem.Player.ActivatePowerUp.performed += OnActivatePowerupPerformed;
 
-        // 3. Bind the Game Map Actions (StartGame)
         mGameControlSystem.Game.StartGame.performed += OnStartGamePerformed;
 
-        // By default, only the Game map should be enabled at start (for Title Screen/StartGame)
         PlayerMap.Disable();
         GameMap.Enable();
     }
 
+    // ... (OnEnable/Disable/HandleGameStateChanged/OnDestroy/Listeners unchanged) ...
+
     private void OnEnable()
     {
-        // Subscribe to GameState changes to handle map switching
         GameplayManager.OnGameStateChanged += HandleGameStateChanged;
     }
 
@@ -77,7 +56,16 @@ public class PlayerController : MonoBehaviour
     {
         if (newState == GameState.GameOver)
         {
-            // Disable Player controls (Movement/Shoot) and enable Game controls (Restart)
+            PlayerMap.Disable();
+            GameMap.Enable();
+        }
+        else if (newState == GameState.StageActive || newState == GameState.StageClear)
+        {
+            PlayerMap.Enable();
+            GameMap.Disable();
+        }
+        else if (newState == GameState.TitleScreen)
+        {
             PlayerMap.Disable();
             GameMap.Enable();
         }
@@ -87,7 +75,6 @@ public class PlayerController : MonoBehaviour
     {
         if (mGameControlSystem != null)
         {
-            // Unsubscribe Player Map
             mGameControlSystem.Player.Movement.performed -= OnMovementPerformed;
             mGameControlSystem.Player.Movement.canceled -= OnMovementCanceled;
             mGameControlSystem.Player.Dash.performed -= OnDashPerformed;
@@ -99,14 +86,11 @@ public class PlayerController : MonoBehaviour
             mGameControlSystem.Player.SwitchPowerup.performed -= OnSwitchPowerupPerformed;
             mGameControlSystem.Player.ActivatePowerUp.performed -= OnActivatePowerupPerformed;
 
-            // Unsubscribe Game Map
             mGameControlSystem.Game.StartGame.performed -= OnStartGamePerformed;
 
             mGameControlSystem.Dispose();
         }
     }
-
-    // --- Player Map Listeners (Movement & Dash) ---
 
     private void OnMovementPerformed(InputAction.CallbackContext context)
     {
@@ -134,8 +118,6 @@ public class PlayerController : MonoBehaviour
         OnShootInput?.Invoke(false);
     }
 
-    // --- Switching & Activation Listeners ---
-
     private void OnSwitchBulletPerformed(InputAction.CallbackContext context)
     {
         OnSwitchBulletInput?.Invoke();
@@ -151,22 +133,21 @@ public class PlayerController : MonoBehaviour
         OnActivatePowerupInput?.Invoke();
     }
 
-    // --- Player Map Listener (Escape) ---
-
     private void OnEscapePerformed(InputAction.CallbackContext context)
     {
-        // This is a universal action (Pause/Quit)
         OnEscapeKeyPressed?.Invoke();
     }
 
-    // --- Game Map Listener (StartGame) ---
-
     private void OnStartGamePerformed(InputAction.CallbackContext context)
     {
-        // 1. Broadcast the event for GameplayManager to handle the state change
         OnStartGameInput?.Invoke();
 
-        // 2. Explicitly switch the input maps as requested
+        // NEW: Play UI Sound
+        if (EventManager.Instance != null)
+        {
+            EventManager.Instance.TriggerUISubmit();
+        }
+
         GameMap.Disable();
         PlayerMap.Enable();
     }

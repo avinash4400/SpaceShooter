@@ -3,10 +3,11 @@
 /// </summary>
 public enum GameState
 {
-    TitleScreen,      // Initial state, waiting for player input (Press SPACE to start)
-    PreStage,         // Setup phase (e.g., loading level assets, initial score reset)
-    StageActive,      // Main gameplay loop (movement, shooting, spawning)
-    StageClear,       // Stage finished successfully (waves completed or timer ended)
+    TitleScreen,      // Initial state, waiting for player input
+    PreStage,         // Setup phase
+    StageActive,      // Main gameplay loop
+    StageClear,       // Wave/Level finished successfully
     GameOver,         // Player HP reached 0
-    Pause             // Game is temporarily suspended (optional)
+    Pause,            // Game suspended
+    GameVictory       // All levels completed (Campaign Finished)
 }
