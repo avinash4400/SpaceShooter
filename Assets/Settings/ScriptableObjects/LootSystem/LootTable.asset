@@ -18,6 +18,6 @@ MonoBehaviour:
     conditions:
     - {fileID: 11400000, guid: f5a4bbe1e602cb947945f8a4909807ec, type: 2}
   - item: {fileID: 11400000, guid: 5348d5825b1fb71459e0e936b6427193, type: 2}
-    weight: 15
+    weight: 10
     conditions:
     - {fileID: 11400000, guid: f5a4bbe1e602cb947945f8a4909807ec, type: 2}

@@ -1,67 +1,37 @@
 using UnityEngine;
-using UnityEngine.UI; // Required for Image and Text components
-using System;
-using TMPro;
+using UnityEngine.UI;
+using TMPro; // Using TextMeshPro for better text rendering
 
-/// <summary>
-/// Handles the display of the Player's Bullet Inventory (selected icon/ammo count)
-/// and Power-Up Inventory (selected icon/count).
-/// Listens exclusively to events broadcasted by the inventory systems.
-/// </summary>
 public class InventoryUI : MonoBehaviour
 {
-    [Header("Bullet UI References (Bottom-Left)")]
-    [SerializeField] private Image bulletIconImage;
-    [SerializeField] private TMP_Text ammoCountText;
+    [Header("UI References")]
+    [Tooltip("Text component to display current ammo count.")]
+    [SerializeField] private TextMeshProUGUI ammoCountText;
 
-    [Header("Power-Up UI References (Bottom-Right)")]
-    // Note: The Power-Up UI in the GDD is complex (scrollable bar).
-    // These references handle the currently selected power-up only for now.
-    [SerializeField] private Image powerupIconImage;
-    [SerializeField] private TMP_Text powerupCountText;
+    [Tooltip("Image component to display current weapon or power-up icon.")]
+    [SerializeField] private Image weaponIcon;
 
+    [Header("Visual Settings")]
+    [SerializeField] private Color normalColor = Color.white;
+    [SerializeField] private Color warningColor = Color.yellow;
+    [SerializeField] private Color emptyColor = Color.red;
 
-    void OnEnable()
+    private void Start()
     {
-        // Subscribe to Bullet Inventory Events
-        BulletInventory.OnBulletSelected += UpdateBulletIcon;
-        BulletInventory.OnAmmoCountChanged += UpdateAmmoCount;
-
-        // Subscribe to Power-Up Inventory Events (Placeholder until Day 4)
-        // PowerupInventory.OnPowerupSelected += UpdatePowerupIcon;
-        // PowerupInventory.OnPowerupCountChanged += UpdatePowerupCount;
-    }
-
-    void OnDisable()
-    {
-        // Unsubscribe from Bullet Inventory Events
-        BulletInventory.OnBulletSelected -= UpdateBulletIcon;
-        BulletInventory.OnAmmoCountChanged -= UpdateAmmoCount;
-
-        // Unsubscribe from Power-Up Inventory Events (Placeholder)
-        // PowerupInventory.OnPowerupSelected -= UpdatePowerupIcon;
-        // PowerupInventory.OnPowerupCountChanged -= UpdatePowerupCount;
-    }
-
-    /// <summary>
-    /// Updates the bullet icon when a new bullet type is selected.
-    /// </summary>
-    private void UpdateBulletIcon(BulletTypeSO bulletType)
-    {
-        if (bulletIconImage != null)
+        // Initialize UI if needed
+        if (ammoCountText == null)
         {
-            bulletIconImage.sprite = bulletType.icon;
-            bulletIconImage.color = Color.white;
-
-            // Also refresh the ammo count when the bullet type changes
-            // (Assumes BulletInventory will broadcast the current count immediately after selection)
+            Debug.LogWarning("InventoryUI: Ammo Count Text reference is missing.");
         }
     }
 
     /// <summary>
     /// Updates the text display for ammo count.
+    /// Called by the PlayerController or WeaponSystem when ammo changes.
     /// </summary>
-    private void UpdateAmmoCount(BulletTypeSO bulletType, int count)
+    /// <param name="bulletType">The type of bullet currently equipped.</param>
+    /// <param name="count">The current number of bullets remaining.</param>
+    public void UpdateAmmoCount(BulletTypeSO bulletType, int count)
     {
         if (ammoCountText != null)
         {
@@ -71,38 +41,47 @@ public class InventoryUI : MonoBehaviour
 
                 // Optional: Change color if low ammo
                 if (count <= 10 && count > 0)
-                    ammoCountText.color = Color.yellow;
+                    ammoCountText.color = warningColor;
                 else if (count <= 0)
-                    ammoCountText.color = Color.red;
+                    ammoCountText.color = emptyColor;
                 else
-                    ammoCountText.color = Color.white;
+                    ammoCountText.color = normalColor;
             }
             else
             {
                 // For infinite ammo types (like Single Shot)
+                // Using Unicode Infinity Symbol
                 ammoCountText.text = "\u221E";
-                ammoCountText.color = Color.white;
+                ammoCountText.color = normalColor;
             }
         }
     }
 
-    // --- Power-Up Handlers (Placeholder for Day 4) ---
+    /// <summary>
+    /// Updates the weapon icon displayed in the UI.
+    /// </summary>
+    public void UpdateWeaponIcon(Sprite icon)
+    {
+        if (weaponIcon != null && icon != null)
+        {
+            weaponIcon.sprite = icon;
+            weaponIcon.enabled = true;
+        }
+        else if (weaponIcon != null)
+        {
+            weaponIcon.enabled = false;
+        }
+    }
 
-    /*
-    private void UpdatePowerupIcon(PowerupTypeSO powerupType)
+    // --- Power-Up Handlers ---
+
+    /// <summary>
+    /// Displays a temporary power-up message or effect.
+    /// </summary>
+    public void ShowPowerUpIndicator(string powerUpName, float duration)
     {
-        if (powerupIconImage != null)
-        {
-            powerupIconImage.sprite = powerupType.icon;
-        }
+        // Example implementation for showing a powerup popup
+        Debug.Log($"UI: PowerUp Acquired - {powerUpName} for {duration} seconds");
+        // Logic to show/hide a panel or text would go here
     }
-    
-    private void UpdatePowerupCount(PowerupTypeSO powerupType, int count)
-    {
-        if (powerupCountText != null)
-        {
-            powerupCountText.text = $"x{count}";
-        }
-    }
-    */
 }
