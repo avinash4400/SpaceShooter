@@ -82,44 +82,42 @@ public class DashComponent : MonoBehaviour, IGameComponent, IMovementBlocker
 
     private IEnumerator DashCoroutine()
     {
-        // Guard check: ensures we have a reference before attempting movement
         if (actor == null)
         {
-            Debug.LogError("[DashComponent] IActor reference is null. Initialization failed.");
+            Debug.LogError("[DashComponent] IActor reference is null.");
             yield break;
         }
 
         IsDashing = true;
         CanDash = false;
 
-        // Signal the start of movement block
         OnMovementBlockStart?.Invoke();
         OnDashExecuted?.Invoke();
 
-        Transform actorTransform = actor.GetTransform();
-        Vector3 currentVelocity = dashVelocity;
-        float startTime = Time.time;
+        // Enable Invulnerability
+        HealthComponent health = actor.GetAttachedComponent<HealthComponent>();
+        if (health != null) health.SetExternalInvulnerability(true);
 
-        // Dash movement loop
-        while (Time.time < startTime + dashDuration)
+        Rigidbody rb = actor.GetRigidbody();
+        Vector3 dashVel = dashVelocity;
+        actor.SetCurrentVelocity(dashVel);
+
+        float timer = dashDuration;
+
+        while (timer > 0f)
         {
-            // Apply dash movement directly using the Actor's Transform
-            actorTransform.position += dashVelocity * Time.deltaTime;
-            //currentVelocity = dashVelocity;
-            //actor.GetRigidbody().velocity = currentVelocity;
-            yield return null; // Wait until the next frame
+            timer -= Time.fixedDeltaTime;
+            rb.MovePosition(rb.position + dashVel * Time.fixedDeltaTime);
+            yield return new WaitForFixedUpdate();
         }
 
-        // End the dash
-        IsDashing = false;
+        // Disable Invulnerability
+        if (health != null) health.SetExternalInvulnerability(false);
 
-        // Signal the end of movement block
+        IsDashing = false;
         OnMovementBlockEnd?.Invoke();
 
-        // Start the cooldown period
         yield return new WaitForSeconds(dashCooldown);
-
         CanDash = true;
-        Debug.Log("Dash ready.");
     }
 }

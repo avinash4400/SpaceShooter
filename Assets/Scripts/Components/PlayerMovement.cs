@@ -120,6 +120,8 @@ public class PlayerMovement : MonoBehaviour, IGameComponent, IMovementBlocker
                 // Input is absent: Use high friction rate to quickly slow down to zero
                 //currentVelocity = Vector2.MoveTowards(currentVelocity, Vector2.zero, friction * Time.fixedDeltaTime);
                 currentVelocity = currentVelocity * friction;
+                //currentVelocity = Vector3.zero;
+                currentVelocity *= Mathf.Pow(friction, Time.fixedDeltaTime);
             }
 
             // Apply movement to the actor's Transform

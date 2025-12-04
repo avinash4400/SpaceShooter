@@ -21,6 +21,9 @@ public class HealthComponent : MonoBehaviour, IDamageHandler, IGameComponent
     private int currentHealth;
     private bool isInvulnerable = false;
 
+    // New flag for external systems (like Dash) to control invulnerability
+    private bool isExternalInvulnerable = false;
+
     // --- Public Accessors for UI ---
     public int MaxHealth => maxHealth;
     public int CurrentHealth => currentHealth;
@@ -52,13 +55,22 @@ public class HealthComponent : MonoBehaviour, IDamageHandler, IGameComponent
     }
 
     /// <summary>
+    /// Allows other components (like Dash) to toggle invulnerability.
+    /// </summary>
+    public void SetExternalInvulnerability(bool state)
+    {
+        isExternalInvulnerable = state;
+    }
+
+    /// <summary>
     /// Required implementation of IDamageHandler. Processes incoming damage.
     /// This method is called when this object is hit by an IDamageSource (like a bullet).
     /// </summary>
     /// <param name="info">Damage data including amount and source.</param>
     public void HandleDamage(DamageInfo info)
     {
-        if (!disableInvulnerability && isInvulnerable)
+        // Check both internal (post-hit) and external (dash/powerup) invulnerability
+        if (isExternalInvulnerable || (!disableInvulnerability && isInvulnerable))
         {
             return;
         }

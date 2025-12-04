@@ -33,7 +33,7 @@ public class UIManager : MonoBehaviour
     private void HandleStateChanged(GameState newState)
     {
         // Determine which main panel "Key" should be active based on the state group
-        GameState activeKey = GameState.TitleScreen; // Default fallback
+        GameState activeKey = newState; // Default fallback
 
         switch (newState)
         {
@@ -45,7 +45,6 @@ public class UIManager : MonoBehaviour
             case GameState.PreStage:
             case GameState.StageActive:
             case GameState.StageClear:
-            case GameState.GameOver:
             case GameState.Pause:
                 activeKey = GameState.StageActive;
                 break;

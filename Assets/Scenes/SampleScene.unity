@@ -2216,70 +2216,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 794345467}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &1106369384
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1106369385}
-  - component: {fileID: 1106369388}
-  - component: {fileID: 1106369387}
-  m_Layer: 0
-  m_Name: GameFlow
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 0
---- !u!4 &1106369385
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1106369384}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1106369387
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1106369384}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4b85b9a263787b54d90d2ce68d506f61, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_title_loop: {fileID: 1106369388}
-  m_stage_transform: {fileID: 431413297}
-  m_stage_score_text: {fileID: 0}
-  m_prefab_player: {fileID: 8345280602849411046, guid: 6ac43da3da70c1a4e97cf724e73a4dd7, type: 3}
-  m_prefab_enemy_spawner: {fileID: -2756452676086639708, guid: 67832a5cc26e2c343b585b1715f75afc, type: 3}
---- !u!114 &1106369388
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1106369384}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f0d9835b8498cc74facb29c8db339a1c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_stage_loop: {fileID: 1106369387}
-  m_ui_title: {fileID: 1109414499}
 --- !u!1 &1109414498
 GameObject:
   m_ObjectHideFlags: 0
@@ -4427,10 +4363,9 @@ SceneRoots:
   m_Roots:
   - {fileID: 963194228}
   - {fileID: 705507995}
-  - {fileID: 1106369385}
+  - {fileID: 557279129}
   - {fileID: 1666752218}
   - {fileID: 431413297}
   - {fileID: 794345467}
   - {fileID: 393722984}
-  - {fileID: 557279129}
   - {fileID: 1929287604}
