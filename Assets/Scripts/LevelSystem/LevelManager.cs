@@ -178,6 +178,7 @@ public class LevelManager : Singleton<LevelManager>
 
     private IEnumerator ProcessWave(WaveSO wave)
     {
+        Debug.LogWarningFormat($"[LevelManager] Starting Wave: {wave.name}");
         if (wave.startDelay > 0) yield return new WaitForSeconds(wave.startDelay);
 
         if (wave.runInParallel)

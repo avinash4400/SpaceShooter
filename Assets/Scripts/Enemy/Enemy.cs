@@ -24,6 +24,14 @@ public class Enemy : MonoBehaviour, IActor, ILootSource
     public T GetAttachedComponent<T>() where T : IGameComponent => gameComponents.OfType<T>().FirstOrDefault();
     public LootTableSO GetLootTable() => config != null ? config.lootTable : null;
 
+    void Start()
+    {
+        if (EventManager.Instance != null)
+        {
+            EventManager.Instance.TriggerEnemySpawned(this);
+        }
+    }
+
     public void Initialize(EnemyDataSO data, IActor targetPlayer, BulletPool bulletPool = null)
     {
         config = data;

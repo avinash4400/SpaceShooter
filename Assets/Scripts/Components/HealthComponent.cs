@@ -95,6 +95,22 @@ public class HealthComponent : MonoBehaviour, IDamageHandler, IGameComponent
         }
     }
 
+    /// <summary>
+    /// Restores health to the entity.
+    /// </summary>
+    /// <param name="amount">Amount to heal.</param>
+    public void Heal(int amount)
+    {
+        if (currentHealth >= maxHealth) return;
+
+        currentHealth += amount;
+        currentHealth = Mathf.Min(currentHealth, maxHealth);
+
+        // Broadcast change
+        OnHealthChanged?.Invoke(gameObject, currentHealth);
+        Debug.Log($"{gameObject.name} healed for {amount}. HP: {currentHealth}");
+    }
+
     private void Die()
     {
         // Broadcast the death event (instance)

@@ -10,7 +10,7 @@ public class WaitForClearPatternSO : SpawnPatternSO
 {
     public override IEnumerator Execute(LevelManager manager, SpawnConfig config)
     {
-        Debug.Log("[WaitForClear] Waiting for screen clear...");
+        Debug.LogWarningFormat($"[WaitForClear] Waiting for screen clear...{0}", manager.ActiveEnemyCount);
 
         // Optimized polling: Uses the event-driven count from LevelManager
         while (manager.ActiveEnemyCount > 0)

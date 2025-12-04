@@ -15,7 +15,7 @@ public class FaceMovementDirectionSO : EnemyRotationSO
         // ISSUE: Calculating rotation based on movement requires knowing the movement vector.
         // OPTIMIZATION: Check if 'self' has an IActor component to get velocity?
 
-        IActor enemyActor = self.GetComponent<IActor>();
+        IActor enemyActor = self.GetComponentInParent<IActor>();
         if (enemyActor != null)
         {
             Vector2 velocity = enemyActor.GetCurrentVelocity();

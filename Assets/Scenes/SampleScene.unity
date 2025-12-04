@@ -2361,9 +2361,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _DontDestroyOnLoad: 1
   campaignLevels:
+  - {fileID: 11400000, guid: 6346fce527b89434cb34e71ecdb0f7c5, type: 2}
   - {fileID: 11400000, guid: bd8ee928c76208e409e962426cd786c1, type: 2}
   - {fileID: 11400000, guid: 29bcd01e1df60b84bb83a6952d9e168f, type: 2}
-  - {fileID: 11400000, guid: 6346fce527b89434cb34e71ecdb0f7c5, type: 2}
   autoStart: 1
   levelStartDelay: 1
   levelTransitionDelay: 4

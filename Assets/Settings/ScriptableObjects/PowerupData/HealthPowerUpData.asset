@@ -10,11 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6fe3b31b9d2fd76418591dbe61a41e2c, type: 3}
-  m_Name: ShieldPowerUpData
+  m_Name: HealthPowerUpData
   m_EditorClassIdentifier: 
-  type: 0
-  powerUpName: Shield
-  icon: {fileID: 21300000, guid: a1c5611d0b583314db3c9b03703127e0, type: 3}
+  type: 3
+  powerUpName: Heal
+  icon: {fileID: 21300000, guid: aeb62a618a0c6f04b81642b58292a2dc, type: 3}
   description: 
   pickupSound: {fileID: 8300000, guid: 78023e7009f673b44aa00098e0ec2582, type: 3}
-  effect: {fileID: 11400000, guid: 8f77e9a032e8918429d8b5c9bfee98dc, type: 2}
+  effect: {fileID: 11400000, guid: 4cfd74f43e00d404ea57b1a2cb60c7b8, type: 2}

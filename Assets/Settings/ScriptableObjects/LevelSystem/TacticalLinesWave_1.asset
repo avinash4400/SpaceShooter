@@ -21,7 +21,7 @@ MonoBehaviour:
       spawnStrategy: {fileID: 11400000, guid: a1536239d15d8894f90a3d6cae85a2b2, type: 2}
       enemyPool: []
       count: 5
-      interval: 0.4
+      interval: 0.1
       duration: 0
       initialDelay: 1
   - patternLogic: {fileID: 11400000, guid: 560e9c27ecfafd048979486cc808a690, type: 2}
@@ -43,7 +43,18 @@ MonoBehaviour:
       spawnStrategy: {fileID: 11400000, guid: a1536239d15d8894f90a3d6cae85a2b2, type: 2}
       enemyPool: []
       count: 6
-      interval: 0.4
+      interval: 0.05
+      duration: 0
+      initialDelay: 4
+  - patternLogic: {fileID: 11400000, guid: 2f7c415671ae47c48bac97faed01ca34, type: 2}
+    config:
+      mode: 1
+      enemyPrefab: {fileID: -815993105983958437, guid: bc5749eaadb203044a2e3afe7a642bdc, type: 3}
+      enemyConfig: {fileID: 11400000, guid: 56b4e7636c6adb84db92de09543b7784, type: 2}
+      spawnStrategy: {fileID: 11400000, guid: a1536239d15d8894f90a3d6cae85a2b2, type: 2}
+      enemyPool: []
+      count: 6
+      interval: 0.1
       duration: 0
       initialDelay: 4
   - patternLogic: {fileID: 11400000, guid: 560e9c27ecfafd048979486cc808a690, type: 2}
@@ -54,9 +65,20 @@ MonoBehaviour:
       spawnStrategy: {fileID: 11400000, guid: a1536239d15d8894f90a3d6cae85a2b2, type: 2}
       enemyPool: []
       count: 4
-      interval: 0.4
+      interval: 0.1
       duration: 0
-      initialDelay: 4
+      initialDelay: 0
+  - patternLogic: {fileID: 11400000, guid: 560e9c27ecfafd048979486cc808a690, type: 2}
+    config:
+      mode: 1
+      enemyPrefab: {fileID: -815993105983958437, guid: bc5749eaadb203044a2e3afe7a642bdc, type: 3}
+      enemyConfig: {fileID: 11400000, guid: 56b4e7636c6adb84db92de09543b7784, type: 2}
+      spawnStrategy: {fileID: 11400000, guid: a1536239d15d8894f90a3d6cae85a2b2, type: 2}
+      enemyPool: []
+      count: 4
+      interval: 0.1
+      duration: 0
+      initialDelay: 3
   - patternLogic: {fileID: 11400000, guid: 2f7c415671ae47c48bac97faed01ca34, type: 2}
     config:
       mode: 1

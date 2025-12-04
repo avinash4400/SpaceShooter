@@ -23,7 +23,7 @@ MonoBehaviour:
       count: 1
       interval: 2
       duration: 0
-      initialDelay: 2
+      initialDelay: 1
   - patternLogic: {fileID: 11400000, guid: 2f7c415671ae47c48bac97faed01ca34, type: 2}
     config:
       mode: 0
