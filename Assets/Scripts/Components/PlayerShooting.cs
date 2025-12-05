@@ -4,9 +4,11 @@ using System.Collections.Generic;
 
 public class PlayerShooting : MonoBehaviour, IGameComponent
 {
-    [Header("Dependencies")]
-    [SerializeField] private Transform muzzlePoint;
-    [SerializeField] private float fireRate = 0.2f;
+    [Header("Muzzle Setup")]
+    [Tooltip("Define all fire points on this ship.")]
+    [SerializeField] private List<MuzzleDefinition> muzzles = new List<MuzzleDefinition>();
+
+    // Removed local fireRate field
 
     private IActor actor;
     private BulletInventory inventory;
@@ -60,7 +62,15 @@ public class PlayerShooting : MonoBehaviour, IGameComponent
             if (Time.time >= nextFireTime)
             {
                 TryFire();
-                nextFireTime = Time.time + fireRate;
+
+                // Calculate next fire time based on the CURRENT bullet's fire rate
+                float currentRate = 0.2f; // Default fallback
+                if (inventory != null && inventory.SelectedBullet != null)
+                {
+                    currentRate = inventory.SelectedBullet.fireRate;
+                }
+
+                nextFireTime = Time.time + currentRate;
             }
             yield return null;
         }
@@ -70,8 +80,7 @@ public class PlayerShooting : MonoBehaviour, IGameComponent
     {
         if (inventory == null) return;
 
-        // Delegate the entire firing logic (check ammo, consume, spawn) to the inventory
-        // We pass the muzzle position and direction (Up for vertical shooter)
-        inventory.AttemptFire(muzzlePoint.position, Vector3.up, actor);
+        // Pass muzzle definitions to inventory -> pattern logic
+        inventory.AttemptFire(muzzles, Vector3.up, actor);
     }
 }

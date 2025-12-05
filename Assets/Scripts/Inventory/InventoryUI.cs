@@ -1,37 +1,71 @@
 using UnityEngine;
-using UnityEngine.UI;
-using TMPro; // Using TextMeshPro for better text rendering
+using UnityEngine.UI; // Required for Image and Text components
+using System;
+using System.Collections.Generic; // Required for List
+using TMPro;
 
+/// <summary>
+/// Handles the display of the Player's Bullet Inventory (selected icon/ammo count)
+/// and Power-Up Inventory (selected icon/count).
+/// Listens exclusively to events broadcasted by the inventory systems.
+/// </summary>
 public class InventoryUI : MonoBehaviour
 {
-    [Header("UI References")]
-    [Tooltip("Text component to display current ammo count.")]
-    [SerializeField] private TextMeshProUGUI ammoCountText;
+    [Header("Bullet UI References (Bottom-Left)")]
+    [SerializeField] private Image bulletIconImage;
+    [SerializeField] private TMP_Text ammoCountText;
 
-    [Tooltip("Image component to display current weapon or power-up icon.")]
-    [SerializeField] private Image weaponIcon;
+    [Header("Power-Up UI References (Bottom-Right)")]
+    // Note: The Power-Up UI in the GDD is complex (scrollable bar).
+    // These references handle the currently selected power-up only for now.
+    [SerializeField] private Image powerupIconImage;
+    [SerializeField] private TMP_Text powerupCountText;
 
-    [Header("Visual Settings")]
-    [SerializeField] private Color normalColor = Color.white;
-    [SerializeField] private Color warningColor = Color.yellow;
-    [SerializeField] private Color emptyColor = Color.red;
+    // State for PowerUps
+    private List<PowerUpDataSO> currentPowerUps = new List<PowerUpDataSO>();
+    private PowerUpDataSO currentSelectedPowerUp;
 
-    private void Start()
+    void OnEnable()
     {
-        // Initialize UI if needed
-        if (ammoCountText == null)
+        // Subscribe to Bullet Inventory Events
+        BulletInventory.OnBulletSelected += UpdateBulletIcon;
+        BulletInventory.OnAmmoCountChanged += UpdateAmmoCount;
+
+        // Subscribe to Power-Up Inventory Events
+        PowerUpInventory.OnPowerUpSelected += UpdatePowerupSelection;
+        PowerUpInventory.OnInventoryUpdated += UpdatePowerupList;
+    }
+
+    void OnDisable()
+    {
+        // Unsubscribe from Bullet Inventory Events
+        BulletInventory.OnBulletSelected -= UpdateBulletIcon;
+        BulletInventory.OnAmmoCountChanged -= UpdateAmmoCount;
+
+        // Unsubscribe from Power-Up Inventory Events
+        PowerUpInventory.OnPowerUpSelected -= UpdatePowerupSelection;
+        PowerUpInventory.OnInventoryUpdated -= UpdatePowerupList;
+    }
+
+    /// <summary>
+    /// Updates the bullet icon when a new bullet type is selected.
+    /// </summary>
+    private void UpdateBulletIcon(BulletTypeSO bulletType)
+    {
+        if (bulletIconImage != null)
         {
-            Debug.LogWarning("InventoryUI: Ammo Count Text reference is missing.");
+            bulletIconImage.sprite = bulletType.icon;
+            bulletIconImage.color = Color.white;
+
+            // Also refresh the ammo count when the bullet type changes
+            // (Assumes BulletInventory will broadcast the current count immediately after selection)
         }
     }
 
     /// <summary>
     /// Updates the text display for ammo count.
-    /// Called by the PlayerController or WeaponSystem when ammo changes.
     /// </summary>
-    /// <param name="bulletType">The type of bullet currently equipped.</param>
-    /// <param name="count">The current number of bullets remaining.</param>
-    public void UpdateAmmoCount(BulletTypeSO bulletType, int count)
+    private void UpdateAmmoCount(BulletTypeSO bulletType, int count)
     {
         if (ammoCountText != null)
         {
@@ -41,47 +75,71 @@ public class InventoryUI : MonoBehaviour
 
                 // Optional: Change color if low ammo
                 if (count <= 10 && count > 0)
-                    ammoCountText.color = warningColor;
+                    ammoCountText.color = Color.yellow;
                 else if (count <= 0)
-                    ammoCountText.color = emptyColor;
+                    ammoCountText.color = Color.red;
                 else
-                    ammoCountText.color = normalColor;
+                    ammoCountText.color = Color.white;
             }
             else
             {
                 // For infinite ammo types (like Single Shot)
-                // Using Unicode Infinity Symbol
                 ammoCountText.text = "\u221E";
-                ammoCountText.color = normalColor;
+                ammoCountText.color = Color.white;
             }
-        }
-    }
-
-    /// <summary>
-    /// Updates the weapon icon displayed in the UI.
-    /// </summary>
-    public void UpdateWeaponIcon(Sprite icon)
-    {
-        if (weaponIcon != null && icon != null)
-        {
-            weaponIcon.sprite = icon;
-            weaponIcon.enabled = true;
-        }
-        else if (weaponIcon != null)
-        {
-            weaponIcon.enabled = false;
         }
     }
 
     // --- Power-Up Handlers ---
 
-    /// <summary>
-    /// Displays a temporary power-up message or effect.
-    /// </summary>
-    public void ShowPowerUpIndicator(string powerUpName, float duration)
+    private void UpdatePowerupSelection(PowerUpDataSO data)
     {
-        // Example implementation for showing a powerup popup
-        Debug.Log($"UI: PowerUp Acquired - {powerUpName} for {duration} seconds");
-        // Logic to show/hide a panel or text would go here
+        currentSelectedPowerUp = data;
+
+        if (powerupIconImage != null)
+        {
+            if (data != null)
+            {
+                powerupIconImage.sprite = data.icon;
+                powerupIconImage.color = Color.white;
+                powerupIconImage.enabled = true;
+            }
+            else
+            {
+                powerupIconImage.sprite = null;
+                powerupIconImage.color = Color.clear;
+                powerupIconImage.enabled = false;
+            }
+        }
+
+        RefreshPowerupCount();
+    }
+
+    private void UpdatePowerupList(List<PowerUpDataSO> list)
+    {
+        currentPowerUps = list ?? new List<PowerUpDataSO>();
+        RefreshPowerupCount();
+    }
+
+    private void RefreshPowerupCount()
+    {
+        if (powerupCountText != null)
+        {
+            if (currentSelectedPowerUp != null && currentPowerUps != null)
+            {
+                // Count how many of the selected powerup we have
+                int count = 0;
+                foreach (var item in currentPowerUps)
+                {
+                    if (item == currentSelectedPowerUp) count++;
+                }
+
+                powerupCountText.text = count > 0 ? count.ToString() : "";
+            }
+            else
+            {
+                powerupCountText.text = "";
+            }
+        }
     }
 }

@@ -32,11 +32,10 @@ public class BulletInventory : MonoBehaviour, IGameComponent
         InitializePools();
     }
 
-    // ... (OnEnable/Disable, InitializePools, InitializeAmmo, SwitchBullet, SelectBullet, ConsumeAmmo unchanged) ...
-
     void OnEnable() { PlayerController.OnSwitchBulletInput += SwitchBullet; }
     void OnDisable() { PlayerController.OnSwitchBulletInput -= SwitchBullet; }
 
+    // ... (InitializePools, InitializeAmmo, SwitchBullet, SelectBullet, ConsumeAmmo unchanged) ...
     private void InitializePools()
     {
         bulletPools = new Dictionary<BulletType, BulletPool>();
@@ -118,7 +117,8 @@ public class BulletInventory : MonoBehaviour, IGameComponent
         return false;
     }
 
-    public void AttemptFire(Vector3 spawnPosition, Vector3 fireDirection, IActor sourceActor, IActor target = null)
+    // UPDATED: Now accepts List<MuzzleDefinition> to support new Pattern logic
+    public void AttemptFire(List<MuzzleDefinition> muzzles, Vector3 fireDirection, IActor sourceActor, IActor target = null)
     {
         if (SelectedBullet == null) return;
         if (!ConsumeAmmo(SelectedBullet)) return;
@@ -126,19 +126,42 @@ public class BulletInventory : MonoBehaviour, IGameComponent
         if (bulletPools == null || !bulletPools.ContainsKey(SelectedBullet.type)) return;
         BulletPool pool = bulletPools[SelectedBullet.type];
 
-        Vector3 flatSpawnPos = spawnPosition;
-        flatSpawnPos.z = 0f;
-
         if (SelectedBullet.patternLogic != null)
         {
-            SelectedBullet.patternLogic.Fire(sourceActor, flatSpawnPos, fireDirection, SelectedBullet, pool, target);
+            // Delegate to pattern with the full list of muzzles
+            SelectedBullet.patternLogic.Fire(sourceActor, muzzles, fireDirection, SelectedBullet, pool, target);
         }
         else
         {
-            SpawnBullet(SelectedBullet, flatSpawnPos, fireDirection, sourceActor, target);
+            // Fallback for Legacy/Default behavior:
+            // Find "Main" muzzle or default to the first one available
+            Vector3 spawnPos = sourceActor.GetTransform().position;
+
+            if (muzzles != null && muzzles.Count > 0)
+            {
+                // Try to find the Main muzzle
+                var mainMuzzle = muzzles.FirstOrDefault(m => m.type == MuzzleType.Main);
+
+                // Check if the struct returned is valid (transform not null)
+                if (mainMuzzle.transform != null)
+                {
+                    spawnPos = mainMuzzle.transform.position;
+                }
+                else
+                {
+                    // If no Main found, use the first available muzzle
+                    if (muzzles[0].transform != null)
+                        spawnPos = muzzles[0].transform.position;
+                }
+            }
+
+            // Maintain the Z-flattening logic from your original code
+            spawnPos.z = 0f;
+
+            SpawnBullet(SelectedBullet, spawnPos, fireDirection, sourceActor, target);
         }
 
-        // NEW: Trigger Audio Event
+        // Trigger Audio Event
         if (EventManager.Instance != null)
         {
             EventManager.Instance.TriggerPlayerFired(SelectedBullet);

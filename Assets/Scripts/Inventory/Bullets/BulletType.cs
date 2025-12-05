@@ -8,5 +8,6 @@ public enum BulletType
     DoubleShot,
     TripleShot,
     LaserBeam,
+    MachineGun
     // Add future types here (e.g., HomingMissile, Bomb)
 }

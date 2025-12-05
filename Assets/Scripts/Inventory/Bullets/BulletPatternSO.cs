@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections.Generic;
 
 /// <summary>
 /// Abstract base class for bullet patterns as ScriptableObjects.
@@ -6,8 +7,8 @@ using UnityEngine;
 /// </summary>
 public abstract class BulletPatternSO : ScriptableObject, IBullet
 {
-    // Updated signature to include target
-    public abstract void Fire(IActor source, Vector3 origin, Vector3 direction, BulletTypeSO config, ObjectPool<BaseProjectile> pool, IActor target);
+    // Updated signature: Replaced 'Vector3 origin' with 'List<MuzzleDefinition> muzzles'
+    public abstract void Fire(IActor source, List<MuzzleDefinition> muzzles, Vector3 direction, BulletTypeSO config, ObjectPool<BaseProjectile> pool, IActor target);
 
     /// <summary>
     /// Helper to get and initialize a projectile from the pool.
@@ -21,7 +22,6 @@ public abstract class BulletPatternSO : ScriptableObject, IBullet
         projectile.transform.rotation = Quaternion.identity;
 
         // Initialize logic with target
-        // Default speed multiplier is 1f for player bullets
         projectile.Initialize(config, source, direction, 1f, target);
     }
 }

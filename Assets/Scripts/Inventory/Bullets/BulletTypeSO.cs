@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "BulletType", menuName = "Game/Bullet Type")]
@@ -13,17 +14,22 @@ public class BulletTypeSO : ScriptableObject
     [Tooltip("The actual projectile prefab.")]
     public BaseProjectile projectilePrefab;
 
+    [Tooltip("Specific muzzle types required for this bullet's pattern (e.g. LeftWing, RightWing).")]
+    public List<MuzzleType> muzzleRequirements;
+
     [Header("Stats")]
     public int projectileCount = 1;
     public int damage = 1;
     public float speed = 15f;
     public float lifetime = 3f;
+    [Tooltip("Time in seconds between shots.")]
+    public float fireRate = 0.2f;
 
     [Header("Ammo")]
     public bool hasLimitedAmmo = false;
 
     [Header("Visuals & Audio")]
     public Sprite icon;
-    public AudioClip fireSound; // New
-    public AudioClip hitSound;  // New (Explosion/Impact)
+    public AudioClip fireSound;
+    public AudioClip hitSound;
 }

@@ -1,19 +1,19 @@
 using UnityEngine;
+using System.Collections.Generic;
 
 /// <summary>
-/// Strategy interface for firing logic.
-/// Defines HOW projectiles are spawned (Pattern), independent of WHAT is spawned (Prefab).
+/// Interface for objects that define how a bullet is fired (Patterns).
 /// </summary>
 public interface IBullet
 {
     /// <summary>
-    /// Executes the firing logic.
+    /// Fires the bullet pattern.
     /// </summary>
-    /// <param name="source">The actor firing the shot (for damage attribution).</param>
-    /// <param name="origin">Muzzle position.</param>
-    /// <param name="direction">Aiming direction.</param>
-    /// <param name="config">Configuration data (speed, damage, count).</param>
+    /// <param name="source">The actor firing the bullet.</param>
+    /// <param name="muzzles">List of available muzzle definitions.</param>
+    /// <param name="direction">The general fire direction.</param>
+    /// <param name="config">The configuration data for the bullet.</param>
     /// <param name="pool">The object pool to retrieve projectiles from.</param>
-    /// <param name="target">Optional target for homing projectiles.</param>
-    void Fire(IActor source, Vector3 origin, Vector3 direction, BulletTypeSO config, ObjectPool<BaseProjectile> pool, IActor target);
+    /// <param name="target">The target actor (optional, can be null).</param>
+    void Fire(IActor source, List<MuzzleDefinition> muzzles, Vector3 direction, BulletTypeSO config, ObjectPool<BaseProjectile> pool, IActor target);
 }
