@@ -13,6 +13,8 @@ public class Player : MonoBehaviour, IActor
     private HealthComponent healthComponent;
     private PlayerMovement playerMovement;
     private DashComponent dashComponent;
+    private HealVisuals healVisualsComponent;
+    private DeathVisuals deathVisualsComponent;
     private IGameComponent[] gameComponents;
     private Rigidbody rb;
 
@@ -61,6 +63,7 @@ public class Player : MonoBehaviour, IActor
         {
             healthComponent.OnDeath += OnLocalDeath;
             healthComponent.OnHealthChanged += OnLocalHealthChanged;
+            healthComponent.OnHeal += OnHeal;
 
             // NEW: Listen for damage impact
             healthComponent.OnHit += OnLocalHit;
@@ -100,7 +103,10 @@ public class Player : MonoBehaviour, IActor
         playerMovement = GetOrAddComponent<PlayerMovement>();
         dashComponent = GetOrAddComponent<DashComponent>();
         rb = GetComponentInChildren<Rigidbody>();
-
+        healVisualsComponent = rb.GetComponent<HealVisuals>();
+        deathVisualsComponent = rb.GetComponent<DeathVisuals>();
+        if(deathVisualsComponent != null)
+            deathVisualsComponent.Initialize(this);
         gameComponents = GetComponents<IGameComponent>();
 
         foreach (IGameComponent component in gameComponents)
@@ -117,6 +123,7 @@ public class Player : MonoBehaviour, IActor
             healthComponent.OnDeath -= OnLocalDeath;
             healthComponent.OnHealthChanged -= OnLocalHealthChanged;
             healthComponent.OnHit -= OnLocalHit;
+            healthComponent.OnHeal -= OnHeal;
         }
     }
 
@@ -127,6 +134,16 @@ public class Player : MonoBehaviour, IActor
             Debug.Log("Player identity confirmed death. Triggering global event.");
             EventManager.Instance.TriggerPlayerDeath();
         }
+        DisableAllComponents();
+        if (deathVisualsComponent != null)
+        {
+            deathVisualsComponent.StartDeathEffect(OnDeathViualsCompleted);
+        }
+    }
+
+    private void OnDeathViualsCompleted()
+    {
+        Destroy(this.gameObject);
     }
 
     private void OnLocalHealthChanged(GameObject source, int currentHealth)
@@ -137,12 +154,29 @@ public class Player : MonoBehaviour, IActor
         }
     }
 
+    private void OnHeal(GameObject source, int currentHealth)
+    {
+        if(healVisualsComponent != null)
+            healVisualsComponent.PlayHealEffect();
+    }
+
     // NEW: Forward hit event to EventManager for Screen Shake
     private void OnLocalHit(GameObject source)
     {
         if (EventManager.Instance != null)
         {
             EventManager.Instance.TriggerCameraShake();
+        }
+    }
+
+    private void DisableAllComponents()
+    {
+        foreach (IGameComponent component in gameComponents)
+        {
+            if (component is MonoBehaviour mb)
+            {
+                mb.enabled = false;
+            }
         }
     }
 }

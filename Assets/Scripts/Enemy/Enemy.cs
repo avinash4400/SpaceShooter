@@ -11,7 +11,7 @@ public class Enemy : MonoBehaviour, IActor, ILootSource
     private EnemyWeapon weapon;
     private ScreenBoundsHandlerComponent bounds;
     private CollisionDamageComponent collisionDamage;
-    private EnemyDeathVisuals deathVisuals;
+    private DeathVisuals deathVisuals;
     private BossHitVisuals bossHitVisuals;
     private List<IGameComponent> gameComponents;
     private Rigidbody rb;
@@ -73,7 +73,7 @@ public class Enemy : MonoBehaviour, IActor, ILootSource
             weapon.enabled = true;
         }
 
-        deathVisuals = GetOrAddComponent<EnemyDeathVisuals>();
+        deathVisuals = GetOrAddComponent<DeathVisuals>();
         deathVisuals.Initialize(this);
         gameComponents.Add(deathVisuals);
 

@@ -31,6 +31,7 @@ public class HealthComponent : MonoBehaviour, IDamageHandler, IGameComponent
     // --- Events for Decoupled Communication (INSTANCE EVENTS) ---
     // The GameObject parameter tells subscribers *which* entity was affected.
     public event Action<GameObject, int> OnHealthChanged; // (AffectedObject, CurrentHP)
+    public event Action<GameObject, int> OnHeal; // (AffectedObject, CurrentHP)
     public event Action<GameObject> OnHit; // (AffectedObject) - Used for hit flash/SFX
     public event Action<GameObject> OnDeath; // (AffectedObject) - Used by Player.cs or EnemySpawner.cs
 
@@ -108,6 +109,7 @@ public class HealthComponent : MonoBehaviour, IDamageHandler, IGameComponent
 
         // Broadcast change
         OnHealthChanged?.Invoke(gameObject, currentHealth);
+        OnHeal?.Invoke(gameObject, currentHealth);
         Debug.Log($"{gameObject.name} healed for {amount}. HP: {currentHealth}");
     }
 

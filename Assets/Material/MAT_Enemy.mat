@@ -20,7 +20,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Enemy
+  m_Name: MAT_Enemy
   m_Shader: {fileID: -6465566751694194690, guid: 3eda6464317e1bb4a966b5a404de5425, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0

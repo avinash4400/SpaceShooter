@@ -8,7 +8,7 @@ using System.Collections;
 /// Plays a VFX Graph and lerps a Shader Dissolve value before destroying the object.
 /// Updated to align VFX properties (Velocity, BoxCenter, BoxSize) with the sprite's rotation.
 /// </summary>
-public class EnemyDeathVisuals : MonoBehaviour, IGameComponent
+public class DeathVisuals : MonoBehaviour, IGameComponent
 {
     [Header("Components")]
     [Tooltip("The SpriteRenderer to apply the dissolve effect to.")]
@@ -115,5 +115,10 @@ public class EnemyDeathVisuals : MonoBehaviour, IGameComponent
 
         // 3. Finish
         onComplete?.Invoke();
+    }
+
+    public void ResetComponent()
+    {
+        propBlock.SetFloat(dissolvePropID, 0);
     }
 }
