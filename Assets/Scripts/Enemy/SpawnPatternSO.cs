@@ -3,7 +3,6 @@ using System.Collections;
 
 /// <summary>
 /// Abstract strategy for spawning enemies.
-/// Pure Logic: Does not hold configuration data (counts, prefabs).
 /// Receives config at runtime from the Wave.
 /// </summary>
 public abstract class SpawnPatternSO : ScriptableObject

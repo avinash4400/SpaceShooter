@@ -8,7 +8,6 @@ public class PlayerShooting : MonoBehaviour, IGameComponent
     [Tooltip("Define all fire points on this ship.")]
     [SerializeField] private List<MuzzleDefinition> muzzles = new List<MuzzleDefinition>();
 
-    // Removed local fireRate field
 
     private IActor actor;
     private BulletInventory inventory;
@@ -63,7 +62,6 @@ public class PlayerShooting : MonoBehaviour, IGameComponent
             {
                 TryFire();
 
-                // Calculate next fire time based on the CURRENT bullet's fire rate
                 float currentRate = 0.2f; // Default fallback
                 if (inventory != null && inventory.SelectedBullet != null)
                 {
@@ -80,7 +78,6 @@ public class PlayerShooting : MonoBehaviour, IGameComponent
     {
         if (inventory == null) return;
 
-        // Pass muzzle definitions to inventory -> pattern logic
         inventory.AttemptFire(muzzles, Vector3.up, actor);
     }
 }

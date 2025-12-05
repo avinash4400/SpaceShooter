@@ -3,7 +3,6 @@ using System.Collections;
 
 /// <summary>
 /// Shakes the camera when triggered by the EventManager.
-/// Listens to the global EventManager.
 /// </summary>
 public class CameraShake : MonoBehaviour
 {
@@ -14,7 +13,6 @@ public class CameraShake : MonoBehaviour
     [Tooltip("How violently the camera shakes (Radius of random sphere).")]
     [SerializeField] private float magnitude = 0.3f;
 
-    // Cache the initial position to reset after shaking
     private Vector3 originalPosition;
     private Coroutine shakeCoroutine;
 
@@ -41,11 +39,10 @@ public class CameraShake : MonoBehaviour
 
     private void TriggerShake()
     {
-        // If already shaking, stop and restart (or add duration, but restart feels punchier)
         if (shakeCoroutine != null)
         {
             StopCoroutine(shakeCoroutine);
-            transform.localPosition = originalPosition; // Reset first
+            transform.localPosition = originalPosition;
         }
 
         shakeCoroutine = StartCoroutine(ShakeRoutine());
@@ -57,18 +54,15 @@ public class CameraShake : MonoBehaviour
 
         while (elapsed < duration)
         {
-            // Generate a random offset
             float x = Random.Range(-1f, 1f) * magnitude;
             float y = Random.Range(-1f, 1f) * magnitude;
 
-            // Apply relative to original position
             transform.localPosition = new Vector3(originalPosition.x + x, originalPosition.y + y, originalPosition.z);
 
             elapsed += Time.deltaTime;
             yield return null;
         }
 
-        // Restore original position
         transform.localPosition = originalPosition;
         shakeCoroutine = null;
     }

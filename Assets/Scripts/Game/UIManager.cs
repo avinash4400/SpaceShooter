@@ -3,7 +3,6 @@ using System.Collections.Generic;
 
 /// <summary>
 /// Manages the high-level UI Panels based on the current GameState.
-/// Uses a switch statement to group states into specific UI screens.
 /// </summary>
 public class UIManager : MonoBehaviour
 {
@@ -21,7 +20,6 @@ public class UIManager : MonoBehaviour
 
     void OnEnable()
     {
-        // Subscribe to state changes
         GameplayManager.OnGameStateChanged += HandleStateChanged;
     }
 
@@ -32,8 +30,7 @@ public class UIManager : MonoBehaviour
 
     private void HandleStateChanged(GameState newState)
     {
-        // Determine which main panel "Key" should be active based on the state group
-        GameState activeKey = newState; // Default fallback
+        GameState activeKey = newState; 
 
         switch (newState)
         {
@@ -41,7 +38,6 @@ public class UIManager : MonoBehaviour
                 activeKey = GameState.TitleScreen;
                 break;
 
-            // Group all gameplay-related states to show the HUD/Game Panel
             case GameState.PreStage:
             case GameState.StageActive:
             case GameState.StageClear:
@@ -49,19 +45,15 @@ public class UIManager : MonoBehaviour
                 activeKey = GameState.StageActive;
                 break;
 
-            // Special Case for Final Victory Screen
             case GameState.GameVictory:
                 activeKey = GameState.GameVictory;
                 break;
         }
 
-        // Apply visibility to main panels
         foreach (var entry in panels)
         {
             if (entry.panel != null)
             {
-                // Enable only the panel that matches the determined key
-                // You can now add an entry in the inspector: Key=GameVictory -> Panel=VictoryPanel
                 bool shouldActive = entry.state == activeKey;
 
                 if (entry.panel.activeSelf != shouldActive)

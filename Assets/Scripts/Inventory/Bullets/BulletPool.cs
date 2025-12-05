@@ -2,7 +2,6 @@ using UnityEngine;
 
 /// <summary>
 /// A specialized Object Pool for Projectiles.
-/// Automatically subscribes to the OnProjectileExpired event to return objects to the pool.
 /// </summary>
 public class BulletPool : ObjectPool<BaseProjectile>
 {
@@ -16,8 +15,6 @@ public class BulletPool : ObjectPool<BaseProjectile>
     {
         BaseProjectile projectile = base.CreateNewInstance();
 
-        // The pool subscribes to the projectile's expiration event.
-        // When the event fires, the pool's Return() method is called directly.
         projectile.OnProjectileExpired += Return;
 
         return projectile;

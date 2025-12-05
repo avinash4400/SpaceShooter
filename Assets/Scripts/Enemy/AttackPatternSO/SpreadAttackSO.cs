@@ -41,7 +41,6 @@ public class SpreadAttackSO : EnemyAttackSO
             bullet.transform.position = spawnPos;
             bullet.transform.rotation = rotation;
 
-            // Pass the target
             bullet.Initialize(bulletType, attacker, fireDirection, speedMultiplier, target);
 
             currentAngle += angleStep;

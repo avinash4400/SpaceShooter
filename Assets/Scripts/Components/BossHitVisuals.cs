@@ -8,7 +8,7 @@ public class BossHitVisuals : MonoBehaviour, IGameComponent
     [SerializeField] private VisualEffect impactVFX;
 
     [Header("Audio")]
-    [SerializeField] private AudioClip impactSound; // NEW
+    [SerializeField] private AudioClip impactSound; 
 
     [Header("Settings")]
     [SerializeField] private float cooldown = 0.05f;
@@ -43,7 +43,6 @@ public class BossHitVisuals : MonoBehaviour, IGameComponent
 
         lastHitTime = Time.time;
 
-        // 1. Visuals
         Bounds bounds = spriteRenderer.localBounds;
         float randX = Random.Range(bounds.min.x, bounds.max.x);
         float randY = Random.Range(bounds.min.y, bounds.max.y);
@@ -53,10 +52,8 @@ public class BossHitVisuals : MonoBehaviour, IGameComponent
         impactVFX.transform.localPosition = localPoint;
         impactVFX.Play();
 
-        // 2. Audio (NEW)
         if (impactSound != null && EventManager.Instance != null)
         {
-            // Use existing generic sound trigger
             EventManager.Instance.TriggerExplosion(transform.position, impactSound);
         }
     }

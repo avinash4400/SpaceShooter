@@ -12,10 +12,8 @@ public class KamikazeAttackSO : EnemyAttackSO
         EnemyMovement movement = attacker.GetAttachedComponent<EnemyMovement>();
         if (movement == null) return 0.1f;
 
-        // FIX: Cast to the new State Class
         KamikazeState state = movement.RuntimeState as KamikazeState;
 
-        // Check if state exists and has a locked target
         if (state == null || !state.lockedTarget.HasValue) return 0.1f;
 
         float dist = Vector3.Distance(attacker.GetTransform().position, state.lockedTarget.Value);

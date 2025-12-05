@@ -3,7 +3,6 @@ using UnityEngine;
 /// <summary>
 /// Interface for any object that can receive and process damage.
 /// Player, Enemies, and destructible environment elements will implement this.
-/// This decouples the receiver from the source, enforcing a clean architecture.
 /// </summary>
 public interface IDamageHandler
 {

@@ -2,7 +2,6 @@ using UnityEngine;
 
 /// <summary>
 /// Strategy for determining the spawn position of loot.
-/// Allows spawning at the enemy's location OR dropping from the screen top.
 /// </summary>
 public abstract class SpawnStrategySO : ScriptableObject
 {

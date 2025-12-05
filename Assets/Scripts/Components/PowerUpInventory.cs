@@ -5,29 +5,23 @@ using System.Collections.Generic;
 
 /// <summary>
 /// Manages the collection, selection, and activation of Power-Ups.
-/// Implements IGameComponent for initialization.
 /// </summary>
 public class PowerUpInventory : MonoBehaviour, IGameComponent
 {
-    // --- Events for UI ---
     public static event Action<PowerUpDataSO> OnPowerUpSelected;
-    public static event Action<List<PowerUpDataSO>> OnInventoryUpdated; // For redrawing the whole list if needed
+    public static event Action<List<PowerUpDataSO>> OnInventoryUpdated;
     public static event Action<PowerUpDataSO> OnPowerUpActivated;
 
-    // --- State ---
     private IActor actor;
 
-    // The "Infinite List" of collected power-ups
     private List<PowerUpDataSO> collectedPowerUps = new List<PowerUpDataSO>();
 
     private int selectedIndex = -1;
 
-    // --- IGameComponent Implementation ---
     public void Initialize(IActor actor)
     {
         this.actor = actor;
 
-        // Initialize state
         if (collectedPowerUps.Count > 0)
         {
             selectedIndex = 0;
@@ -38,7 +32,6 @@ public class PowerUpInventory : MonoBehaviour, IGameComponent
     void OnEnable()
     {
         PlayerController.OnSwitchPowerupInput += CycleSelection;
-        // Subscribe to the new activation input
         PlayerController.OnActivatePowerupInput += ActivateSelectedPowerUp;
     }
 
@@ -57,7 +50,6 @@ public class PowerUpInventory : MonoBehaviour, IGameComponent
 
         collectedPowerUps.Add(data);
 
-        // If this is the first item, select it automatically
         if (collectedPowerUps.Count == 1)
         {
             selectedIndex = 0;
@@ -65,7 +57,6 @@ public class PowerUpInventory : MonoBehaviour, IGameComponent
         }
 
         OnInventoryUpdated?.Invoke(collectedPowerUps);
-        Debug.Log($"[PowerUpInventory] Collected: {data.powerUpName}");
     }
 
     /// <summary>
@@ -102,23 +93,18 @@ public class PowerUpInventory : MonoBehaviour, IGameComponent
 
         if (data.effect != null)
         {
-            // 1. Apply the effect strategy
             data.effect.Apply(actor);
 
-            // 2. Handle duration (if applicable)
             if (data.effect.duration > 0)
             {
                 StartCoroutine(DurationCoroutine(data.effect));
             }
 
             OnPowerUpActivated?.Invoke(data);
-            Debug.Log($"[PowerUpInventory] Activated: {data.powerUpName}");
         }
 
-        // 3. Consume (Remove) the item
         collectedPowerUps.RemoveAt(selectedIndex);
 
-        // 4. Update selection logic
         if (collectedPowerUps.Count == 0)
         {
             selectedIndex = -1;
@@ -135,10 +121,9 @@ public class PowerUpInventory : MonoBehaviour, IGameComponent
     private IEnumerator DurationCoroutine(PowerUpEffectSO effect)
     {
         yield return new WaitForSeconds(effect.duration);
-        if (actor != null) // Check if player is still alive
+        if (actor != null) 
         {
             effect.Remove(actor);
-            Debug.Log($"[PowerUpInventory] Effect expired: {effect.name}");
         }
     }
 }

@@ -11,10 +11,8 @@ public class EnemyMovement : MonoBehaviour, IGameComponent
     private Rigidbody rb;
     private Vector2 currentVelocity;
 
-    // Generic Memory for Strategies (The Blackboard)
     private object runtimeState;
 
-    // Public getter if needed by attacks (cast as needed)
     public object RuntimeState => runtimeState;
 
     public void Initialize(IActor actor) { }
@@ -26,7 +24,7 @@ public class EnemyMovement : MonoBehaviour, IGameComponent
         target = playerTarget;
         moveSpeed = speed;
         timeAlive = 0f;
-        runtimeState = null; // Reset memory
+        runtimeState = null; 
 
         rb = GetComponentInChildren<Rigidbody>();
         if (rb == null)
@@ -44,8 +42,6 @@ public class EnemyMovement : MonoBehaviour, IGameComponent
     {
         if (newMove != null)
         {
-            // If switching strategies, we generally want to reset the state memory
-            // to avoid the new strategy trying to interpret old data.
             if (movementStrategy != newMove) runtimeState = null;
 
             movementStrategy = newMove;
@@ -61,7 +57,6 @@ public class EnemyMovement : MonoBehaviour, IGameComponent
         {
             Vector3 currentPos = rb != null ? rb.position : transform.position;
 
-            // Pass runtimeState by ref
             Vector3 nextPos = movementStrategy.CalculateMovement(currentPos, target, timeAlive, moveSpeed, ref runtimeState);
 
             currentVelocity = (nextPos - currentPos) / Time.fixedDeltaTime;

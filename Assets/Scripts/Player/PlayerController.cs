@@ -4,7 +4,6 @@ using UnityEngine.InputSystem;
 
 public class PlayerController : MonoBehaviour
 {
-    // ... (Existing Events) ...
     public static event Action<Vector2> OnMovementInput;
     public static event Action OnDashAttempt;
     public static event Action<bool> OnShootInput;
@@ -39,9 +38,6 @@ public class PlayerController : MonoBehaviour
         PlayerMap.Disable();
         GameMap.Enable();
     }
-
-    // ... (OnEnable/Disable/HandleGameStateChanged/OnDestroy/Listeners unchanged) ...
-
     private void OnEnable()
     {
         GameplayManager.OnGameStateChanged += HandleGameStateChanged;
@@ -142,7 +138,6 @@ public class PlayerController : MonoBehaviour
     {
         OnStartGameInput?.Invoke();
 
-        // NEW: Play UI Sound
         if (EventManager.Instance != null)
         {
             EventManager.Instance.TriggerUISubmit();

@@ -27,12 +27,10 @@ public class PlayerSpawner : MonoBehaviour
             Destroy(currentPlayerInstance.gameObject);
         }
 
-        // Force Z to 0
         Vector3 flatSpawnPos = spawnPosition;
         flatSpawnPos.z = 0f;
 
         currentPlayerInstance = Instantiate(playerPrefab, flatSpawnPos, Quaternion.identity);
-        Debug.Log($"Player spawned at {flatSpawnPos}.");
 
         return currentPlayerInstance;
     }

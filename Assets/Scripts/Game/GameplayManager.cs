@@ -4,12 +4,9 @@ using System.Collections;
 
 /// <summary>
 /// Core system responsible for managing the state machine and overall flow of the game.
-/// It transitions between Title, StageActive, and Game Over based on global events.
-/// Inherits from Singleton to ensure a single instance persists across scenes.
 /// </summary>
 public class GameplayManager : Singleton<GameplayManager>
 {
-    // Public event for other systems to react to state changes (e.g., UI, Spawner)
     public static event Action<GameState> OnGameStateChanged;
 
     [Header("Current State")]
@@ -22,7 +19,6 @@ public class GameplayManager : Singleton<GameplayManager>
 
     void Start()
     {
-        // Start the game loop on the Title Screen
         UpdateGameState(GameState.TitleScreen);
     }
 
@@ -84,10 +80,8 @@ public class GameplayManager : Singleton<GameplayManager>
                 StartCoroutine(HandleGameOverSequence());
                 break;
             case GameState.StageClear:
-                // Just wait for LevelManager to load next level
                 break;
             case GameState.GameVictory:
-                // All levels done. Start sequence to return to title.
                 StartCoroutine(HandleGameVictorySequence());
                 break;
             case GameState.Pause:
@@ -106,7 +100,6 @@ public class GameplayManager : Singleton<GameplayManager>
 
     private IEnumerator HandleGameVictorySequence()
     {
-        // Keep game running or pause it? Usually nice to see fireworks/particles move.
         Time.timeScale = 1f;
 
         yield return new WaitForSecondsRealtime(gameVictoryDuration);
@@ -120,7 +113,6 @@ public class GameplayManager : Singleton<GameplayManager>
         UpdateGameState(GameState.StageActive);
     }
 
-    // --- Event Listeners ---
 
     private void OnPlayerDeath()
     {
@@ -146,7 +138,7 @@ public class GameplayManager : Singleton<GameplayManager>
 
     private void OnGameVictory()
     {
-        Debug.Log("Campaign Complete!");
+        Debug.Log("Game Complete!");
         UpdateGameState(GameState.GameVictory);
     }
 

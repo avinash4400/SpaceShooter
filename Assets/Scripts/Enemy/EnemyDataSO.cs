@@ -10,7 +10,7 @@ public class EnemyDataSO : ScriptableObject
     public float moveSpeed = 5f;
 
     [Header("Audio")]
-    public AudioClip deathSound; // New
+    public AudioClip deathSound; 
 
     [Header("Loot")]
     public LootTableSO lootTable;

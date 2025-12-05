@@ -2,7 +2,6 @@ using UnityEngine;
 
 /// <summary>
 /// Centralized system responsible for spawning loot.
-/// Listens to global events (Enemy Death) and handles Game Loop spawns (Supply Drops).
 /// </summary>
 public class LootManager : Singleton<LootManager>
 {
@@ -24,11 +23,9 @@ public class LootManager : Singleton<LootManager>
 
     /// <summary>
     /// Reacts to an enemy death event.
-    /// Uses the position and source passed directly from the event (safe for pooling).
     /// </summary>
     private void HandleEnemyDeathLoot(Vector3 deathPosition, ILootSource lootSource)
     {
-        // Check if the dead entity actually had a loot table
         if (lootSource != null)
         {
             LootTableSO table = lootSource.GetLootTable();
@@ -46,8 +43,6 @@ public class LootManager : Singleton<LootManager>
     {
         if (table == null || strategy == null) return;
 
-        // Calculate position based on the strategy (e.g. Screen Top)
-        // Transform passed is this manager's transform, though likely unused by screen strategies
         Vector3 spawnPos = strategy.CalculateSpawnPosition(transform);
 
         SpawnFromTable(table, spawnPos);
@@ -62,8 +57,6 @@ public class LootManager : Singleton<LootManager>
 
         if (itemToSpawn != null && itemToSpawn.prefab != null)
         {
-            // Instantiate the pickup
-            // Note: For high frequency drops, consider adding an ObjectPool for BasePickups later.
             Instantiate(itemToSpawn.prefab, position, Quaternion.identity);
 
             Debug.Log($"[LootManager] Spawned {itemToSpawn.itemName} at {position}");

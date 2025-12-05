@@ -13,7 +13,6 @@ public class EventManager : Singleton<EventManager>
     public event Action<Vector3, AudioClip> OnExplosion;
     public event Action<BulletTypeSO> OnPlayerFired;
     public event Action<PowerUpDataSO> OnPowerUpCollected;
-    // NEW: Generic pickup sound event
     public event Action<AudioClip> OnPickupSound;
 
     // --- UI Interaction Event ---
@@ -48,8 +47,6 @@ public class EventManager : Singleton<EventManager>
     public void TriggerExplosion(Vector3 position, AudioClip clip) => OnExplosion?.Invoke(position, clip);
     public void TriggerPlayerFired(BulletTypeSO bullet) => OnPlayerFired?.Invoke(bullet);
     public void TriggerPowerUpCollected(PowerUpDataSO data) => OnPowerUpCollected?.Invoke(data);
-
-    // NEW Trigger
     public void TriggerPickupSound(AudioClip clip) => OnPickupSound?.Invoke(clip);
 
     public void TriggerUISubmit() => OnUISubmit?.Invoke();

@@ -2,7 +2,6 @@ using UnityEngine;
 
 /// <summary>
 /// Abstract ScriptableObject implementation of the power-up strategy.
-/// Allows creating specific effects (Shield, Speed, Nuke) as assets.
 /// </summary>
 public abstract class PowerUpEffectSO : ScriptableObject, IPowerUpEffect
 {
@@ -13,6 +12,5 @@ public abstract class PowerUpEffectSO : ScriptableObject, IPowerUpEffect
 
     public virtual void Remove(IActor target)
     {
-        // Optional override for effects that need cleanup
     }
 }

@@ -5,11 +5,9 @@ using System.Collections.Generic;
 
 /// <summary>
 /// The primary identity component for the Player object. 
-/// Implements the Provider side of the Handshake Pattern.
 /// </summary>
 public class Player : MonoBehaviour, IActor
 {
-    // References to all required components
     private HealthComponent healthComponent;
     private PlayerMovement playerMovement;
     private DashComponent dashComponent;
@@ -18,10 +16,7 @@ public class Player : MonoBehaviour, IActor
     private IGameComponent[] gameComponents;
     private Rigidbody rb;
 
-    // IActor State
     private Vector2 currentVelocity;
-
-    // --- IActor Implementation ---
 
     public Transform GetTransform() => GetRigidbody().transform;
     public Vector2 GetCurrentVelocity() => currentVelocity;
@@ -32,8 +27,6 @@ public class Player : MonoBehaviour, IActor
     {
         return gameComponents.OfType<T>().FirstOrDefault();
     }
-
-    // --- Lifecycle & Handshake ---
 
     void OnEnable()
     {
@@ -58,17 +51,14 @@ public class Player : MonoBehaviour, IActor
 
         InitializeComponents();
 
-        // Subscribe to local health events to forward them globally
         if (healthComponent != null)
         {
             healthComponent.OnDeath += OnLocalDeath;
             healthComponent.OnHealthChanged += OnLocalHealthChanged;
             healthComponent.OnHeal += OnHeal;
 
-            // NEW: Listen for damage impact
             healthComponent.OnHit += OnLocalHit;
 
-            // Initial broadcast so UI updates on start
             OnLocalHealthChanged(gameObject, healthComponent.CurrentHealth);
         }
 
@@ -112,7 +102,6 @@ public class Player : MonoBehaviour, IActor
         foreach (IGameComponent component in gameComponents)
         {
             component.Initialize(this);
-            Debug.Log($"Initialized {component.GetType().Name} with IActor reference.");
         }
     }
 
@@ -159,8 +148,6 @@ public class Player : MonoBehaviour, IActor
         if(healVisualsComponent != null)
             healVisualsComponent.PlayHealEffect();
     }
-
-    // NEW: Forward hit event to EventManager for Screen Shake
     private void OnLocalHit(GameObject source)
     {
         if (EventManager.Instance != null)

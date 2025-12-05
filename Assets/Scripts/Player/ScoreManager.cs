@@ -2,13 +2,11 @@ using UnityEngine;
 
 /// <summary>
 /// Manages the player's score state.
-/// Listens for AddScore events and broadcasts ScoreUpdated events.
 /// </summary>
 public class ScoreManager : Singleton<ScoreManager>
 {
     private int currentScore = 0;
 
-    // Optional: High score tracking could go here
 
     void OnEnable()
     {
@@ -16,8 +14,6 @@ public class ScoreManager : Singleton<ScoreManager>
         {
             EventManager.Instance.OnAddScore += AddScore;
 
-            // Optional: Reset score on Game Start via GameplayManager state change?
-            // For now, we rely on manual reset or Init.
             GameplayManager.OnGameStateChanged += HandleGameStateChange;
         }
     }
@@ -33,7 +29,6 @@ public class ScoreManager : Singleton<ScoreManager>
 
     private void HandleGameStateChange(GameState newState)
     {
-        // Reset score when returning to Title or starting fresh
         if (newState == GameState.PreStage || newState == GameState.TitleScreen)
         {
             ResetScore();
@@ -44,7 +39,6 @@ public class ScoreManager : Singleton<ScoreManager>
     {
         currentScore += amount;
 
-        // Notify UI
         if (EventManager.Instance != null)
         {
             EventManager.Instance.TriggerScoreUpdated(currentScore);
@@ -59,7 +53,5 @@ public class ScoreManager : Singleton<ScoreManager>
             EventManager.Instance.TriggerScoreUpdated(currentScore);
         }
     }
-
-    // Public getter if needed for Save System
     public int GetScore() => currentScore;
 }

@@ -4,8 +4,6 @@ using System.Collections.Generic;
 
 /// <summary>
 /// The central director for the game level.
-/// Runs a campaign of multiple levels sequentially.
-/// Updated to handle Scene Cleanup on Game Over / Restart.
 /// </summary>
 public class LevelManager : Singleton<LevelManager>
 {
@@ -22,11 +20,9 @@ public class LevelManager : Singleton<LevelManager>
     [Tooltip("Time to wait after a level finishes before loading the next one.")]
     [SerializeField] private float levelTransitionDelay = 4f;
 
-    // State
     private IActor playerActor;
     private int currentLevelIndex = 0;
 
-    // Optimization: Track active enemies via events
     private int activeEnemyCount = 0;
     public int ActiveEnemyCount => activeEnemyCount;
 
@@ -44,7 +40,6 @@ public class LevelManager : Singleton<LevelManager>
             EventManager.Instance.OnEnemyDespawned += HandleEnemyDespawned;
         }
 
-        // Listen to GameState changes for cleanup
         GameplayManager.OnGameStateChanged += HandleGameStateChanged;
     }
 
@@ -62,12 +57,10 @@ public class LevelManager : Singleton<LevelManager>
 
     private void HandleGameStateChanged(GameState newState)
     {
-        // Stop spawning immediately on Game Over
         if (newState == GameState.GameOver)
         {
             StopAllCoroutines();
         }
-        // Cleanup scene when returning to Title or Restarting
         else if (newState == GameState.TitleScreen || newState == GameState.PreStage)
         {
             CleanupScene();
@@ -79,31 +72,26 @@ public class LevelManager : Singleton<LevelManager>
     /// </summary>
     private void CleanupScene()
     {
-        StopAllCoroutines(); // Ensure no spawning continues
+        StopAllCoroutines(); 
 
-        // 1. Destroy all Enemies
         Enemy[] enemies = FindObjectsByType<Enemy>(FindObjectsSortMode.None);
         foreach (var e in enemies)
         {
             if (e != null) Destroy(e.gameObject);
         }
 
-        // 2. Destroy all Projectiles (Bullets)
-        // Note: Pooling systems will just instantiate new ones when needed.
         BaseProjectile[] bullets = FindObjectsByType<BaseProjectile>(FindObjectsSortMode.None);
         foreach (var b in bullets)
         {
             if (b != null) Destroy(b.gameObject);
         }
 
-        // 3. Destroy all Pickups
         BasePickup[] pickups = FindObjectsByType<BasePickup>(FindObjectsSortMode.None);
         foreach (var p in pickups)
         {
             if (p != null) Destroy(p.gameObject);
         }
 
-        // 4. Reset State
         currentLevelIndex = 0;
         activeEnemyCount = 0;
 
@@ -133,11 +121,9 @@ public class LevelManager : Singleton<LevelManager>
 
     private void InitializeWithPlayer(IActor player)
     {
-        // Prevent re-initialization if we already have the player
         if (playerActor == player) return;
 
         playerActor = player;
-        Debug.Log($"[LevelManager] Player acquired: {player.GetTransform().name}");
 
         if (autoStart && campaignLevels != null && campaignLevels.Count > 0)
         {
@@ -147,7 +133,6 @@ public class LevelManager : Singleton<LevelManager>
 
     private IEnumerator RunCampaignRoutine()
     {
-        // Loop through all configured levels
         for (currentLevelIndex = 0; currentLevelIndex < campaignLevels.Count; currentLevelIndex++)
         {
             LevelSO currentLevel = campaignLevels[currentLevelIndex];
@@ -172,7 +157,7 @@ public class LevelManager : Singleton<LevelManager>
             yield return new WaitForSeconds(levelTransitionDelay);
         }
 
-        Debug.Log("[LevelManager] Campaign Victory!");
+        Debug.Log("[LevelManager] Game Victory!");
         EventManager.Instance.TriggerGameVictory();
     }
 
@@ -205,8 +190,6 @@ public class LevelManager : Singleton<LevelManager>
             }
         }
     }
-
-    // --- Service Methods for Patterns ---
 
     public void SpawnEnemy(Enemy prefab, EnemyDataSO config, SpawnStrategySO strategy)
     {

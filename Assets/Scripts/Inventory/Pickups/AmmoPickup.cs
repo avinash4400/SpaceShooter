@@ -12,7 +12,6 @@ public class AmmoPickup : BasePickup
     [Header("Audio")]
     [SerializeField] private AudioClip pickupSound;
 
-    // BasePickup handles Update() for Movement via LootMovementSO.
 
     /// <summary>
     /// Implementation of the IPickup contract.
@@ -22,23 +21,20 @@ public class AmmoPickup : BasePickup
     {
         if (target == null) return false;
 
-        // Get the inventory via the Actor interface
         BulletInventory inventory = target.GetAttachedComponent<BulletInventory>();
 
         if (inventory != null && bulletType != null)
         {
             inventory.AddAmmo(bulletType, ammoAmount);
 
-            // Generic Audio Event: Passes the specific clip to the EventManager
-            // Note: Ensure EventManager has: public void TriggerPickupSound(AudioClip clip)
             if (EventManager.Instance != null && pickupSound != null)
             {
                 EventManager.Instance.TriggerPickupSound(pickupSound);
             }
 
-            return true; // Successfully collected
+            return true;
         }
 
-        return false; // Could not collect (no inventory or bad config)
+        return false; 
     }
 }

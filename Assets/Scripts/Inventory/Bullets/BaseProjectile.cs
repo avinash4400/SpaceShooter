@@ -4,12 +4,9 @@ using System.Collections;
 
 /// <summary>
 /// Abstract base class for all projectiles.
-/// Implements IDamageSource, IActor, and pooling/recycling logic.
-/// Automatically handles Layer assignment and Out-of-Bounds recycling.
 /// </summary>
 public abstract class BaseProjectile : MonoBehaviour, IDamageSource, IActor
 {
-    // --- IDamageSource Implementation ---
     public int DamageAmount { get; protected set; }
     public IActor SourceActor { get; protected set; }
 
@@ -20,22 +17,18 @@ public abstract class BaseProjectile : MonoBehaviour, IDamageSource, IActor
 
     public event Action<BaseProjectile> OnProjectileExpired;
 
-    // --- State & Config ---
     protected BulletTypeSO config;
     protected float moveSpeed;
     protected float lifeTimer;
     protected Vector3 fireDirection;
 
-    // NEW: Target reference for Homing/Tracking logic
     protected IActor target;
 
-    // Physics & Rendering
     protected Rigidbody rb;
     private Camera mainCamera;
 
     public BulletTypeSO Config => config;
 
-    // --- IActor Implementation ---
     public Transform GetTransform() => transform;
     public Rigidbody GetRigidbody() => rb;
     public Vector2 GetCurrentVelocity() => fireDirection * moveSpeed;
@@ -53,20 +46,19 @@ public abstract class BaseProjectile : MonoBehaviour, IDamageSource, IActor
 
     /// <summary>
     /// Initializes the projectile.
-    /// Updated to accept a specific Target actor (for homing logic).
     /// </summary>
     public virtual void Initialize(
         BulletTypeSO bulletConfig,
         IActor source,
         Vector3 direction,
         float speedMultiplier = 1f,
-        IActor target = null // <--- NEW PARAMETER
+        IActor target = null 
     )
     {
         config = bulletConfig;
         DamageAmount = config.damage;
         SourceActor = source;
-        this.target = target; // Store it for Move() logic
+        this.target = target; 
 
         moveSpeed = config.speed * speedMultiplier;
         lifeTimer = config.lifetime;

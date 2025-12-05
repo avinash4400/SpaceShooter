@@ -11,7 +11,6 @@ public class LevelSO : ScriptableObject
 
     [Header("Environment")]
     public AudioClip backgroundMusic;
-    // Removed bossMusic as Boss Levels are now just Levels
 
     [Tooltip("The scrolling sprite to apply to the background for this level.")]
     public Sprite levelBackgroundSprite;

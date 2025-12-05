@@ -3,7 +3,6 @@ using TMPro;
 
 /// <summary>
 /// Displays the current score.
-/// Listens to the global OnScoreUpdated event.
 /// </summary>
 public class ScoreUI : MonoBehaviour
 {

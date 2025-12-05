@@ -3,6 +3,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
+/// <summary>
+/// Stores and manages the player's bullet inventory, including ammo counts and bullet selection.
+/// </summary>
 public class BulletInventory : MonoBehaviour, IGameComponent
 {
     [Header("Configuration")]
@@ -69,17 +72,14 @@ public class BulletInventory : MonoBehaviour, IGameComponent
         availableBulletTypes = availableBulletTypes.OrderBy(b => b.type).ToList();
     }
 
-    // --- New: Ammo Loot Logic (Updated: Removed Max Ammo Clamp) ---
     public void AddAmmo(BulletTypeSO bulletType, int amount)
     {
         if (bulletType == null || !bulletType.hasLimitedAmmo) return;
 
         if (limitedAmmoCounts.ContainsKey(bulletType.type))
         {
-            // Simply add the amount without capping it
             limitedAmmoCounts[bulletType.type] += amount;
 
-            // Update UI
             OnAmmoCountChanged?.Invoke(bulletType, limitedAmmoCounts[bulletType.type]);
 
             Debug.Log($"[BulletInventory] Added {amount} ammo to {bulletType.bulletName}. Total: {limitedAmmoCounts[bulletType.type]}");

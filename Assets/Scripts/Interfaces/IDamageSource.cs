@@ -13,7 +13,6 @@ public interface IDamageSource
 
     /// <summary>
     /// Gets a reference to the GameObject that owns this damage source.
-    /// Used for referencing the entity that caused the damage (e.g., the Player).
     /// </summary>
     IActor SourceActor { get; }
 

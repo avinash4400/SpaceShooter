@@ -4,9 +4,6 @@ using System.Collections;
 
 /// <summary>
 /// A reusable component for any entity (Player, Enemy, Boss) that has health and can take damage.
-/// Implements IDamageHandler to process damage from any source (IDamageSource).
-/// Events are instance-based, allowing a dedicated Manager (e.g., Player.cs) or Spawner to listen.
-/// Implements IGameComponent to participate in the Actor's initialization dependency injection.
 /// </summary>
 public class HealthComponent : MonoBehaviour, IDamageHandler, IGameComponent
 {
@@ -21,28 +18,23 @@ public class HealthComponent : MonoBehaviour, IDamageHandler, IGameComponent
     private int currentHealth;
     private bool isInvulnerable = false;
 
-    // New flag for external systems (like Dash) to control invulnerability
     private bool isExternalInvulnerable = false;
 
-    // --- Public Accessors for UI ---
     public int MaxHealth => maxHealth;
     public int CurrentHealth => currentHealth;
 
-    // --- Events for Decoupled Communication (INSTANCE EVENTS) ---
-    // The GameObject parameter tells subscribers *which* entity was affected.
-    public event Action<GameObject, int> OnHealthChanged; // (AffectedObject, CurrentHP)
-    public event Action<GameObject, int> OnHeal; // (AffectedObject, CurrentHP)
-    public event Action<GameObject> OnHit; // (AffectedObject) - Used for hit flash/SFX
-    public event Action<GameObject> OnDeath; // (AffectedObject) - Used by Player.cs or EnemySpawner.cs
+    public event Action<GameObject, int> OnHealthChanged;
+    public event Action<GameObject, int> OnHeal; 
+    public event Action<GameObject> OnHit; 
+    public event Action<GameObject> OnDeath;
 
     // --- IGameComponent Implementation ---
 
     public void Initialize(IActor actor)
     {
-        // Currently, no initialization logic is needed here, but the contract is fulfilled.
+        
     }
 
-    // --- Standard MonoBehaviour Methods ---
 
     void Awake()
     {
@@ -51,7 +43,6 @@ public class HealthComponent : MonoBehaviour, IDamageHandler, IGameComponent
 
     void Start()
     {
-        // Initial health broadcast
         OnHealthChanged?.Invoke(gameObject, currentHealth);
     }
 
@@ -70,20 +61,16 @@ public class HealthComponent : MonoBehaviour, IDamageHandler, IGameComponent
     /// <param name="info">Damage data including amount and source.</param>
     public void HandleDamage(DamageInfo info)
     {
-        // Check both internal (post-hit) and external (dash/powerup) invulnerability
         if (isExternalInvulnerable || (!disableInvulnerability && isInvulnerable))
         {
             return;
         }
 
         currentHealth -= info.DamageAmount;
-        currentHealth = Mathf.Max(0, currentHealth); // Ensure health doesn't go negative
+        currentHealth = Mathf.Max(0, currentHealth);
 
-        // Broadcast the hit event (instance)
         OnHit?.Invoke(gameObject);
-        Debug.Log($"{gameObject.name} took {info.DamageAmount} damage. HP remaining: {currentHealth}");
 
-        // Broadcast the change (instance)
         OnHealthChanged?.Invoke(gameObject, currentHealth);
 
         if (currentHealth <= 0)
@@ -107,21 +94,14 @@ public class HealthComponent : MonoBehaviour, IDamageHandler, IGameComponent
         currentHealth += amount;
         currentHealth = Mathf.Min(currentHealth, maxHealth);
 
-        // Broadcast change
         OnHealthChanged?.Invoke(gameObject, currentHealth);
         OnHeal?.Invoke(gameObject, currentHealth);
-        Debug.Log($"{gameObject.name} healed for {amount}. HP: {currentHealth}");
     }
 
     private void Die()
     {
-        // Broadcast the death event (instance)
         OnDeath?.Invoke(gameObject);
         Debug.Log($"{gameObject.name} Died. Notifying systems.");
-
-        // REMOVED: gameObject.SetActive(false); 
-        // We now rely on the listener (Enemy.cs, Player.cs) to handle the destruction/disabling
-        // to allow for death sequences (VFX/Animation) to play out first.
     }
 
     /// <summary>

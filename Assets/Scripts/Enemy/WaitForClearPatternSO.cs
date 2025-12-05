@@ -12,10 +12,8 @@ public class WaitForClearPatternSO : SpawnPatternSO
     {
         Debug.LogWarningFormat($"[WaitForClear] Waiting for screen clear...{0}", manager.ActiveEnemyCount);
 
-        // Optimized polling: Uses the event-driven count from LevelManager
         while (manager.ActiveEnemyCount > 0)
         {
-            // Check every 0.5 seconds to save performance
             yield return new WaitForSeconds(0.5f);
         }
 

@@ -24,31 +24,24 @@ public class ShieldPowerUpSO : PowerUpEffectSO
 
         Transform targetTransform = target.GetRigidbody().transform;
 
-        // Check if a shield already exists to prevent stacking
         ShieldController existingShield = targetTransform.GetComponentInChildren<ShieldController>();
         if (existingShield != null)
         {
             Destroy(existingShield.gameObject);
         }
 
-        // Spawn the shield attached to the actor
         ShieldController shieldInstance = Instantiate(shieldPrefab, targetTransform.position, Quaternion.identity);
         shieldInstance.transform.SetParent(targetTransform);
         shieldInstance.transform.localPosition = Vector3.zero;
 
-        // CRITICAL FIX: Set the layer to match the Player so Enemy Bullets collide with it
-        // Also ensure we set it recursively in case the shield has child visuals/colliders
         SetLayerRecursively(shieldInstance.gameObject, targetTransform.gameObject.layer);
 
-        // Initialize the logic component
         shieldInstance.Initialize(duration, shieldHealth);
 
-        Debug.Log($"[ShieldPowerUp] Activated on {targetTransform.name}");
     }
 
     public override void Remove(IActor target)
     {
-        // Cleanup handled by ShieldController
     }
 
     private void SetLayerRecursively(GameObject obj, int newLayer)

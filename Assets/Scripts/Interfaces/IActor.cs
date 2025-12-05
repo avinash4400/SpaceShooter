@@ -2,8 +2,6 @@ using UnityEngine;
 
 /// <summary>
 /// Interface representing any major entity (actor) in the game world.
-/// Provides essential, common data points like the Transform and movement state.
-/// Player and all Enemy classes will implement this interface.
 /// </summary>
 public interface IActor
 {

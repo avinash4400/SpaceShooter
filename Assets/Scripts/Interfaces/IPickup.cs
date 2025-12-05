@@ -2,7 +2,6 @@ using UnityEngine;
 
 /// <summary>
 /// Interface for any object that can be picked up by an Actor.
-/// Decouples collision logic from the specific item effect.
 /// </summary>
 public interface IPickup
 {

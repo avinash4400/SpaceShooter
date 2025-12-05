@@ -2,7 +2,6 @@ using UnityEngine;
 
 /// <summary>
 /// Container for configuration data used by SpawnPatterns.
-/// Allows splitting Data (this class) from Logic (SpawnPatternSO).
 /// </summary>
 [System.Serializable]
 public class SpawnConfig

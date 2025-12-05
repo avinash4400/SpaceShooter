@@ -14,7 +14,7 @@ public class AudioManager : MonoBehaviour
     [SerializeField] private AudioClip titleMusic;
     [SerializeField] private AudioClip uiSubmitSound;
     [SerializeField] private AudioClip playerHitSound;
-    [SerializeField] private AudioClip playerDeathSound; // NEW
+    [SerializeField] private AudioClip playerDeathSound; 
     [SerializeField] private AudioClip defaultExplosionSound;
     [SerializeField] private AudioClip gameVictorySound;
 
@@ -43,7 +43,6 @@ public class AudioManager : MonoBehaviour
             EventManager.Instance.OnGameVictory += PlayVictorySound;
             EventManager.Instance.OnUISubmit += PlayUISound;
 
-            // NEW: Listen for Player Death
             EventManager.Instance.OnPlayerDeath += PlayPlayerDeathSound;
         }
     }
@@ -64,9 +63,6 @@ public class AudioManager : MonoBehaviour
             EventManager.Instance.OnPlayerDeath -= PlayPlayerDeathSound;
         }
     }
-
-    // --- Music Handlers ---
-
     private void HandleStateChanged(GameState newState)
     {
         if (newState == GameState.TitleScreen)
@@ -95,7 +91,6 @@ public class AudioManager : MonoBehaviour
 
     private void PlayVictorySound()
     {
-        // Stop background music to emphasize victory
         musicSource.Stop();
 
         if (gameVictorySound != null)
@@ -103,8 +98,6 @@ public class AudioManager : MonoBehaviour
             sfxSource.PlayOneShot(gameVictorySound);
         }
     }
-
-    // --- SFX Handlers ---
 
     private void PlayUISound()
     {

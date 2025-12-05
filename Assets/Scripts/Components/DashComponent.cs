@@ -10,24 +10,22 @@ using System.Collections;
 public class DashComponent : MonoBehaviour, IGameComponent, IMovementBlocker
 {
     [Header("Dash Settings")]
-    [SerializeField] private float dashSpeed = 50f; // Increased speed for noticeable dash
+    [SerializeField] private float dashSpeed = 50f; 
     [SerializeField] private float dashDuration = 0.15f;
     [SerializeField] private float dashCooldown = 1.0f;
 
-    // Events required by IMovementBlocker
     public event Action OnMovementBlockStart;
     public event Action OnMovementBlockEnd;
 
-    // Events for Decoupled Communication (VFX/SFX)
     public static event Action OnDashExecuted;
 
-    // Public properties for other scripts (like PlayerMovement) to check state
+  
     public bool IsDashing { get; private set; } = false;
     public bool CanDash { get; private set; } = true;
 
-    // Local IActor reference for clean abstraction
+    
     private IActor actor;
-    private Vector3 dashVelocity; // The velocity to apply during the dash
+    private Vector3 dashVelocity; 
 
     /// <summary>
     /// Initializes the DashComponent with the owning Actor reference.
@@ -40,7 +38,6 @@ public class DashComponent : MonoBehaviour, IGameComponent, IMovementBlocker
 
     void OnEnable()
     {
-        // Subscribe to the input event
         PlayerController.OnDashAttempt += AttemptDash;
     }
 
@@ -56,27 +53,18 @@ public class DashComponent : MonoBehaviour, IGameComponent, IMovementBlocker
     {
         if (CanDash && !IsDashing)
         {
-            Vector2 dashDirection = Vector2.up; // Default direction (vertical shooter)
+            Vector2 dashDirection = Vector2.up; 
 
-            // *** MODIFIED LOGIC: Get current velocity from IActor and use it for direction ***
             Vector2 currentVelocity = actor.GetCurrentVelocity();
 
-            // If the player is actively moving, use that direction. 
-            // Otherwise (if standing still), default to the UP direction.
             if (currentVelocity.magnitude > 0.01f)
             {
                 dashDirection = currentVelocity.normalized;
             }
 
-            // Set the constant velocity for the dash duration
-            // This is the magnitude of the dash speed multiplied by the determined direction vector.
             dashVelocity = new Vector3(dashDirection.x * dashSpeed, dashDirection.y * dashSpeed, 0f);
 
             StartCoroutine(DashCoroutine());
-        }
-        else
-        {
-            // Optional: Play a "dash on cooldown" SFX
         }
     }
 
@@ -84,7 +72,6 @@ public class DashComponent : MonoBehaviour, IGameComponent, IMovementBlocker
     {
         if (actor == null)
         {
-            Debug.LogError("[DashComponent] IActor reference is null.");
             yield break;
         }
 

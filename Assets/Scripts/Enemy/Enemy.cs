@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class Enemy : MonoBehaviour, IActor, ILootSource
 {
-    // ... (Fields and Init unchanged) ...
     private EnemyDataSO config;
     private HealthComponent healthComponent;
     private EnemyMovement movement;
@@ -127,8 +126,6 @@ public class Enemy : MonoBehaviour, IActor, ILootSource
             {
                 EventManager.Instance.TriggerAddScore(config.scoreValue);
 
-                // NEW: Trigger Explosion Sound
-                // We trigger generic explosion, passing the specific clip from EnemyData
                 EventManager.Instance.TriggerExplosion(deathPos, config.deathSound);
             }
         }

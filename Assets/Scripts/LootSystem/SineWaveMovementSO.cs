@@ -22,14 +22,11 @@ public class SineWaveMovementSO : LootMovementSO
 
     public override Vector3 CalculatePosition(Vector3 startPos, float time, float speed)
     {
-        // 1. Calculate linear fall position
         Vector3 linearPos = startPos + (fallDirection.normalized * speed * time);
 
-        // 2. Calculate sine wave offset
         float waveOffset = Mathf.Sin(time * frequency) * amplitude;
         Vector3 wavePos = waveAxis.normalized * waveOffset;
 
-        // 3. Combine
         return linearPos + wavePos;
     }
 }

@@ -11,7 +11,6 @@ public class LinearMovementSO : LootMovementSO
 
     public override Vector3 CalculatePosition(Vector3 startPos, float time, float speed)
     {
-        // Simple linear interpolation: Start + (Direction * Speed * Time)
         return startPos + (direction.normalized * speed * time);
     }
 }

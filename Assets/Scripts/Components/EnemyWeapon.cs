@@ -3,13 +3,6 @@ using System.Collections.Generic;
 
 public class EnemyWeapon : MonoBehaviour, IGameComponent
 {
-    [System.Serializable]
-    public struct MuzzleDefinition
-    {
-        public MuzzleType type;
-        public Transform transform;
-    }
-
     [Header("Visuals")]
     [SerializeField] private List<MuzzleDefinition> muzzles;
 
@@ -58,7 +51,6 @@ public class EnemyWeapon : MonoBehaviour, IGameComponent
         {
             IActor attacker = GetComponent<IActor>();
 
-            // ExecuteAttack now handles its own speed/timing
             float cooldown = attackStrategy.ExecuteAttack(attacker, this, target, enemyData);
 
             nextAttackTime = Time.time + cooldown;

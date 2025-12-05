@@ -11,7 +11,7 @@ public class AtSourcePositionStrategySO : SpawnStrategySO
         if (sourceTransform == null) return Vector3.zero;
 
         Vector3 pos = sourceTransform.position;
-        pos.z = 0f; // Force 2D plane
+        pos.z = 0f; 
 
         return pos;
     }

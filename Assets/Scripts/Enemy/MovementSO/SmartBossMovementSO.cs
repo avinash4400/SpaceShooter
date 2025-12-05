@@ -12,19 +12,19 @@ public class SmartBossMovementSO : EnemyMovementSO
 {
     // --- Configuration ---
     [Header("Patrol")]
-    [SerializeField] private float patrolWidth = 6f; // Width of movement
+    [SerializeField] private float patrolWidth = 6f; 
     [SerializeField] private float patrolSpeedMult = 1f;
     [SerializeField] private float diveCooldown = 5f;
 
     [Header("Evasion")]
     [SerializeField] private float detectionRadius = 3f;
     [SerializeField] private float evasionStrength = 8f;
-    [SerializeField] private float evasionCooldown = 0.2f; // Prevents jitter
+    [SerializeField] private float evasionCooldown = 0.2f; 
     [SerializeField] private LayerMask dangerLayers;
 
     [Header("Dive")]
     [SerializeField] private float diveSpeedMult = 4f;
-    [SerializeField] private float diveDuration = 1.5f; // Used as a timeout
+    [SerializeField] private float diveDuration = 1.5f; 
     [SerializeField] private float recoverDuration = 1.0f;
 
     // --- State Definition ---
@@ -34,23 +34,22 @@ public class SmartBossMovementSO : EnemyMovementSO
         public Mode currentMode;
         public float stateTimer;
         public float diveTimer;
-        public float evasionTimer; // Tracks dodge frequency
-        public Vector3 anchorPos; // Center of patrol
-        public float patrolDirection = 1f; // 1 = Right, -1 = Left
-        public Vector3 diveTarget; // Locked position for the dive
+        public float evasionTimer;
+        public Vector3 anchorPos; 
+        public float patrolDirection = 1f; 
+        public Vector3 diveTarget;
     }
 
     private static readonly Collider[] hitBuffer = new Collider[5];
 
     public override Vector3 CalculateMovement(Vector3 currentPos, IActor target, float timeAlive, float speed, ref object runtimeState)
     {
-        // 1. Initialize State
         if (runtimeState == null || !(runtimeState is BossState))
         {
             runtimeState = new BossState
             {
                 currentMode = BossState.Mode.Patrol,
-                anchorPos = currentPos, // Assume start pos is the anchor
+                anchorPos = currentPos, 
                 diveTimer = diveCooldown
             };
         }
@@ -68,13 +67,11 @@ public class SmartBossMovementSO : EnemyMovementSO
             case BossState.Mode.Patrol:
                 nextPos = HandlePatrol(currentPos, speed, state, target);
 
-                // Trigger Dive?
                 if (state.diveTimer <= 0 && target != null)
                 {
                     state.currentMode = BossState.Mode.Dive;
-                    state.stateTimer = diveDuration; // Use as timeout
+                    state.stateTimer = diveDuration; 
 
-                    // Lock target position immediately upon entering state
                     Vector3 tPos = target.GetTransform().position;
                     tPos.z = 0f;
                     state.diveTarget = tPos;
@@ -84,10 +81,8 @@ public class SmartBossMovementSO : EnemyMovementSO
             case BossState.Mode.Dive:
                 nextPos = HandleDive(currentPos, speed, state);
 
-                // Check arrival or timeout
                 float dist = Vector3.Distance(nextPos, state.diveTarget);
 
-                // If reached target OR timed out
                 if (dist < 0.5f || state.stateTimer <= 0)
                 {
                     state.currentMode = BossState.Mode.Recover;
@@ -96,7 +91,6 @@ public class SmartBossMovementSO : EnemyMovementSO
                 break;
 
             case BossState.Mode.Recover:
-                // Sit still or drift slightly
                 if (state.stateTimer <= 0)
                 {
                     state.currentMode = BossState.Mode.ReturnToAnchor;
@@ -104,12 +98,11 @@ public class SmartBossMovementSO : EnemyMovementSO
                 break;
 
             case BossState.Mode.ReturnToAnchor:
-                // Move back to start position
                 nextPos = Vector3.MoveTowards(currentPos, state.anchorPos, speed * patrolSpeedMult * Time.fixedDeltaTime);
                 if (Vector3.Distance(nextPos, state.anchorPos) < 0.1f)
                 {
                     state.currentMode = BossState.Mode.Patrol;
-                    state.diveTimer = diveCooldown; // Reset cooldown
+                    state.diveTimer = diveCooldown; 
                 }
                 break;
         }
@@ -119,11 +112,8 @@ public class SmartBossMovementSO : EnemyMovementSO
 
     private Vector3 HandlePatrol(Vector3 currentPos, float speed, BossState state, IActor target)
     {
-        // A. Basic Patrol Movement (Left/Right)
-        // Switch direction if too far from anchor
         if (Mathf.Abs(currentPos.x - state.anchorPos.x) > patrolWidth / 2f)
         {
-            // If moving right (1) and pos > limit, switch to left (-1)
             if ((currentPos.x > state.anchorPos.x && state.patrolDirection > 0) ||
                 (currentPos.x < state.anchorPos.x && state.patrolDirection < 0))
             {
@@ -131,45 +121,35 @@ public class SmartBossMovementSO : EnemyMovementSO
             }
         }
 
-        // Calculate base movement velocity
         float moveX = state.patrolDirection * speed * patrolSpeedMult * Time.fixedDeltaTime;
 
-        // B. Evasive Maneuver Logic (Momentum Preservation)
-        // Only scan if cooldown allows
         if (state.evasionTimer <= 0)
         {
             int hits = Physics.OverlapSphereNonAlloc(currentPos, detectionRadius, hitBuffer, dangerLayers);
             if (hits > 0)
             {
-                // 1. Default to current movement direction (Momentum Preservation)
                 float dodgeDirection = state.patrolDirection;
 
-                // 2. Check Screen Bounds to see if we are cornered
                 if (Camera.main != null)
                 {
                     Vector3 viewPos = Camera.main.WorldToViewportPoint(currentPos);
 
-                    // If moving Right (1) but near Right Edge (> 0.9), Force Left
                     if (dodgeDirection > 0 && viewPos.x > 0.9f)
                     {
                         dodgeDirection = -1f;
                     }
-                    // If moving Left (-1) but near Left Edge (< 0.1), Force Right
                     else if (dodgeDirection < 0 && viewPos.x < 0.1f)
                     {
                         dodgeDirection = 1f;
                     }
                 }
 
-                // 3. Apply Dodge (Override base movement)
                 moveX = dodgeDirection * evasionStrength * Time.fixedDeltaTime;
 
-                // Reset cooldown
                 state.evasionTimer = evasionCooldown;
             }
         }
 
-        // Apply X movement and Clamp Z to 0
         Vector3 finalPos = currentPos + new Vector3(moveX, 0, 0);
         finalPos.z = 0f;
 
@@ -178,7 +158,6 @@ public class SmartBossMovementSO : EnemyMovementSO
 
     private Vector3 HandleDive(Vector3 currentPos, float speed, BossState state)
     {
-        // Move towards the LOCKED diveTarget, ignoring current player position
         Vector3 dir = (state.diveTarget - currentPos).normalized;
         return currentPos + (dir * speed * diveSpeedMult * Time.fixedDeltaTime);
     }

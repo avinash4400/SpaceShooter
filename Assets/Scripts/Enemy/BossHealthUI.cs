@@ -8,14 +8,13 @@ using UnityEngine.UI;
 public class BossHealthUI : MonoBehaviour
 {
     [Header("UI References")]
-    [SerializeField] private GameObject container; // To hide/show the whole bar
+    [SerializeField] private GameObject container; 
     [SerializeField] private Image fillImage;
 
     private HealthComponent bossHealth;
 
     void Awake()
     {
-        // Start hidden
         if (container != null) container.SetActive(false);
     }
 
@@ -45,14 +44,11 @@ public class BossHealthUI : MonoBehaviour
     {
         bossHealth = health;
 
-        // Show UI
         if (container != null) container.SetActive(true);
 
-        // Subscribe
         bossHealth.OnHealthChanged += UpdateFill;
         bossHealth.OnDeath += HandleBossDeath;
 
-        // Initial Update
         UpdateFill(null, bossHealth.CurrentHealth);
     }
 
@@ -67,10 +63,8 @@ public class BossHealthUI : MonoBehaviour
 
     private void HandleBossDeath(GameObject deadObject)
     {
-        // Hide UI
         if (container != null) container.SetActive(false);
 
-        // Cleanup reference
         if (bossHealth != null)
         {
             bossHealth.OnHealthChanged -= UpdateFill;

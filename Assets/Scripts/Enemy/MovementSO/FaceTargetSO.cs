@@ -4,7 +4,7 @@ using UnityEngine;
 public class FaceTargetSO : EnemyRotationSO
 {
     [SerializeField] private float rotationSpeed = 360f;
-    [SerializeField] private float angleOffset = -90f; // Align sprite (usually -90 for Up-facing sprites)
+    [SerializeField] private float angleOffset = -90f; 
 
     public override Quaternion CalculateRotation(Transform self, IActor target)
     {
@@ -15,7 +15,6 @@ public class FaceTargetSO : EnemyRotationSO
 
         Quaternion targetRotation = Quaternion.AngleAxis(targetAngle, Vector3.forward);
 
-        // Smoothly rotate towards target
         return Quaternion.RotateTowards(self.rotation, targetRotation, rotationSpeed * Time.fixedDeltaTime);
     }
 }

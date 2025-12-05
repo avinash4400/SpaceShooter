@@ -11,7 +11,7 @@ public class EliminationPatternSO : SpawnPatternSO
 
         int targetKills = config.count;
         int currentKills = 0;
-        int spawnedCount = 0; // Track spawns for Fixed mode
+        int spawnedCount = 0; 
 
         Action<Vector3, ILootSource> onDeath = (pos, src) => { currentKills++; };
 
@@ -20,8 +20,6 @@ public class EliminationPatternSO : SpawnPatternSO
         // Loop until quota reached
         while (currentKills < targetKills)
         {
-            // CHECK SPAWN MODE
-            // If FixedSquad, we stop spawning once we hit the initial count.
             bool canSpawn = true;
             if (config.mode == SpawnConfig.SpawnMode.FixedSquad && spawnedCount >= config.count)
             {
@@ -54,6 +52,5 @@ public class EliminationPatternSO : SpawnPatternSO
         }
 
         if (EventManager.Instance != null) EventManager.Instance.OnEnemyDeath -= onDeath;
-        Debug.Log($"[EliminationPattern] Quota of {targetKills} kills reached. Pattern Complete.");
     }
 }

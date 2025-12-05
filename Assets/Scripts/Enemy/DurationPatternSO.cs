@@ -22,11 +22,9 @@ public class DurationPatternSO : SpawnPatternSO
 
         while (timer < config.duration)
         {
-            // Pick random enemy from pool
             int index = Random.Range(0, config.enemyPool.Length);
             var entry = config.enemyPool[index];
 
-            // Use specific config if available, fallback to main config
             EnemyDataSO data = entry.config != null ? entry.config : config.enemyConfig;
 
             manager.SpawnEnemy(entry.prefab, data, config.spawnStrategy);

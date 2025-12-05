@@ -4,17 +4,14 @@ using System;
 
 /// <summary>
 /// A Generic, non-MonoBehaviour Object Pool.
-/// Manages a queue of objects of type T.
-/// Modified to support inheritance for specialized pools.
 /// </summary>
 /// <typeparam name="T">The Component type to pool (e.g., BaseProjectile, Enemy).</typeparam>
 public class ObjectPool<T> where T : Component
 {
-    // Changed from private to protected to allow inheritance access
     protected T prefab;
     protected Transform parent;
     protected Queue<T> poolQueue = new Queue<T>();
-    protected Action<T> onGet; // Optional setup action
+    protected Action<T> onGet; 
 
     public ObjectPool(T prefab, int initialSize, Transform parent = null, Action<T> onGet = null)
     {
@@ -28,7 +25,6 @@ public class ObjectPool<T> where T : Component
         }
     }
 
-    // Virtual to allow derived classes to customize instantiation (e.g. Dependency Injection)
     protected virtual T CreateNewInstance()
     {
         T obj = UnityEngine.Object.Instantiate(prefab, parent);
@@ -50,8 +46,7 @@ public class ObjectPool<T> where T : Component
         }
         else
         {
-            obj = CreateNewInstance(); // Expand pool if empty
-            // Since CreateNewInstance enqueues it, we must dequeue it immediately
+            obj = CreateNewInstance(); 
             poolQueue.Dequeue();
         }
 
@@ -62,7 +57,6 @@ public class ObjectPool<T> where T : Component
 
     /// <summary>
     /// Returns an object to the pool.
-    /// Virtual to allow custom cleanup logic.
     /// </summary>
     public virtual void Return(T obj)
     {
@@ -93,7 +87,6 @@ public static class ObjectPooler
             return null;
         }
 
-        // Create a dedicated parent object in the scene if none provided, to keep hierarchy clean
         if (parent == null)
         {
             GameObject poolObj = new GameObject($"Pool_{typeof(T).Name}_{prefab.name}");

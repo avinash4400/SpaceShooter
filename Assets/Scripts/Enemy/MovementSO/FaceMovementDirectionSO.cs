@@ -7,14 +7,6 @@ public class FaceMovementDirectionSO : EnemyRotationSO
 
     public override Quaternion CalculateRotation(Transform self, IActor target)
     {
-        // We need the velocity/movement vector. 
-        // Since the strategy signature doesn't pass velocity, we can infer it or rely on IActor.
-        // But 'self' is a Transform. 
-        // Let's assume the Enemy script sets its rotation, this strategy just calculates target rotation.
-
-        // ISSUE: Calculating rotation based on movement requires knowing the movement vector.
-        // OPTIMIZATION: Check if 'self' has an IActor component to get velocity?
-
         IActor enemyActor = self.GetComponentInParent<IActor>();
         if (enemyActor != null)
         {

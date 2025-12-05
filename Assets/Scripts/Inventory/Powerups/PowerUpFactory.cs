@@ -13,7 +13,6 @@ public class PowerUpFactory : ScriptableObject
     [Tooltip("List of all available Power-Up Data assets.")]
     [SerializeField] private PowerUpDataSO[] allPowerUps;
 
-    // Cache for O(1) lookup
     private Dictionary<PowerUpType, PowerUpDataSO> typeLookup;
 
     private void InitLookup()

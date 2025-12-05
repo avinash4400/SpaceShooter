@@ -23,7 +23,6 @@ public class BossPhaseController : MonoBehaviour
     [Tooltip("List of phases. Should be ordered from highest threshold (e.g. 0.75) to lowest (0.25).")]
     [SerializeField] private List<BossPhase> phases;
 
-    // References
     private Enemy enemyController;
     private HealthComponent health;
     private int currentPhaseIndex = -1;
@@ -37,7 +36,6 @@ public class BossPhaseController : MonoBehaviour
         {
             health.OnHealthChanged += CheckPhases;
 
-            // Notify UI
             if (EventManager.Instance != null)
             {
                 EventManager.Instance.TriggerBossSpawned(health);
@@ -59,17 +57,13 @@ public class BossPhaseController : MonoBehaviour
 
         float healthPercent = (float)currentHealth / health.MaxHealth;
 
-        // Iterate to find the active phase
-        // We look for the first phase in the list that meets the threshold condition 
-        // that we haven't already entered.
 
         for (int i = 0; i < phases.Count; i++)
         {
-            // If we haven't reached this phase yet AND health is low enough
             if (i > currentPhaseIndex && healthPercent <= phases[i].healthThreshold)
             {
                 EnterPhase(i);
-                currentPhaseIndex = i; // Mark this as the current active phase
+                currentPhaseIndex = i; 
             }
         }
     }
@@ -77,7 +71,6 @@ public class BossPhaseController : MonoBehaviour
     private void EnterPhase(int index)
     {
         BossPhase phase = phases[index];
-        Debug.Log($"[Boss] Entering Phase {index + 1} at {phase.healthThreshold * 100}% HP");
 
         if (enemyController != null)
         {

@@ -7,7 +7,6 @@ public struct DamageInfo
 {
     public readonly int DamageAmount;
     public readonly IActor Source;
-    // We can expand this later with: public readonly DamageType Type;
 
     public DamageInfo(int amount, IActor source)
     {

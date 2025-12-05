@@ -2,7 +2,6 @@ using UnityEngine;
 
 /// <summary>
 /// A generic component that manages the lifecycle of an object based on screen visibility.
-/// Logic: Wait for object to enter screen -> If it leaves screen -> Destroy/Disable.
 /// </summary>
 public class ScreenBoundsHandlerComponent : MonoBehaviour, IGameComponent
 {
@@ -12,10 +11,6 @@ public class ScreenBoundsHandlerComponent : MonoBehaviour, IGameComponent
     private Camera mainCamera;
     private IActor actor;
 
-    /// <summary>
-    /// IGameComponent implementation.
-    /// Initializes dependencies using the actor.
-    /// </summary>
     public void Initialize(IActor actor)
     {
         this.actor = actor;
@@ -66,7 +61,6 @@ public class ScreenBoundsHandlerComponent : MonoBehaviour, IGameComponent
 
     private bool CheckIfOnScreen()
     {
-        // Use the actor's transform (Rigidbody) for accurate position
         Vector3 viewPos = mainCamera.WorldToViewportPoint(actor.GetTransform().position);
 
         bool visibleX = viewPos.x > 0 && viewPos.x < 1;
@@ -74,21 +68,18 @@ public class ScreenBoundsHandlerComponent : MonoBehaviour, IGameComponent
 
         if (hasEnteredScreen)
         {
-            // Logic for IS ON SCREEN (Exit Check)
             bool offScreen = viewPos.x < -boundsBuffer || viewPos.x > 1 + boundsBuffer ||
                              viewPos.y < -boundsBuffer || viewPos.y > 1 + boundsBuffer;
             return !offScreen;
         }
         else
         {
-            // Logic for HAS ENTERED SCREEN (Entry Check)
             return visibleX && visibleY;
         }
     }
 
     private void HandleExit()
     {
-        Debug.LogWarning($"[ScreenBoundsHandler] {name} exited screen and will be destroyed.");
         Destroy(gameObject);
     }
 }

@@ -16,13 +16,13 @@ public class RandomWaypointMovementSO : EnemyMovementSO
         if (!targetPos.HasValue)
         {
             targetPos = PickRandomPoint();
-            runtimeState = targetPos; // Update state
+            runtimeState = targetPos; 
         }
 
         if (Vector3.Distance(currentPos, targetPos.Value) < reachThreshold)
         {
             targetPos = PickRandomPoint();
-            runtimeState = targetPos; // Update state
+            runtimeState = targetPos; 
         }
 
         return Vector3.MoveTowards(currentPos, targetPos.Value, speed * Time.fixedDeltaTime);

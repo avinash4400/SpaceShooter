@@ -13,7 +13,6 @@ public class HomingProjectile : BaseProjectile
 
     [Header("Explosion Settings")]
     [SerializeField] private float explosionRadius = 2.0f;
-    [SerializeField] private int damage = 1;
 
     private bool isLocked = false;
     private Vector3 lockedPosition;
@@ -81,8 +80,6 @@ public class HomingProjectile : BaseProjectile
 
     private void Explode()
     {
-        // NEW: Audio Event
-        // Pass the hitSound configured in the BulletTypeSO
         if (EventManager.Instance != null && config != null)
         {
             EventManager.Instance.TriggerExplosion(transform.position, config.hitSound);

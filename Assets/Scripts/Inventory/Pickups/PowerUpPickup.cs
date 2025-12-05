@@ -20,7 +20,6 @@ public class PowerUpPickup : BasePickup
         {
             inventory.AddPowerUp(powerUpData);
 
-            // NEW: Trigger Audio Event
             if (EventManager.Instance != null)
             {
                 EventManager.Instance.TriggerPowerUpCollected(powerUpData);

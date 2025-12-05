@@ -14,7 +14,7 @@ public class LootTableSO : ScriptableObject
     {
         public LootItemSO item;
         [Min(0)] public int weight;
-        public LootConditionSO[] conditions; // Optional filters
+        public LootConditionSO[] conditions; 
     }
 
     [SerializeField] private LootEntry[] entries;
@@ -25,7 +25,6 @@ public class LootTableSO : ScriptableObject
     /// <returns>The selected LootItemSO, or null if nothing was selected.</returns>
     public LootItemSO GetDropItem()
     {
-        // 1. Filter entries based on Conditions
         List<LootEntry> validEntries = new List<LootEntry>();
         int totalWeight = 0;
 
@@ -42,7 +41,6 @@ public class LootTableSO : ScriptableObject
 
         if (validEntries.Count == 0 || totalWeight == 0) return null;
 
-        // 2. Weighted Random Selection
         int rng = Random.Range(0, totalWeight);
         int currentWeightSum = 0;
 

@@ -4,11 +4,9 @@ using System.Collections.Generic;
 /// <summary>
 /// Centralized manager for Bullet Pools.
 /// Allows multiple entities (Enemies, Player) to share pools for the same bullet type.
-/// Implements Lazy Initialization.
 /// </summary>
 public class BulletManager : Singleton<BulletManager>
 {
-    // Dictionary mapping specific BulletTypeSO to its Object Pool
     private Dictionary<BulletTypeSO, BulletPool> pools = new Dictionary<BulletTypeSO, BulletPool>();
 
     [Header("Configuration")]
@@ -30,7 +28,6 @@ public class BulletManager : Singleton<BulletManager>
             return pools[bulletType];
         }
 
-        // Lazy Initialization: Create the pool if it doesn't exist
         GameObject poolGroup = new GameObject($"Pool_{bulletType.name}");
         poolGroup.transform.SetParent(transform);
 

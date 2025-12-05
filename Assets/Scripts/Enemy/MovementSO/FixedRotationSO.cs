@@ -12,7 +12,6 @@ public class FixedRotationSO : EnemyRotationSO
 
     public override Quaternion CalculateRotation(Transform self, IActor target)
     {
-        // Simply return the fixed rotation
         return Quaternion.AngleAxis(fixedAngle, Vector3.forward);
     }
 }

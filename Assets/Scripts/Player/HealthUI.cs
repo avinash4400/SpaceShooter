@@ -3,7 +3,6 @@ using UnityEngine.UI;
 
 /// <summary>
 /// Manages the Player's Health Bar UI.
-/// Simply listens to the global EventManager for updates.
 /// </summary>
 public class HealthUI : MonoBehaviour
 {
@@ -42,7 +41,6 @@ public class HealthUI : MonoBehaviour
     {
         if (healthFillImage == null || maxHealth <= 0) return;
 
-        // Calculate fill amount (0.0 to 1.0)
         float fillAmount = (float)currentHealth / maxHealth;
         healthFillImage.fillAmount = fillAmount;
     }
