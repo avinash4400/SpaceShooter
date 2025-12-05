@@ -5,7 +5,6 @@ using System.Linq;
 
 public class BulletInventory : MonoBehaviour, IGameComponent
 {
-    // ... (Configuration fields)
     [Header("Configuration")]
     [SerializeField] private BulletFactory bulletFactory;
     [SerializeField] private int initialPoolSize = 20;
@@ -35,7 +34,6 @@ public class BulletInventory : MonoBehaviour, IGameComponent
     void OnEnable() { PlayerController.OnSwitchBulletInput += SwitchBullet; }
     void OnDisable() { PlayerController.OnSwitchBulletInput -= SwitchBullet; }
 
-    // ... (InitializePools, InitializeAmmo, SwitchBullet, SelectBullet, ConsumeAmmo unchanged) ...
     private void InitializePools()
     {
         bulletPools = new Dictionary<BulletType, BulletPool>();
@@ -69,6 +67,23 @@ public class BulletInventory : MonoBehaviour, IGameComponent
         }
         if (defaultType != null) SelectBullet(defaultType);
         availableBulletTypes = availableBulletTypes.OrderBy(b => b.type).ToList();
+    }
+
+    // --- New: Ammo Loot Logic (Updated: Removed Max Ammo Clamp) ---
+    public void AddAmmo(BulletTypeSO bulletType, int amount)
+    {
+        if (bulletType == null || !bulletType.hasLimitedAmmo) return;
+
+        if (limitedAmmoCounts.ContainsKey(bulletType.type))
+        {
+            // Simply add the amount without capping it
+            limitedAmmoCounts[bulletType.type] += amount;
+
+            // Update UI
+            OnAmmoCountChanged?.Invoke(bulletType, limitedAmmoCounts[bulletType.type]);
+
+            Debug.Log($"[BulletInventory] Added {amount} ammo to {bulletType.bulletName}. Total: {limitedAmmoCounts[bulletType.type]}");
+        }
     }
 
     public void SwitchBullet()
@@ -117,7 +132,6 @@ public class BulletInventory : MonoBehaviour, IGameComponent
         return false;
     }
 
-    // UPDATED: Now accepts List<MuzzleDefinition> to support new Pattern logic
     public void AttemptFire(List<MuzzleDefinition> muzzles, Vector3 fireDirection, IActor sourceActor, IActor target = null)
     {
         if (SelectedBullet == null) return;
@@ -128,40 +142,22 @@ public class BulletInventory : MonoBehaviour, IGameComponent
 
         if (SelectedBullet.patternLogic != null)
         {
-            // Delegate to pattern with the full list of muzzles
             SelectedBullet.patternLogic.Fire(sourceActor, muzzles, fireDirection, SelectedBullet, pool, target);
         }
         else
         {
-            // Fallback for Legacy/Default behavior:
-            // Find "Main" muzzle or default to the first one available
+            // Fallback logic
             Vector3 spawnPos = sourceActor.GetTransform().position;
-
             if (muzzles != null && muzzles.Count > 0)
             {
-                // Try to find the Main muzzle
                 var mainMuzzle = muzzles.FirstOrDefault(m => m.type == MuzzleType.Main);
-
-                // Check if the struct returned is valid (transform not null)
-                if (mainMuzzle.transform != null)
-                {
-                    spawnPos = mainMuzzle.transform.position;
-                }
-                else
-                {
-                    // If no Main found, use the first available muzzle
-                    if (muzzles[0].transform != null)
-                        spawnPos = muzzles[0].transform.position;
-                }
+                if (mainMuzzle.transform != null) spawnPos = mainMuzzle.transform.position;
+                else if (muzzles[0].transform != null) spawnPos = muzzles[0].transform.position;
             }
-
-            // Maintain the Z-flattening logic from your original code
             spawnPos.z = 0f;
-
             SpawnBullet(SelectedBullet, spawnPos, fireDirection, sourceActor, target);
         }
 
-        // Trigger Audio Event
         if (EventManager.Instance != null)
         {
             EventManager.Instance.TriggerPlayerFired(SelectedBullet);

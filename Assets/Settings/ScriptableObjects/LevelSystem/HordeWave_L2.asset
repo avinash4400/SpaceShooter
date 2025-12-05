@@ -16,7 +16,7 @@ MonoBehaviour:
   - patternLogic: {fileID: 11400000, guid: e1de21f2d842dd5479a5145950229ed3, type: 2}
     config:
       mode: 0
-      enemyPrefab: {fileID: -815993105983958437, guid: bc5749eaadb203044a2e3afe7a642bdc, type: 3}
+      enemyPrefab: {fileID: -815993105983958437, guid: 07af62366e4dca9498b1043198cd3e9d, type: 3}
       enemyConfig: {fileID: 11400000, guid: 261d2dec867c8e94ebd3b5afa091737b, type: 2}
       spawnStrategy: {fileID: 11400000, guid: d40f94fea9ab177439856dc77b7c0e3a, type: 2}
       enemyPool: []
@@ -27,7 +27,7 @@ MonoBehaviour:
   - patternLogic: {fileID: 11400000, guid: 2f7c415671ae47c48bac97faed01ca34, type: 2}
     config:
       mode: 0
-      enemyPrefab: {fileID: -815993105983958437, guid: bc5749eaadb203044a2e3afe7a642bdc, type: 3}
+      enemyPrefab: {fileID: -815993105983958437, guid: 07af62366e4dca9498b1043198cd3e9d, type: 3}
       enemyConfig: {fileID: 11400000, guid: 261d2dec867c8e94ebd3b5afa091737b, type: 2}
       spawnStrategy: {fileID: 11400000, guid: d40f94fea9ab177439856dc77b7c0e3a, type: 2}
       enemyPool: []

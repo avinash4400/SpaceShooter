@@ -16,11 +16,13 @@ MonoBehaviour:
   bulletName: Single Shot
   patternLogic: {fileID: 11400000, guid: 8e5a4e103c69a8440bdf875397a5d858, type: 2}
   projectilePrefab: {fileID: 5366986491365022919, guid: b0997fa5a58082e44b094b5407d6bd5c, type: 3}
+  muzzleRequirements: 
   projectileCount: 1
   damage: 50
   speed: 15
   lifetime: 60
+  fireRate: 0.2
   hasLimitedAmmo: 0
-  icon: {fileID: 21300000, guid: 98be93167ed6cd54d82a8e882da6f3e1, type: 3}
+  icon: {fileID: 21300000, guid: ed6262cc13fb18d40824ff5bbfd1ba95, type: 3}
   fireSound: {fileID: 8300000, guid: b8a5a32eee7be594b8d30f276be0be97, type: 3}
   hitSound: {fileID: 8300000, guid: 055e2c1e1e386284696b23928b8f80f6, type: 3}

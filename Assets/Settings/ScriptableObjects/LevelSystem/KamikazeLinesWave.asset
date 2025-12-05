@@ -16,7 +16,7 @@ MonoBehaviour:
   - patternLogic: {fileID: 11400000, guid: 560e9c27ecfafd048979486cc808a690, type: 2}
     config:
       mode: 1
-      enemyPrefab: {fileID: -815993105983958437, guid: bc5749eaadb203044a2e3afe7a642bdc, type: 3}
+      enemyPrefab: {fileID: -815993105983958437, guid: 8c55ade186624de40ab9c36b26556aaf, type: 3}
       enemyConfig: {fileID: 11400000, guid: 5cff3c20abf36cc4fb5927313d0faeaf, type: 2}
       spawnStrategy: {fileID: 11400000, guid: d40f94fea9ab177439856dc77b7c0e3a, type: 2}
       enemyPool: []
@@ -27,7 +27,7 @@ MonoBehaviour:
   - patternLogic: {fileID: 11400000, guid: 2f7c415671ae47c48bac97faed01ca34, type: 2}
     config:
       mode: 1
-      enemyPrefab: {fileID: -815993105983958437, guid: bc5749eaadb203044a2e3afe7a642bdc, type: 3}
+      enemyPrefab: {fileID: -815993105983958437, guid: 07af62366e4dca9498b1043198cd3e9d, type: 3}
       enemyConfig: {fileID: 11400000, guid: 56b4e7636c6adb84db92de09543b7784, type: 2}
       spawnStrategy: {fileID: 11400000, guid: a1536239d15d8894f90a3d6cae85a2b2, type: 2}
       enemyPool: []
@@ -38,7 +38,7 @@ MonoBehaviour:
   - patternLogic: {fileID: 11400000, guid: 560e9c27ecfafd048979486cc808a690, type: 2}
     config:
       mode: 1
-      enemyPrefab: {fileID: -815993105983958437, guid: bc5749eaadb203044a2e3afe7a642bdc, type: 3}
+      enemyPrefab: {fileID: -815993105983958437, guid: 8c55ade186624de40ab9c36b26556aaf, type: 3}
       enemyConfig: {fileID: 11400000, guid: 5cff3c20abf36cc4fb5927313d0faeaf, type: 2}
       spawnStrategy: {fileID: 11400000, guid: a1536239d15d8894f90a3d6cae85a2b2, type: 2}
       enemyPool: []
@@ -60,7 +60,7 @@ MonoBehaviour:
   - patternLogic: {fileID: 11400000, guid: 560e9c27ecfafd048979486cc808a690, type: 2}
     config:
       mode: 1
-      enemyPrefab: {fileID: -815993105983958437, guid: bc5749eaadb203044a2e3afe7a642bdc, type: 3}
+      enemyPrefab: {fileID: -815993105983958437, guid: 07af62366e4dca9498b1043198cd3e9d, type: 3}
       enemyConfig: {fileID: 11400000, guid: 56b4e7636c6adb84db92de09543b7784, type: 2}
       spawnStrategy: {fileID: 11400000, guid: a1536239d15d8894f90a3d6cae85a2b2, type: 2}
       enemyPool: []

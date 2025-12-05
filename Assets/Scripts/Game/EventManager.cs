@@ -13,8 +13,10 @@ public class EventManager : Singleton<EventManager>
     public event Action<Vector3, AudioClip> OnExplosion;
     public event Action<BulletTypeSO> OnPlayerFired;
     public event Action<PowerUpDataSO> OnPowerUpCollected;
+    // NEW: Generic pickup sound event
+    public event Action<AudioClip> OnPickupSound;
 
-    // NEW: UI Interaction Event
+    // --- UI Interaction Event ---
     public event Action OnUISubmit;
 
     // --- Enemy Lifecycle Events ---
@@ -48,6 +50,8 @@ public class EventManager : Singleton<EventManager>
     public void TriggerPowerUpCollected(PowerUpDataSO data) => OnPowerUpCollected?.Invoke(data);
 
     // NEW Trigger
+    public void TriggerPickupSound(AudioClip clip) => OnPickupSound?.Invoke(clip);
+
     public void TriggerUISubmit() => OnUISubmit?.Invoke();
 
     public void TriggerEnemyDeath(Vector3 deathPosition, ILootSource lootSource) => OnEnemyDeath?.Invoke(deathPosition, lootSource);

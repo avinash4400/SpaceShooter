@@ -10,14 +10,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: bbbc2a69f79ff1046930c245098a8ee8, type: 3}
-  m_Name: LootTable
+  m_Name: PowerUpLootTable
   m_EditorClassIdentifier: 
   entries:
   - item: {fileID: 11400000, guid: a5a7be5fb708efe4a80299e5c0d440a1, type: 2}
-    weight: 10
+    weight: 8
     conditions:
     - {fileID: 11400000, guid: f5a4bbe1e602cb947945f8a4909807ec, type: 2}
   - item: {fileID: 11400000, guid: 5348d5825b1fb71459e0e936b6427193, type: 2}
-    weight: 10
+    weight: 7
     conditions:
     - {fileID: 11400000, guid: f5a4bbe1e602cb947945f8a4909807ec, type: 2}
