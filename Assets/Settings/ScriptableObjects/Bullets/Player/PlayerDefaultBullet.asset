@@ -18,7 +18,7 @@ MonoBehaviour:
   projectilePrefab: {fileID: 5366986491365022919, guid: b0997fa5a58082e44b094b5407d6bd5c, type: 3}
   muzzleRequirements: 
   projectileCount: 1
-  damage: 50
+  damage: 10
   speed: 15
   lifetime: 60
   fireRate: 0.2

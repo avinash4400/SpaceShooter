@@ -13,7 +13,21 @@ public class SequencePatternSO : SpawnPatternSO
 
         for (int i = 0; i < config.count; i++)
         {
-            manager.SpawnEnemy(config.enemyPrefab, config.enemyConfig, config.spawnStrategy);
+
+            bool usePool = config.enemyPool != null
+                  && config.enemyPool.Length > 0
+                  && UnityEngine.Random.value < 0.5f;
+
+            if (usePool)
+            {
+                var entry = config.enemyPool[UnityEngine.Random.Range(0, config.enemyPool.Length)];
+                EnemyDataSO data = entry.config != null ? entry.config : config.enemyConfig;
+                manager.SpawnEnemy(entry.prefab, data, config.spawnStrategy);
+            }
+            else
+            {
+                manager.SpawnEnemy(config.enemyPrefab, config.enemyConfig, config.spawnStrategy);
+            }
 
             if (i < config.count - 1)
             {

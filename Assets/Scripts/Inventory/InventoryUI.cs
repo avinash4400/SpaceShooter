@@ -19,6 +19,7 @@ public class InventoryUI : MonoBehaviour
 
     private List<PowerUpDataSO> currentPowerUps = new List<PowerUpDataSO>();
     private PowerUpDataSO currentSelectedPowerUp;
+    private BulletTypeSO currentSelectedBulletType;
 
     void OnEnable()
     {
@@ -43,6 +44,7 @@ public class InventoryUI : MonoBehaviour
     /// </summary>
     private void UpdateBulletIcon(BulletTypeSO bulletType)
     {
+        currentSelectedBulletType = bulletType;
         if (bulletIconImage != null)
         {
             bulletIconImage.sprite = bulletType.icon;
@@ -55,6 +57,8 @@ public class InventoryUI : MonoBehaviour
     /// </summary>
     private void UpdateAmmoCount(BulletTypeSO bulletType, int count)
     {
+        if(currentSelectedBulletType != null && bulletType != currentSelectedBulletType)
+            return;
         if (ammoCountText != null)
         {
             if (bulletType.hasLimitedAmmo)

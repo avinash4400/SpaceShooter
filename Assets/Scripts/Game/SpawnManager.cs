@@ -66,5 +66,9 @@ public class SpawnManager : Singleton<SpawnManager>
 
     private void HandleGameOverCleanup()
     {
+        if (playerSpawner != null)
+        {
+            playerSpawner.DespawnPlayer();
+        }
     }
 }

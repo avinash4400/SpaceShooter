@@ -519,15 +519,15 @@ MonoBehaviour:
   phases:
   - healthThreshold: 0.8
     movementPattern: {fileID: 11400000, guid: 30c8cd37de0e73443ae222824a62ace0, type: 2}
-    rotationPattern: {fileID: 11400000, guid: 10a6686bafc15f04696dd57ae3189f1c, type: 2}
+    rotationPattern: {fileID: 11400000, guid: daf09ca5cbb8b564bb357043a8ce0c70, type: 2}
     attackPattern: {fileID: 11400000, guid: 43d14e5097eae27499f59fc9abf1ee6b, type: 2}
   - healthThreshold: 0.5
     movementPattern: {fileID: 11400000, guid: 30c8cd37de0e73443ae222824a62ace0, type: 2}
-    rotationPattern: {fileID: 11400000, guid: 10a6686bafc15f04696dd57ae3189f1c, type: 2}
+    rotationPattern: {fileID: 11400000, guid: daf09ca5cbb8b564bb357043a8ce0c70, type: 2}
     attackPattern: {fileID: 11400000, guid: 41804073fd4c05f44a11125a813b7d55, type: 2}
   - healthThreshold: 0.3
     movementPattern: {fileID: 11400000, guid: 6ad8832a6da8c204d9d59e689a10e71a, type: 2}
-    rotationPattern: {fileID: 11400000, guid: 10a6686bafc15f04696dd57ae3189f1c, type: 2}
+    rotationPattern: {fileID: 11400000, guid: daf09ca5cbb8b564bb357043a8ce0c70, type: 2}
     attackPattern: {fileID: 11400000, guid: 81a2f7c726b8dc04a8e081ed39818ab8, type: 2}
 --- !u!1 &8604164738541283319
 GameObject:
@@ -612,7 +612,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 5
   m_Sprite: {fileID: 21300000, guid: 9323a6c37ab7cee46aff0f07c38607a9, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0

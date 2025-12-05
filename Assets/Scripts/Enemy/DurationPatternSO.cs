@@ -26,8 +26,18 @@ public class DurationPatternSO : SpawnPatternSO
             var entry = config.enemyPool[index];
 
             EnemyDataSO data = entry.config != null ? entry.config : config.enemyConfig;
+            bool usePool = config.enemyPool != null
+                  && config.enemyPool.Length > 0
+                  && UnityEngine.Random.value < 0.5f;
 
-            manager.SpawnEnemy(entry.prefab, data, config.spawnStrategy);
+            if (usePool)
+            {
+                entry = config.enemyPool[UnityEngine.Random.Range(0, config.enemyPool.Length)];
+                data = entry.config != null ? entry.config : config.enemyConfig;
+                manager.SpawnEnemy(entry.prefab, data, config.spawnStrategy);
+            }
+            else
+                manager.SpawnEnemy(entry.prefab, data, config.spawnStrategy);
 
             yield return new WaitForSeconds(config.interval);
             timer += config.interval;

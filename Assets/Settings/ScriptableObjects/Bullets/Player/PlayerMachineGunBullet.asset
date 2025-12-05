@@ -13,12 +13,12 @@ MonoBehaviour:
   m_Name: PlayerMachineGunBullet
   m_EditorClassIdentifier: 
   type: 4
-  bulletName: Single Shot
+  bulletName: Machine Gun Ammo
   patternLogic: {fileID: 11400000, guid: 8e5a4e103c69a8440bdf875397a5d858, type: 2}
   projectilePrefab: {fileID: 5366986491365022919, guid: b0997fa5a58082e44b094b5407d6bd5c, type: 3}
   muzzleRequirements: 
   projectileCount: 1
-  damage: 50
+  damage: 20
   speed: 15
   lifetime: 60
   fireRate: 0.08

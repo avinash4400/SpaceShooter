@@ -20,10 +20,14 @@ MonoBehaviour:
       enemyConfig: {fileID: 11400000, guid: 261d2dec867c8e94ebd3b5afa091737b, type: 2}
       spawnStrategy: {fileID: 11400000, guid: bf3a567e481732a4fa75c12f2254662d, type: 2}
       enemyPool:
-      - prefab: {fileID: -815993105983958437, guid: bc5749eaadb203044a2e3afe7a642bdc, type: 3}
+      - prefab: {fileID: -815993105983958437, guid: f3afeafcaf53acd4ca83a031d261066f, type: 3}
         config: {fileID: 11400000, guid: 261d2dec867c8e94ebd3b5afa091737b, type: 2}
-      count: 10
-      interval: 2
+      - prefab: {fileID: -815993105983958437, guid: 8c55ade186624de40ab9c36b26556aaf, type: 3}
+        config: {fileID: 11400000, guid: 5cff3c20abf36cc4fb5927313d0faeaf, type: 2}
+      - prefab: {fileID: -815993105983958437, guid: 07af62366e4dca9498b1043198cd3e9d, type: 3}
+        config: {fileID: 11400000, guid: 56b4e7636c6adb84db92de09543b7784, type: 2}
+      count: 25
+      interval: 0.5
       duration: 20
       initialDelay: 2
   - patternLogic: {fileID: 11400000, guid: 2f7c415671ae47c48bac97faed01ca34, type: 2}

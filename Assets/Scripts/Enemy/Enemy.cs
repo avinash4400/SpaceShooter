@@ -21,7 +21,7 @@ public class Enemy : MonoBehaviour, IActor, ILootSource
     public Vector2 GetCurrentVelocity() => movement != null ? movement.GetVelocity() : Vector2.zero;
     public void SetCurrentVelocity(Vector2 velocity) { }
     public T GetAttachedComponent<T>() where T : IGameComponent => gameComponents.OfType<T>().FirstOrDefault();
-    public LootTableSO GetLootTable() => config != null ? config.lootTable : null;
+    public LootTableSO GetLootTable() => config != null ? config.GetLootTable() : null;
 
     void Start()
     {

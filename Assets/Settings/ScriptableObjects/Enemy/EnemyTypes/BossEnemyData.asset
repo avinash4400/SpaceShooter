@@ -17,7 +17,7 @@ MonoBehaviour:
   scoreValue: 1000
   moveSpeed: 5
   deathSound: {fileID: 8300000, guid: 055e2c1e1e386284696b23928b8f80f6, type: 3}
-  lootTable: {fileID: 0}
+  lootTable: []
   movementPattern: {fileID: 11400000, guid: fe11c05752359ec4187dfd6c4dfee6be, type: 2}
   rotationPattern: {fileID: 11400000, guid: daf09ca5cbb8b564bb357043a8ce0c70, type: 2}
   attackPattern: {fileID: 11400000, guid: 479ee233b4f35aa4eb74e09f0520055d, type: 2}

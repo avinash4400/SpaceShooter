@@ -18,10 +18,10 @@ MonoBehaviour:
   projectilePrefab: {fileID: 5366986491365022919, guid: b0997fa5a58082e44b094b5407d6bd5c, type: 3}
   muzzleRequirements: 000000000100000002000000
   projectileCount: 3
-  damage: 20
+  damage: 15
   speed: 15
   lifetime: 60
-  fireRate: 0.4
+  fireRate: 0.5
   hasLimitedAmmo: 1
   icon: {fileID: 21300000, guid: 832c5f765ef59cf48b63c22244429fdf, type: 3}
   fireSound: {fileID: 8300000, guid: b8a5a32eee7be594b8d30f276be0be97, type: 3}

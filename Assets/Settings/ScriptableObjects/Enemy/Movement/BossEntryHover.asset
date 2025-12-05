@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e31f708e4b8bdf1419f93ab2003cd267, type: 3}
   m_Name: BossEntryHover
   m_EditorClassIdentifier: 
-  anchorViewportPos: {x: 0.5, y: 0.8}
+  anchorViewportPos: {x: 0.5, y: 0.7}
   entrySpeedMultiplier: 2
   hoverAmplitude: 3
   hoverFrequency: 1

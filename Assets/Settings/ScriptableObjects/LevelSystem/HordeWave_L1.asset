@@ -20,7 +20,7 @@ MonoBehaviour:
       enemyConfig: {fileID: 11400000, guid: 3d31d64a2b5003644add25065174a7f6, type: 2}
       spawnStrategy: {fileID: 11400000, guid: bf3a567e481732a4fa75c12f2254662d, type: 2}
       enemyPool: []
-      count: 1
+      count: 25
       interval: 2
       duration: 0
       initialDelay: 1

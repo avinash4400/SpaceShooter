@@ -13,7 +13,7 @@ public class EnemyDataSO : ScriptableObject
     public AudioClip deathSound; 
 
     [Header("Loot")]
-    public LootTableSO lootTable;
+    public LootTableSO[] lootTable;
 
     [Header("Movement Strategy")]
     public EnemyMovementSO movementPattern;
@@ -25,4 +25,14 @@ public class EnemyDataSO : ScriptableObject
     public EnemyAttackSO attackPattern;
 
     public float bulletSpeedMultiplier = 1.0f;
+
+    public LootTableSO GetLootTable()
+    {
+        if (lootTable != null && lootTable.Length > 0)
+        {
+            int index = Random.Range(0, lootTable.Length);
+            return lootTable[index];
+        }
+        return null;
+    }
 }

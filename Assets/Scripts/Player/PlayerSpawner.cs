@@ -34,4 +34,13 @@ public class PlayerSpawner : MonoBehaviour
 
         return currentPlayerInstance;
     }
+
+    public void DespawnPlayer()
+    {
+        if (currentPlayerInstance != null)
+        {
+            Destroy(currentPlayerInstance.gameObject);
+            currentPlayerInstance = null;
+        }
+    }
 }
