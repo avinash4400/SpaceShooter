@@ -14,4 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   duration: 5
   shieldPrefab: {fileID: 7100015532256891651, guid: ea280cc8bf7ea2c4a9c71cbba12a0f51, type: 3}
-  shieldHealth: 3
+  shieldHealth: 30

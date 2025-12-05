@@ -21,7 +21,7 @@ MonoBehaviour:
       spawnStrategy: {fileID: 11400000, guid: d40f94fea9ab177439856dc77b7c0e3a, type: 2}
       enemyPool:
       - prefab: {fileID: -815993105983958437, guid: bc5749eaadb203044a2e3afe7a642bdc, type: 3}
-        config: {fileID: 11400000, guid: 3d31d64a2b5003644add25065174a7f6, type: 2}
+        config: {fileID: 11400000, guid: 261d2dec867c8e94ebd3b5afa091737b, type: 2}
       - prefab: {fileID: -815993105983958437, guid: f3afeafcaf53acd4ca83a031d261066f, type: 3}
         config: {fileID: 11400000, guid: 56b4e7636c6adb84db92de09543b7784, type: 2}
       count: 20
